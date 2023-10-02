@@ -156,7 +156,7 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (count($tor)) {
+			 if(is_array($tor) && count($tor)) {
 				$new_name = md5($torrent);
 				$file = fopen("$attach_dir/$new_name.torrent", 'w');
 				fputs($file, $torrent);
