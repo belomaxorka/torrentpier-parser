@@ -162,7 +162,7 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
 				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
 				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', false) . '._[soft-torrent.ru].torrent" />';
+				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', false) . '._[' . $bb_cfg['sitename'] . '].torrent" />';
 				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
 				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
 				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
