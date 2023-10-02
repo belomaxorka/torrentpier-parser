@@ -40,6 +40,10 @@ if (!$url) {
 	$excluded_forums_csv = $user->get_excluded_forums(AUTH_READ);
 	$allowed_forums = array_diff(explode(',', $forums['tracker_forums']), explode(',', $excluded_forums_csv));
 
+	if (!$allowed_forums) {
+		bb_die('Нету форумов на которых разрешена регистрация торрентов');
+	}
+
 	foreach ($allowed_forums as $forum_id) {
 		$f = $forums['f'][$forum_id];
 		$cat_forum['c'][$f['cat_id']][] = $forum_id;
@@ -95,7 +99,6 @@ if (!$url) {
 	}
 
 	if ($tracker == 'nnmclub') {
-
 		$curl->setUserAgent("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:13.0) Gecko/20100101 Firefox/13.0.1");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/nnm_cookie.txt');
 
