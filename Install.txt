@@ -51,7 +51,6 @@ $bb_cfg['auth'] = [
 ------------------Заменить на--------------------------------------
 
 <!-- IF URL -->
-
 <div class="f_tbl_wrap">
 <div style="font-size:11px" class="row1" align="center">
 <br />
@@ -123,12 +122,14 @@ $lang['RELEASE'] = 'Release';
 
 ------------------------Найти-------------------------------------------------
 
+<a href="{U_MEMBERLIST}"><b>{L_MEMBERLIST}</b>
+
+------------------Заменить на--------------------------------------
+
 <a href="{U_MEMBERLIST}"><b>{L_MEMBERLIST}</b></a><span style="color:#CDCDCD;">|</span>
 
 -------------------------Добавить после---------------------------------------
 
-<!-- IF IS_ADMIN -->
-<a href="{U_RELEASE}"><b>{L_RELEASE}</b></a><span style="color:#CDCDCD;">|</span>
-<!-- ENDIF -->
+<!-- IF IS_ADMIN --><a href="{U_RELEASE}"><b>{L_RELEASE}</b></a><!-- ENDIF -->
 
 -------------------------------------------------------------------------------
