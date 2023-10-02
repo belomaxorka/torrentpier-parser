@@ -2,9 +2,10 @@
 
 if (!defined('BB_ROOT')) die(basename(__FILE__));
 
-function nnmclub($text, $mode = false)
+function nnmclub($text, $mode = '')
 {
 	global $bb_cfg;
+
 	$server_name = $bb_cfg['server_name'];
 	$sitename = $bb_cfg['sitename'];
 
