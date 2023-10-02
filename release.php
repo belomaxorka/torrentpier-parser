@@ -59,7 +59,7 @@ if (!$url) {
 
 		foreach ($forums_ary as $forum_id) {
 			$forum_name = $forum_name_html[$forum_id];
-			$forum_name = str_short($forum_name, 60 - 2);
+			$forum_name = str_short($forum_name, 58);
 			$style = '';
 			if (!isset($cat_forum['subforums'][$forum_id])) {
 				$class = 'root_forum';
@@ -136,8 +136,15 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("https://nnmclub.to/forum/download.php?id=$id");
-			$tor = \SandFox\Bencode\Bencode::decode($torrent);
-			$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
+			if (class_exists('\SandFox\Bencode\Bencode')) {
+				$tor = \SandFox\Bencode\Bencode::decode($torrent);
+				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
+			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
+				$tor = \Arokettu\Bencode\Bencode::decode($torrent);
+				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else {
+				bb_die('Отсутствует библиотека для бинкодирования торрента');
+			}
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
