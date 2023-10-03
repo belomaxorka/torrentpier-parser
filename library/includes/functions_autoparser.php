@@ -202,6 +202,7 @@ function nnmclub($text, $mode = '')
 			$text = str_replace('[/yt]', "[/youtube]", $text);
 			$text = preg_replace('/\[spoiler=([\s\S]*?)\]/', '[spoiler="$1"]', $text);
 			$text = preg_replace('/\[url=https:\/\/nnmclub.to\/\?q=.*?=text\]([\s\S]*?)\[\/url]/', '$1', $text);
+			$text = preg_replace('/\[acronym=.*?\]([\s\S]*?)\[\/acronym]/', '$1', $text);
 
 			$text = preg_replace('/\[url=http.*?nnm.*?\/forum\/viewtopic.php.*?\].*?\[\/url]/', '', $text);
 
