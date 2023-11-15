@@ -146,7 +146,7 @@ if (!$url) {
 
     $template->assign_vars(array(
         'URL' => true,
-        'URL_DISPLAY' => 'tapochek.net, rutor.info / rutor.is, booktracker.org, megapeer.ru / megapeer.vip, riperam.org, torrent-wind.net, only-soft.org, z-torrents.ru, uniongang.club, <br> rustorka.com, nnmclub.to, rutracker.org, rutracker.ru, kinozal.tv / kinozal.guru, piratbit.org,  ddgroupclub.win',
+        'URL_DISPLAY' => 'tapochek.net, rutor.info / rutor.is, booktracker.org, megapeer.ru / megapeer.vip, riperam.org, torrent-wind.net, only-soft.org, z-torrents.ru, uniongang.club, <br> rustorka.com, nnmclub.to, rutracker.org, rutracker.ru, kinozal.tv / kinozal.guru, piratbit.org,  ddgroupclub.win, xxxtor.net',
         'SELECT_FORUM' => $cat_forum_select,
     ));
 } else {
@@ -237,7 +237,9 @@ if (!$url) {
         $tracker = 'ddgroupclub';
         if (!$bb_cfg['auth']['ddgroupclub']['login'] || !$bb_cfg['auth']['ddgroupclub']['pass']) {
             bb_die('not auth ddgroupclub');
-        }
+    } elseif (preg_match("#xxxtor.net#", $url)){
+	    $tracker = 'xxxtor';
+		}
     } else {
         meta_refresh('release.php', '2');
         bb_die('not this tracker');
@@ -1523,7 +1525,68 @@ if (!$url) {
             }
         }
         $subject = ddgroupclub($content, 'title');
+    }elseif ($tracker == 'xxxtor')
+    {
+		$content  = $curl->fetchUrl($url);
+
+	    $content = $curl->fetchUrl($url);
+	    $pos = strpos($content, '<div id="down">');
+		$content = substr($content, 0, $pos);
+		
+		if (!$content) {
+            meta_refresh('release.php', '2');
+            bb_die('Занято ;) - Приходите через 20 минут.');
+        }
+
+	    if ($message = xxxtor($content))
+	    {
+		    $id = xxxtor($content, 'torrent');
+			
+			if (!$id) {
+                meta_refresh('release.php', '2');
+                bb_die('Торрент не найден');
+            }
+			
+			$torrent = $curl->fetchUrl("https://$id");
+		    			
+		    if (class_exists('\SandFox\Bencode\Bencode')) {
+                $tor = \SandFox\Bencode\Bencode::decode($torrent);
+                $info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
+            } else if (class_exists('\Arokettu\Bencode\Bencode')) {
+                $tor = \Arokettu\Bencode\Bencode::decode($torrent);
+                $info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+            } else {
+                bb_die('Отсутствует библиотека для бинкодирования торрента');
+            }
+            $info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
+            $info_hash_md5 = md5($info_hash);
+
+            if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
+                $title = ddgroupclub($content, 'title');
+                bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
+            }
+			if (count($tor))
+		    {
+			    $new_name = make_rand_str(6) .'_'. md5($torrent);
+			    $file = fopen("$attach_dir/$new_name.torrent", 'w');
+				fputs($file, $torrent);
+		        fclose($file);
+
+			    $hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
+                $hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
+                $hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
+                $hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
+                $hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
+                $hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
+                $hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
+                $hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
+                $hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
+                $hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
+	        }
+	    }
+	    $subject = xxxtor($content, 'title');
     }
+	
 
     $hidden_form_fields .= '<input type="hidden" name="mode" value="newtopic" />';
     $hidden_form_fields .= '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
