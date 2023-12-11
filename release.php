@@ -17,10 +17,13 @@ $forum_id = (int)request_var('forum_id', '');
 
 // Start session management
 $user->session_start(array('req_login' => true));
-warning(5);
+
+if (function_exists('warning')) {
+	warning(5);
+}
 $attach_dir = get_attachments_dir();
 
-function decodeEmailProtection($encodedString): string
+function decodeEmailProtection($encodedString)
 {
 	// Holds the final output
 	$decodedString = '';
