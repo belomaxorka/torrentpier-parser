@@ -37,20 +37,19 @@ define('COOKIES_PARS_DIR', BB_PATH . '/internal_data/cookies_pars');
 // Авторизация для парсеров
 $bb_cfg['auth'] = [
 	'group_id' => '', // разрешить только для определенной группы
-    'rutracker'     => ['login' => '', 'pass' => ''], //пароли
-	'nnmclub'      	=> ['login' => '', 'pass' => ''], //пароли
-    'rustorka'     	=> ['login' => '', 'pass' => ''], //пароли
-	'booktracker'   => ['login' => '', 'pass' => ''], //пароли
-    'riperam'     	=> ['login' => '', 'pass' => ''], //пароли
-    'mptor'         => ['login' => '',  'pass' => ''], //пароли
-	'tapochek'     	=> ['login' => '', 'pass' => ''], //пароли
-	'uniongang'		=> ['login' => '', 'pass' => ''], //пароли
-	'kinozal'		=> ['login' => '', 'pass' => ''], //пароли
-    'piratbit'     => ['login' => '', 'pass' => ''], //пароли
-    'onlysoft'     => ['login' => '',  'pass' => ''], //пароли
-	'rutrackerru'	=> ['login' => '', 'pass' => ''], //пароли
-	//'ddgroupclub'	=> ['login' => '', 'pass' => ''], //пароли
-	'ddgroupclub'	=> ['login' => '', 'pass' => ''], //пароли
+    'rutracker'     => ['login' => '', 'pass' => ''], // данные авторизации
+	'nnmclub'      	=> ['login' => '', 'pass' => ''], // данные авторизации
+    'rustorka'     	=> ['login' => '', 'pass' => ''], // данные авторизации
+	'booktracker'   => ['login' => '', 'pass' => ''], // данные авторизации
+    'riperam'     	=> ['login' => '', 'pass' => ''], // данные авторизации
+    'mptor'         => ['login' => '',  'pass' => ''], // данные авторизации
+	'tapochek'     	=> ['login' => '', 'pass' => ''], // данные авторизации
+	'uniongang'		=> ['login' => '', 'pass' => ''], // данные авторизации
+	'kinozal'		=> ['login' => '', 'pass' => ''], // данные авторизации
+    'piratbit'      => ['login' => '', 'pass' => ''], // данные авторизации
+    'onlysoft'      => ['login' => '',  'pass' => ''], // данные авторизации
+	'rutrackerru'	=> ['login' => '', 'pass' => ''], // данные авторизации
+	'ddgroupclub'	=> ['login' => '', 'pass' => ''], // данные авторизации
 ];
 
 -------------------Открыть---------------------------------------
