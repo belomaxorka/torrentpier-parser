@@ -1624,4 +1624,4 @@ $template->assign_vars(array(
 	'PAGE_TITLE' => 'Grabber Trackers',
 ));
 
-print_page('posting2.tpl');
+print_page('posting.tpl');
