@@ -69,7 +69,7 @@ function rgb2html($r, $g = -1, $b = -1)
 
 function closetags($tagstext)
 {
-// Выбираем абсолютно все теги
+	// Выбираем абсолютно все теги
 	if (preg_match_all("/<([/]?)([wd]+)[^>/]*>/", $tagstext, $matches, PREG_SET_ORDER)) {
 		$stack = array();
 		foreach ($matches as $k => $match) {
@@ -163,7 +163,6 @@ if (!$url) {
 		$tracker = 'rutor';
 	} elseif (preg_match("#https://nnmclub.to/forum/viewtopic.php\?t=#", $url)) {
 		$tracker = 'nnmclub';
-
 		if (!$bb_cfg['auth']['nnmclub']['login'] || !$bb_cfg['auth']['nnmclub']['pass']) {
 			bb_die('not auth nnmclub');
 		}
@@ -259,7 +258,7 @@ if (!$url) {
 
 		$content = $curl->fetchUrl($url);
 		$content = iconv('windows-1251', 'UTF-8', $content);
-//var_dump($content);
+		//var_dump($content);
 		$pos = strpos($content, '<div style="padding-top: 6px;">');
 		$content = substr($content, 0, $pos);
 
@@ -284,6 +283,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -310,7 +312,6 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = rutracker($content, 'title');
@@ -319,7 +320,6 @@ if (!$url) {
 			$new_host = 'rutor.info';
 			$url = str_replace("http://rutor.org/", "http://$new_host/", $url);
 		}
-
 
 		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 
@@ -352,6 +352,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -369,7 +372,6 @@ if (!$url) {
 				fputs($file, $torrent);
 				fclose($file);
 
-
 				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
 				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
 				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
@@ -384,7 +386,6 @@ if (!$url) {
 		}
 		$subject = rutor($content, 'title');
 	} elseif ($tracker == 'nnmclub') {
-
 		//use proxy
 		$curl->setProxy('38.170.252.172:9527');
 		//use proxy auth
@@ -402,13 +403,9 @@ if (!$url) {
 		$curl->sendPostData($submit_url, $submit_vars);
 
 		$content = $curl->fetchUrl($url);
-
 		//$content = openUrlCloudflare($url);
-
 		$content = iconv('windows-1251', 'UTF-8', $content);
-
 		$pos = strpos($content, '<span class="seedmed">');
-
 		$content = substr($content, 0, $pos);
 		// dump($content);
 
@@ -418,7 +415,6 @@ if (!$url) {
 		}
 
 		if ($message = nnmclub($content)) {
-
 			$tor = nnmclub($content, 'torrent');
 			$id = $tor[2];
 			$name = $tor[1];
@@ -429,7 +425,7 @@ if (!$url) {
 			$name = str_replace('[RG Games]', '', $name);
 			$name = str_replace('[R.G. Revenants]', '', $name);
 			$name = str_replace('[R.G. Mechanics]', '', $name);
-//dump($id);
+			//dump($id);
 
 			if (!$id) {
 				meta_refresh('release.php', '2');
@@ -444,6 +440,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -502,7 +501,6 @@ if (!$url) {
 		}
 
 		if ($message = rustorka($content)) {
-
 			$tor = rustorka($content, 'torrent');
 			$id = $tor[2];
 			$name = $tor[1];
@@ -519,6 +517,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -585,6 +586,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -618,7 +622,6 @@ if (!$url) {
 		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$content = $curl->fetchUrl($url);
 
-
 		$pos = strpos($content, '<div class="fdl-btn-size fx-col fx-center">');
 		$content = substr($content, 0, $pos);
 		//var_dump($content);
@@ -629,10 +632,8 @@ if (!$url) {
 		}
 
 		if ($message = torrentwindows($content)) {
-
-
 			$id = torrentwindows($content, 'torrent');
-//dump($id);
+			//dump($id);
 
 			if (!$id) {
 				meta_refresh('release.php', '2');
@@ -647,6 +648,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -663,7 +667,6 @@ if (!$url) {
 				$file = fopen("$attach_dir/$new_name.torrent", 'w');
 				fputs($file, $torrent);
 				fclose($file);
-
 
 				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
 				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
@@ -695,12 +698,11 @@ if (!$url) {
 		$curl->setReferer($submit_url);
 		$content = $curl->fetchUrl($url);
 
-//var_dump($content);
+		//var_dump($content);
 		$pos = strpos($text, '<div class="content"');
 		$text = substr($text, $pos);
 		$pos = strpos($content, '<td style="text-align: center; vertical-align: top;">');
 		$content = substr($content, 0, $pos);
-
 
 		if (!$content) {
 			meta_refresh('release.php', '2');
@@ -723,6 +725,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -799,6 +804,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -856,9 +864,8 @@ if (!$url) {
 		}
 
 		if ($message = tapochek($content)) {
-
 			$id = tapochek($content, 'torrent');
-//var_dump($id);
+			//var_dump($id);
 
 			if (!$id) {
 				meta_refresh('release.php', '2');
@@ -872,6 +879,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -917,13 +927,12 @@ if (!$url) {
 
 		$content = $curl->fetchUrl($url);
 		$content = iconv('windows-1251', 'UTF-8', $content);
-//var_dump($content);
+		//var_dump($content);
 		$content = preg_replace('/([\r\n])[\s]+/is', "\\1", $content);
 		$pos = strpos($text, '<table width="100%" border="1" cellspacing="0" cellpadding="5">');
 		$text = substr($text, $pos);
 		$pos = strpos($content, '<form method="post" action="takerate.php">');
 		$content = substr($content, 0, $pos);
-
 
 		if (!$content) {
 			meta_refresh('release.php', '2');
@@ -945,6 +954,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -971,7 +983,6 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = uniongang($content, 'title');
@@ -992,10 +1003,9 @@ if (!$url) {
 		$content = $curl->fetchUrl($url);
 		$content = iconv('windows-1251', 'UTF-8', $content);
 		//dump($content);
-//var_dump($content);
+		//var_dump($content);
 		$pos = strpos($content, '<form id="cmt" method=post');
 		$content = substr($content, 0, $pos);
-
 
 		if (!$content) {
 			meta_refresh('release.php', '2');
@@ -1018,6 +1028,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1028,7 +1041,6 @@ if (!$url) {
 				$title = kinozal($content, 'title');
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
-
 
 			if (is_array($tor) && count($tor)) {
 				$new_name = md5($torrent);
@@ -1046,7 +1058,6 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = kinozal($content, 'title');
@@ -1067,10 +1078,9 @@ if (!$url) {
 		$content = $curl->fetchUrl($url);
 		$content = iconv('windows-1251', 'UTF-8', $content);
 		//dump($content);
-//var_dump($content);
+		//var_dump($content);
 		$pos = strpos($content, '<form id="cmt" method=post');
 		$content = substr($content, 0, $pos);
-
 
 		if (!$content) {
 			meta_refresh('release.php', '2');
@@ -1078,7 +1088,6 @@ if (!$url) {
 		}
 
 		if ($message = kinozalguru($content)) {
-
 			$id = kinozalguru($content, 'torrent');
 
 			if (!$id) {
@@ -1093,6 +1102,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1103,7 +1115,6 @@ if (!$url) {
 				$title = kinozalguru($content, 'title');
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
-
 
 			if (is_array($tor) && count($tor)) {
 				$new_name = md5($torrent);
@@ -1121,7 +1132,6 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = kinozalguru($content, 'title');
@@ -1129,11 +1139,9 @@ if (!$url) {
 		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 
 		$content = $curl->fetchUrl($url);
-
 		$pos = strpos($content, '<div class="fstory-rating">');
 		$content = substr($content, 0, $pos);
 		//var_dump($content);
-
 
 		if (!$content) {
 			meta_refresh('release.php', '2');
@@ -1141,7 +1149,6 @@ if (!$url) {
 		}
 
 		if ($message = windowssoftinfo($content)) {
-
 			$id = windowssoftinfo($content, 'torrent');
 
 			if (!$id) {
@@ -1156,6 +1163,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1183,14 +1193,13 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = windowssoftinfo($content, 'title');
 	} elseif ($tracker == 'ztorrents') {
 		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
-		$content = $curl->fetchUrl($url);
 
+		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<div class="dle_b_appp"');
 		$content = substr($content, 0, $pos);
 		//var_dump($content);
@@ -1201,7 +1210,6 @@ if (!$url) {
 		}
 
 		if ($message = ztorrents($content)) {
-
 			$id = ztorrents($content, 'torrent');
 
 			if (!$id) {
@@ -1217,6 +1225,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1233,7 +1244,6 @@ if (!$url) {
 				$file = fopen("$attach_dir/$new_name.torrent", 'w');
 				fputs($file, $torrent);
 				fclose($file);
-
 
 				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
 				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
@@ -1265,14 +1275,13 @@ if (!$url) {
 
 		$pos = strpos($content, '<span class="fs11_bold thanked">');
 		$content = substr($content, 0, $pos);
-//var_dump($content);
+		//var_dump($content);
 		if (!$content) {
 			meta_refresh('release.php', '2');
 			bb_die('Занято ;) - Приходите через 20 минут.');
 		}
 
 		if ($message = piratbit($content)) {
-
 			$id = piratbit($content, 'torrent');
 			//dump($id);
 
@@ -1315,7 +1324,6 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = piratbit($content, 'title');
@@ -1356,6 +1364,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1399,7 +1410,7 @@ if (!$url) {
 		$curl->sendPostData($submit_url, $submit_vars);
 
 		$content = $curl->fetchUrl($url);
-//var_dump($content);
+		//var_dump($content);
 		$pos = strpos($content, '<input type="radio" name=');
 		$content = substr($content, 0, $pos);
 
@@ -1424,6 +1435,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1451,7 +1465,6 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = rutrackerru($content, 'title');
@@ -1469,7 +1482,7 @@ if (!$url) {
 		$curl->sendPostData($submit_url, $submit_vars);
 
 		$content = $curl->fetchUrl($url);
-//var_dump($content);
+		//var_dump($content);
 		$pos = strpos($content, '<p class="small">');
 		$content = substr($content, 0, $pos);
 
@@ -1494,6 +1507,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1521,7 +1537,6 @@ if (!$url) {
 				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
 			}
 		}
 		$subject = ddgroupclub($content, 'title');
@@ -1553,6 +1568,9 @@ if (!$url) {
 			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
 				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+			} else if (function_exists('bencode')) {
+				$tor = bencode($torrent);
+				$info_hash = pack('H*', sha1(bencode($tor['info'])));
 			} else {
 				bb_die('Отсутствует библиотека для бинкодирования торрента');
 			}
@@ -1584,10 +1602,8 @@ if (!$url) {
 		$subject = xxxtor($content, 'title');
 	}
 
-
 	$hidden_form_fields .= '<input type="hidden" name="mode" value="newtopic" />';
 	$hidden_form_fields .= '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
-
 
 	generate_smilies('inline');
 
