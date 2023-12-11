@@ -1016,7 +1016,6 @@ if (!$url) {
 		}
 
 		if ($message = kinozal($content)) {
-
 			$id = kinozal($content, 'torrent');
 
 			if (!$id) {
@@ -1621,7 +1620,7 @@ if (!$url) {
 }
 
 $template->assign_vars(array(
-	'PAGE_TITLE' => 'Grabber Trackers',
+	'PAGE_TITLE' => $lang['RELEASE'],
 ));
 
 print_page('posting.tpl');
