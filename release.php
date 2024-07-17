@@ -16,11 +16,10 @@ $hidden_form_fields = $message = $subject = '';
 $forum_id = (int)request_var('forum_id', '');
 
 // Start session management
-$user->session_start(array('req_login' => true));
+//$user->session_start(array('req_login' => true));
 
-if (function_exists('warning')) {
-	warning(5);
-}
+$user->session_start(['req_login' => true]);
+
 $attach_dir = get_attachments_dir();
 
 function decodeEmailProtection($encodedString)
