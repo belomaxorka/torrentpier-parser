@@ -388,12 +388,17 @@ if (!$url) {
 		'piratbit' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#piratbit.org/topic/#"
+			'regex' => "#piratbit.org/topic/#",
+			'login_url' => 'https://piratbit.org/login.php',
+			'dl_url' => 'https://piratbit.org/dl.php?id=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<span class="fs11_bold thanked">',
 		),
 		'onlysoft' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#https://only-soft.org/viewtopic.php\?t=#"
+			'regex' => "#https://only-soft.org/viewtopic.php\?t=#",
 		),
 		'rutrackerru' => array(
 			'enabled' => true,
@@ -498,53 +503,7 @@ if (!$url) {
 		// Прикрепляем торрент-файл
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
-	
-		$submit_url = "https://piratbit.org/login.php";
-		$submit_vars = array(
-			'login_username' => $bb_cfg['torrent_parser']['auth']['piratbit']['login'],
-			'login_password' => $bb_cfg['torrent_parser']['auth']['piratbit']['pass'],
-			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
 
-		$content = $curl->fetchUrl($url);
-		//$content  = iconv('windows-1251', 'UTF-8', $content);
-
-		$pos = strpos($content, '<span class="fs11_bold thanked">');
-		$content = substr($content, 0, $pos);
-		//var_dump($content);
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = piratbit($content)) {
-			$id = piratbit($content, 'torrent');
-			//dump($id);
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://piratbit.org/dl.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = piratbit($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = piratbit($content, 'title');
-	} elseif ($tracker == 'onlysoft'){
-	$curl->storeCookies(COOKIES_PARS_DIR . '/onlysoft_cookie.txt');
 
 		$submit_url = "https://only-soft.org/login.php";
 		$submit_vars = array(
