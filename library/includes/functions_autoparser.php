@@ -11,6 +11,39 @@
 
 if (!defined('BB_ROOT')) die(basename(__FILE__));
 
+/**
+ * Вставка видео
+ *
+ * @param $text
+ * @return void
+ */
+function insert_video_player(&$text)
+{
+	global $bb_cfg;
+
+	if (!$bb_cfg['torrent_parser']['use_video_player']) {
+		return;
+	}
+
+	// imdb
+	preg_match("/imdb\.com\/title\/tt(\d+)/", $text, $has_imdb);
+	$has_imdb = isset($has_imdb[1]) ? $has_imdb[1] : false; // В посте есть баннер imdb! Ура, победа!
+	// kp
+	preg_match("/kinopoisk\.ru\/(?:film|series)\/(\d+)/", $text, $has_kp);
+	$has_kp = isset($has_kp[1]) ? $has_kp[1] : false; // В посте есть баннер kp! Ура, победа!
+	// вставка плеера
+	if (!empty($has_imdb) || !empty($has_kp)) {
+		$text .= '[br][hr]';
+		if (is_numeric($has_kp)) {
+			// данные с кп приоритетнее
+			$text .= '[movie=kinopoisk]' . $has_kp . '[/movie]';
+		} elseif (is_numeric($has_imdb)) {
+			$text .= '[movie=imdb]' . $has_imdb . '[/movie]';
+		}
+		$text .= '[hr][br]';
+	}
+}
+
 function rutracker($text, $mode = '')
 {
 	global $bb_cfg;
