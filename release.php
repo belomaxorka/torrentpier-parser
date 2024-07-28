@@ -250,7 +250,7 @@ if (!$url) {
 	// $curl->setProxy('38.170.252.172:9527'); // ip:port
 	// $curl->setProxyAuth('cZbZMH:6qFmYC'); // login:pass
 
-	// Проверка вводимого URL адреса
+	// Список всех трекеров
 	$trackers = array(
 		'rutracker' => array(
 			'enabled' => true,
@@ -344,6 +344,7 @@ if (!$url) {
 		)
 	);
 
+	// Проверка вводимого URL адреса
 	$tracker = null;
 	foreach ($trackers as $name => $data) {
 		if (preg_match($data['regex'], $url)) {
