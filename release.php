@@ -382,7 +382,7 @@ if (!$url) {
 		'ztorrents' => array(
 			'enabled' => true,
 			'regex' => "#z-torrents.ru/#",
-			'dl_url' => 'https://windows-soft.info/engine/download.php?id=',
+			'dl_url' => '',
 			'target_element' => '<div class="dle_b_appp"'
 		),
 		'piratbit' => array(
@@ -498,43 +498,7 @@ if (!$url) {
 		// Прикрепляем торрент-файл
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
-
-		$pos = strpos($content, '<div class="dle_b_appp"');
-		$content = substr($content, 0, $pos);
-		//var_dump($content);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('false content');
-		}
-
-		if ($message = ztorrents($content)) {
-			$id = ztorrents($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = ztorrents($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = ztorrents($content, 'title');
-	} elseif ($tracker == 'piratbit'){
-	$curl->storeCookies(COOKIES_PARS_DIR . '/piratbit_cookie.txt');
-
+	
 		$submit_url = "https://piratbit.org/login.php";
 		$submit_vars = array(
 			'login_username' => $bb_cfg['torrent_parser']['auth']['piratbit']['login'],
