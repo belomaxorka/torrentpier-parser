@@ -10,6 +10,8 @@ if (!defined('BB_ROOT')) die(basename(__FILE__));
  */
 function insert_video_player(&$text)
 {
+	global $bb_cfg;
+
 	if (!$bb_cfg['torrent_parser']['use_video_player']) {
 		return;
 	}
