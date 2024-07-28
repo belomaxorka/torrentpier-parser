@@ -2,9 +2,36 @@
 
 if (!defined('BB_ROOT')) die(basename(__FILE__));
 
+/**
+ * Вставка видео
+ *
+ * @param $text
+ * @return void
+ */
+function insert_video_player(&$text)
+{
+	// imdb
+	preg_match("/imdb\.com\/title\/tt(\d+)/", $text, $has_imdb);
+	$has_imdb = isset($has_imdb[1]) ? $has_imdb[1] : false; // В посте есть баннер imdb! Ура, победа!
+	// kp
+	preg_match("/kinopoisk\.ru\/film\/(\d+)/", $text, $has_kp);
+	$has_kp = isset($has_kp[1]) ? $has_kp[1] : false; // В посте есть баннер kp! Ура, победа!
+	// вставка плеера
+	if (!empty($has_imdb) || !empty($has_kp)) {
+		$text .= '[br][hr]';
+		if (is_numeric($has_kp)) {
+			// данные с кп приоритетнее
+			$text .= '[movie=kinopoisk]' . $has_kp . '[/movie]';
+		} elseif (is_numeric($has_imdb)) {
+			$text .= '[movie=imdb]' . $has_imdb . '[/movie]';
+		}
+		$text .= '[hr][br]';
+	}
+}
+
 function rutracker($text, $mode = '')
 {
-	global $bb_cfg;
+	global $bb_cfg, $use_video_player;
 
 	$server_name = $bb_cfg['server_name'];
 	$sitename = $bb_cfg['sitename'];
@@ -222,12 +249,18 @@ function rutracker($text, $mode = '')
 						$text = html_entity_decode($text);
 						*/
 	}
+
+	// Вставка плеера
+	if ($use_video_player) {
+		insert_video_player($text);
+	}
+
 	return $text;
 }
 
 function rutor($text, $mode = false)
 {
-	global $bb_cfg;
+	global $bb_cfg, $use_video_player;
 
 	if ($mode == 'title') {
 		preg_match_all("#<h1>([\s\S]*?)</h1>#", $text, $source, PREG_SET_ORDER);
@@ -398,6 +431,11 @@ function rutor($text, $mode = false)
 		$text = preg_replace('#\[url=http.*?kinopoisk.ru/film/(.*?)/].*?\[\/url\]#', "[kp]https://www.kinopoisk.ru/film/$1[/kp]", $text);
 		$text = preg_replace('/http:(.*?)kinopoisk.ru/', "https:$1kinopoisk.ru", $text);
 		$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
+
+		// Вставка плеера
+		if ($use_video_player) {
+			insert_video_player($text);
+		}
 
 		$text = strip_tags(html_entity_decode($text));
 	}
