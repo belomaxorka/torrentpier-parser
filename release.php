@@ -250,96 +250,112 @@ if (!$url) {
 	// $curl->setProxy('38.170.252.172:9527'); // ip:port
 	// $curl->setProxyAuth('cZbZMH:6qFmYC'); // login:pass
 
-	if (preg_match("/https:\/\/rutracker.org\/forum\/viewtopic.php\?t=/", $url)) {
-		$tracker = 'rutracker';
-		if (!$bb_cfg['torrent_parser']['auth']['rutracker']['login'] || !$bb_cfg['torrent_parser']['auth']['rutracker']['pass']) {
-			bb_die('not auth rutracker');
+	// Проверка вводимого URL адреса
+	$trackers = array(
+		'rutracker' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "/https:\/\/rutracker.org\/forum\/viewtopic.php\?t=/"
+		),
+		'rutor' => array(
+			'enabled' => true,
+			'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#" // .is, .info
+		),
+		'nnmclub' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#https://nnmclub.to/forum/viewtopic.php\?t=#"
+		),
+		'rustorka' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#http://rustorka.com/forum/viewtopic.php\?t=#"
+		),
+		'booktracker' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "/https:\/\/booktracker.org\/viewtopic.php\?t=/"
+		),
+		'torrentwindows' => array(
+			'enabled' => true,
+			'regex' => "#torrent-wind.net/#"
+		),
+		'riperam' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#riperam.org/#"
+		),
+		'mptor' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#" // .ru, .vip
+		),
+		'tapochek' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "/https:\/\/tapochek.net\/viewtopic.php\?t=/"
+		),
+		'uniongang' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#uniongang.club/torrent-#"
+		),
+		'kinozal' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#kinozal.tv/details.php\?id=#"
+		),
+		'kinozalguru' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#kinozal.guru/details.php\?id=#"
+		),
+		'windowssoftinfo' => array(
+			'enabled' => true,
+			'regex' => "#windows-soft.info/#"
+		),
+		'ztorrents' => array(
+			'enabled' => true,
+			'regex' => "#z-torrents.ru/#"
+		),
+		'piratbit' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#piratbit.org/topic/#"
+		),
+		'onlysoft' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "#https://only-soft.org/viewtopic.php\?t=#"
+		),
+		'rutrackerru' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "/http:\/\/rutracker.ru\/viewtopic.php\?t=/"
+		),
+		'ddgroupclub' => array(
+			'enabled' => true,
+			'auth' => true,
+			'regex' => "/http:\/\/ddgroupclub.win\/viewtopic.php\?t=/"
+		),
+		'xxxtor' => array(
+			'enabled' => true,
+			'regex' => "#xxxtor.net#"
+		)
+	);
+
+	$tracker = null;
+	foreach ($trackers as $name => $data) {
+		if (preg_match($data['regex'], $url)) {
+			$tracker = $name;
+			if ($data['auth'] && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
+				bb_die('Не заполнены данные авторизации для трекера:' . $name);
+			}
+			break;
 		}
-	} elseif (preg_match("#rutor.info/torrent/#", $url)) {
-		$tracker = 'rutor';
-	} elseif (preg_match("#rutor.is/torrent/#", $url)) {
-		$tracker = 'rutor';
-	} elseif (preg_match("#https://nnmclub.to/forum/viewtopic.php\?t=#", $url)) {
-		$tracker = 'nnmclub';
-		if (!$bb_cfg['torrent_parser']['auth']['nnmclub']['login'] || !$bb_cfg['torrent_parser']['auth']['nnmclub']['pass']) {
-			bb_die('not auth nnmclub');
-		}
-	} elseif (preg_match("#http://rustorka.com/forum/viewtopic.php\?t=#", $url)) {
-		$tracker = 'rustorka';
-		if (!$bb_cfg['torrent_parser']['auth']['rustorka']['login'] || !$bb_cfg['torrent_parser']['auth']['rustorka']['pass']) {
-			bb_die('not auth rustorka');
-		}
-	} elseif (preg_match("/https:\/\/booktracker.org\/viewtopic.php\?t=/", $url)) {
-		$tracker = 'booktracker';
-		if (!$bb_cfg['torrent_parser']['auth']['booktracker']['login'] || !$bb_cfg['torrent_parser']['auth']['booktracker']['pass']) {
-			bb_die('not auth booktracker');
-		}
-	} elseif (preg_match("#torrent-wind.net/#", $url)) {
-		$tracker = 'torrentwindows';
-	} elseif (preg_match("#riperam.org/#", $url)) {
-		$tracker = 'riperam';
-		if (!$bb_cfg['torrent_parser']['auth']['riperam']['login'] || !$bb_cfg['torrent_parser']['auth']['riperam']['pass']) {
-			bb_die('not auth riperam');
-		}
-	} elseif (preg_match("#megapeer.ru/torrent/#", $url)) {
-		$tracker = 'mptor';
-		if (!$bb_cfg['torrent_parser']['auth']['mptor']['login'] || !$bb_cfg['torrent_parser']['auth']['mptor']['pass']) {
-			bb_die('not auth mptor');
-		}
-	} elseif (preg_match("#megapeer.vip/torrent/#", $url)) {
-		$tracker = 'mptor';
-		if (!$bb_cfg['torrent_parser']['auth']['mptor']['login'] || !$bb_cfg['torrent_parser']['auth']['mptor']['pass']) {
-			bb_die('not auth mptor');
-		}
-	} elseif (preg_match("/https:\/\/tapochek.net\/viewtopic.php\?t=/", $url)) {
-		$tracker = 'tapochek';
-		if (!$bb_cfg['torrent_parser']['auth']['tapochek']['login'] || !$bb_cfg['torrent_parser']['auth']['tapochek']['pass']) {
-			bb_die('not auth tapochek');
-		}
-	} elseif (preg_match("#uniongang.club/torrent-#", $url)) {
-		$tracker = 'uniongang';
-		if (!$bb_cfg['torrent_parser']['auth']['uniongang']['login'] || !$bb_cfg['torrent_parser']['auth']['uniongang']['pass']) {
-			bb_die('not auth uniongang');
-		}
-	} elseif (preg_match("#kinozal.tv/details.php\?id=#", $url)) {
-		$tracker = 'kinozal';
-		if (!$bb_cfg['torrent_parser']['auth']['kinozal']['login'] || !$bb_cfg['torrent_parser']['auth']['kinozal']['pass']) {
-			bb_die('not auth kinozal');
-		}
-	} elseif (preg_match("#kinozal.guru/details.php\?id=#", $url)) {
-		$tracker = 'kinozalguru';
-		if (!$bb_cfg['torrent_parser']['auth']['kinozal']['login'] || !$bb_cfg['torrent_parser']['auth']['kinozal']['pass']) {
-			bb_die('not auth kinozal');
-		}
-	} elseif (preg_match("#windows-soft.info/#", $url)) {
-		$tracker = 'windowssoftinfo';
-	} elseif (preg_match("#z-torrents.ru/#", $url)) {
-		$tracker = 'ztorrents';
-	} elseif (preg_match("#piratbit.org/topic/#", $url)) {
-		$tracker = 'piratbit';
-		if (!$bb_cfg['torrent_parser']['auth']['piratbit']['login'] || !$bb_cfg['torrent_parser']['auth']['piratbit']['pass']) {
-			bb_die('not auth piratbit');
-		}
-	} elseif (preg_match("#https://only-soft.org/viewtopic.php\?t=#", $url)) {
-		$tracker = 'onlysoft';
-		if (!$bb_cfg['torrent_parser']['auth']['onlysoft']['login'] || !$bb_cfg['torrent_parser']['auth']['onlysoft']['pass']) {
-			bb_die('not auth only-soft');
-		}
-	} elseif (preg_match("/http:\/\/rutracker.ru\/viewtopic.php\?t=/", $url)) {
-		$tracker = 'rutrackerru';
-		if (!$bb_cfg['torrent_parser']['auth']['rutrackerru']['login'] || !$bb_cfg['torrent_parser']['auth']['rutrackerru']['pass']) {
-			bb_die('not auth rutrackerru');
-		}
-	} elseif (preg_match("/http:\/\/ddgroupclub.win\/viewtopic.php\?t=/", $url)) {
-		$tracker = 'ddgroupclub';
-		if (!$bb_cfg['torrent_parser']['auth']['ddgroupclub']['login'] || !$bb_cfg['torrent_parser']['auth']['ddgroupclub']['pass']) {
-			bb_die('not auth ddgroupclub');
-		} elseif (preg_match("#xxxtor.net#", $url)) {
-			$tracker = 'xxxtor';
-		}
-	} else {
-		meta_refresh('release.php', '2');
-		bb_die('not this tracker');
+	}
+	if ($tracker === null) {
+		die_and_refresh('Такого трекера нету у нас');
 	}
 
 	if ($tracker == 'rutracker') {
