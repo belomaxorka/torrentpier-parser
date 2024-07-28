@@ -412,6 +412,9 @@ if (!$url) {
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
 		if (preg_match($data['regex'], $url)) {
+			if (!$data['enabled']) {
+				bb_die("Парсинг с трекера $name отключен администратором сайта");
+			}
 			if ($data['auth'] && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
 				bb_die('Не заполнены данные авторизации для трекера: ' . $name);
 			}
