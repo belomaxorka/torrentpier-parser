@@ -356,7 +356,12 @@ if (!$url) {
 		'kinozal' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#kinozal.tv/details.php\?id=#"
+			'regex' => "#kinozal.tv/details.php\?id=#",
+			'login_url' => 'http://kinozal.tv/takelogin.php',
+			'dl_url' => 'http://dl.kinozal.tv/download.php?id=',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'target_element' => '<form id="cmt" method=post',
 		),
 		'kinozalguru' => array(
 			'enabled' => true,
@@ -481,60 +486,7 @@ if (!$url) {
 		// Прикрепляем торрент-файл
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
-
-
-		//$curl->setReferer($url);
-	$curl->storeCookies(COOKIES_PARS_DIR . '/kinozal_cookie.txt');
-
-		$submit_url = "http://kinozal.tv/takelogin.php";
-		$submit_vars = array(
-			'username' => $bb_cfg['torrent_parser']['auth']['kinozal']['login'],
-			'password' => $bb_cfg['torrent_parser']['auth']['kinozal']['pass'],
-			'login' => true,
-		);
-
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$content = iconv('windows-1251', 'UTF-8', $content);
-		//dump($content);
-		//var_dump($content);
-		$pos = strpos($content, '<form id="cmt" method=post');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = kinozal($content)) {
-			$id = kinozal($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("http://dl.kinozal.tv/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = kinozal($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = kinozal($content, 'title');
-	} elseif ($tracker == 'kinozalguru'){
-		//$curl->setReferer($url);
-	$curl->storeCookies(COOKIES_PARS_DIR . '/kinozalguru_cookie.txt');
-
+	
 		$submit_url = "https://kinozal.guru/takelogin.php";
 		$submit_vars = array(
 			'username' => $bb_cfg['torrent_parser']['auth']['kinozal']['login'],
