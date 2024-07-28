@@ -205,7 +205,7 @@ if (!$url) {
 
 		$opt .= "</optgroup>\n";
 	}
-	$search_all_opt = '<option value="0">&nbsp;' . htmlCHR($lang['ALL_AVAILABLE']) . "</option>\n";
+	$search_all_opt = '<option disabled value="0">&nbsp;' . htmlCHR($lang['ALL_AVAILABLE']) . "</option>\n";
 	$cat_forum_select = "\n<select class=\"form-control form-control-sm\" id=\"fs\" name=\"forum_id\" style=\"font-size: small;\">\n" . $search_all_opt . $opt . "</select>\n";
 
 	$template->assign_vars(array(
