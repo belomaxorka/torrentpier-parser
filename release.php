@@ -180,39 +180,6 @@ function rgb2html($r, $g = -1, $b = -1)
 	return '#' . $color;
 }
 
-/**
- * Вставка видео
- *
- * @param $text
- * @return void
- */
-function insert_video_player(&$text)
-{
-	global $bb_cfg;
-
-	if (!$bb_cfg['torrent_parser']['use_video_player']) {
-		return;
-	}
-
-	// imdb
-	preg_match("/imdb\.com\/title\/tt(\d+)/", $text, $has_imdb);
-	$has_imdb = isset($has_imdb[1]) ? $has_imdb[1] : false; // В посте есть баннер imdb! Ура, победа!
-	// kp
-	preg_match("/kinopoisk\.ru\/(?:film|series)\/(\d+)/", $text, $has_kp);
-	$has_kp = isset($has_kp[1]) ? $has_kp[1] : false; // В посте есть баннер kp! Ура, победа!
-	// вставка плеера
-	if (!empty($has_imdb) || !empty($has_kp)) {
-		$text .= '[br][hr]';
-		if (is_numeric($has_kp)) {
-			// данные с кп приоритетнее
-			$text .= '[movie=kinopoisk]' . $has_kp . '[/movie]';
-		} elseif (is_numeric($has_imdb)) {
-			$text .= '[movie=imdb]' . $has_imdb . '[/movie]';
-		}
-		$text .= '[hr][br]';
-	}
-}
-
 if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
 	// Проверка на доступ к парсеру
 	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['torrent_parser']['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
