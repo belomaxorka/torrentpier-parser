@@ -255,26 +255,52 @@ if (!$url) {
 		'rutracker' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "/https:\/\/rutracker.org\/forum\/viewtopic.php\?t=/"
+			'regex' => "/https:\/\/rutracker.org\/forum\/viewtopic.php\?t=/",
+			'login_url' => 'https://rutracker.org/forum/login.php',
+			'dl_url' => 'https://rutracker.org/forum/dl.php?t=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<div style="padding-top: 6px;">'
 		),
 		'rutor' => array(
 			'enabled' => true,
-			'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#" // .is, .info
+			'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
+			'dl_url' => 'http://d.rutor.info/download/',
+			'target_element' => '<td class="header"',
+			'redirect' => array(
+				'from' => array('http://rutor.org/'),
+				'to' => 'http://rutor.info/'
+			)
 		),
 		'nnmclub' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#https://nnmclub.to/forum/viewtopic.php\?t=#"
+			'regex' => "#https://nnmclub.to/forum/viewtopic.php\?t=#",
+			'login_url' => 'https://nnmclub.to/forum/login.php',
+			'dl_url' => 'https://nnmclub.to/forum/download.php?id=',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'target_element' => '<span class="seedmed">'
 		),
 		'rustorka' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#http://rustorka.com/forum/viewtopic.php\?t=#"
+			'regex' => "#http://rustorka.com/forum/viewtopic.php\?t=#",
+			'login_url' => 'http://rustorka.com/forum/login.php',
+			'dl_url' => 'http://rustorka.com/forum/download.php?id=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<tr class="row3 tCenter">'
 		),
 		'booktracker' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "/https:\/\/booktracker.org\/viewtopic.php\?t=/"
+			'regex' => "/https:\/\/booktracker.org\/viewtopic.php\?t=/",
+			'login_url' => 'https://booktracker.org/login.php',
+			'dl_url' => 'https://booktracker.org/download.php?id=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<div id="tor_info"'
 		),
 		'torrentwindows' => array(
 			'enabled' => true,
@@ -363,347 +389,209 @@ if (!$url) {
 		die_and_refresh('Такого трекера нету у нас');
 	}
 
-	// ----------------------- Трекеры -----------------------
-	$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
+	// ----------------------- Обращение к трекеру -----------------------
+	// Проверка на редиректы
+	if (!empty($tracker_data['redirect']['from'])) {
+		foreach ($tracker_data['redirect']['from'] as $fromUrl) {
+			if (strpos($url, $fromUrl) === 0) {
+				$url = $tracker_data['redirect']['to'];
+				break;
+			}
+		}
+	}
 
+	// Авторизация
+	if ($tracker_data['auth']) {
+		if (empty($tracker_data['login_url'])) {
+			bb_die('Отсутствует ссылка на страницу авторизации');
+		}
 
-	if ($tracker == 'rutracker') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/rutracker_cookie.txt');
-
-		$submit_url = "https://rutracker.org/forum/login.php";
+		$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
 		$submit_vars = array(
-			'login_username' => $bb_cfg['torrent_parser']['auth']['rutracker']['login'],
-			'login_password' => $bb_cfg['torrent_parser']['auth']['rutracker']['pass'],
+			$tracker_data['login_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['login'],
+			$tracker_data['password_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['pass'],
 			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$content = iconv('windows-1251', 'UTF-8', $content);
-		//var_dump($content);
-		$pos = strpos($content, '<div style="padding-top: 6px;">');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = rutracker($content)) {
-			$id = rutracker($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://rutracker.org/forum/dl.php?t=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = rutracker($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = rutracker($content, 'title');
-	} elseif ($tracker == 'rutor') {
-		// --------- Константы --------- //
-		define('RUTOR_DL_LINK', 'http://d.rutor.info/download/');
-		// ----------------------------- //
-
-		// Заменяем старые ссылки на новую
-		if (preg_match("#http://rutor.org/#", $url)) {
-			$url = 'http://rutor.info/';
-		}
-
-		// Получаем HTML код страницы
-		$content = $curl->fetchUrl($url);
-		$pos = strpos($content, '<td class="header"');
-		$content = substr($content, 0, $pos);
-
-		// Проверка на пустую страницу
-		if (empty($content)) {
-			die_and_refresh('Не удается получить HTML код страницы');
-		}
-
-		// Парсим HTML код страницы
-		if ($message = rutor($content)) {
-			$id = $message['torrent']; // Идентификатор торрент-файла
-			$subject = $message['title']; // Заголовок сообщения
-
-			// Проверка идентификатора торрента
-			if (empty($id) || !is_numeric($id)) {
-				die_and_refresh('Не удается получить торрент-файл. Вот ID:' . $id);
-			}
-
-			// Проверка наличия заголовка
-			if (empty($subject)) {
-				die_and_refresh('Не получается найти заголовок темы');
-			}
-
-			// Получение торрент-файла
-			$torrent = $curl->fetchUrl(RUTOR_DL_LINK . $id);
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			// Проверка на повтор
-			duplicate_check($info_hash, $subject, $url);
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-	} elseif ($tracker == 'nnmclub') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/nnm_cookie.txt');
-
-		$submit_url = "https://nnmclub.to/forum/login.php";
-		//$snoopy->_submit_method = "POST";
-		$submit_vars = array(
-			'username' => $bb_cfg['torrent_parser']['auth']['nnmclub']['login'],
-			'password' => $bb_cfg['torrent_parser']['auth']['nnmclub']['pass'],
-			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		//$content = openUrlCloudflare($url);
-		$content = iconv('windows-1251', 'UTF-8', $content);
-		$pos = strpos($content, '<span class="seedmed">');
-		$content = substr($content, 0, $pos);
-		// dump($content);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = nnmclub($content)) {
-			$tor = nnmclub($content, 'torrent');
-			$id = $tor[2];
-			$name = $tor[1];
-			$name = str_replace('[NNM-Club.info] ', '', $name);
-			$name = str_replace('[NNMClub.to]_', '', $name);
-			$name = str_replace('[NNM-Club.me]_', '', $name);
-			$name = str_replace('[NNM-Club.ru]_', '', $name);
-			$name = str_replace('[RG Games]', '', $name);
-			$name = str_replace('[R.G. Revenants]', '', $name);
-			$name = str_replace('[R.G. Mechanics]', '', $name);
-			//dump($id);
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://nnmclub.to/forum/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = nnmclub($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = nnmclub($content, 'title');
-	} elseif ($tracker == 'rustorka') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/rustorka_cookie.txt');
-
-		$submit_url = "http://rustorka.com/forum/login.php";
-		$submit_vars = array(
-			//"cookie_test"		=> "$cookie_id",
-			"login_username" => $bb_cfg['torrent_parser']['auth']['rustorka']['login'],
-			"login_password" => $bb_cfg['torrent_parser']['auth']['rustorka']['pass'],
-			"autologin" => "on",
-			"login" => true,
-		);
-
-		//dump($submit_vars);
-
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$content = iconv('windows-1251', 'UTF-8', $content);
-		$pos = strpos($content, '<tr class="row3 tCenter">');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('попробуйте еще раз,не прошла авторизация');
-		}
-
-		if ($message = rustorka($content)) {
-			$tor = rustorka($content, 'torrent');
-			$id = $tor[2];
-			$name = $tor[1];
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("http://rustorka.com/forum/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = rustorka($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = rustorka($content, 'title');
-	} elseif ($tracker == 'booktracker') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/booktracker_cookie.txt');
-
-		$submit_url = "https://booktracker.org/login.php";
-		$submit_vars = array(
-			'login_username' => $bb_cfg['torrent_parser']['auth']['booktracker']['login'],
-			'login_password' => $bb_cfg['torrent_parser']['auth']['booktracker']['pass'],
-			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$pos = strpos($content, '<div id="tor_info"');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = booktracker($content)) {
-			$id = booktracker($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://booktracker.org/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = booktracker($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = booktracker($content, 'title');
-	} elseif ($tracker == 'torrentwindows') {
-		$content = $curl->fetchUrl($url);
-
-		$pos = strpos($content, '<div class="fdl-btn-size fx-col fx-center">');
-		$content = substr($content, 0, $pos);
-		//var_dump($content);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('false content');
-		}
-
-		if ($message = torrentwindows($content)) {
-			$id = torrentwindows($content, 'torrent');
-			//dump($id);
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://torrent-wind.net/index.php?do=download&id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = torrentwindows($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = torrentwindows($content, 'title');
-	} elseif ($tracker == 'riperam') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/riperam_cookie.txt');
-
-		$submit_url = "http://riperam.org/ucp.php?mode=login";
-		$submit_vars = array(
-			'username' => $bb_cfg['torrent_parser']['auth']['riperam']['login'],
-			'password' => $bb_cfg['torrent_parser']['auth']['riperam']['pass'],
 			'autologin' => 'on',
-			'viewonline' => 'on',
-			'login' => true,
 		);
+		$curl->sendPostData($tracker_data['login_url'], $submit_vars);
+	}
 
-		$curl->sendPostData($submit_url, $submit_vars);
-		$curl->setReferer($submit_url);
-		$content = $curl->fetchUrl($url);
+	// Получение содержимого
+	$content = $curl->fetchUrl($url);
+	$content = iconv('windows-1251', 'UTF-8', $content);
+	$pos = strpos($content, $tracker_data['target_element']);
+	$content = substr($content, 0, $pos);
 
-		//var_dump($content);
-		$pos = strpos($text, '<div class="content"');
-		$text = substr($text, $pos);
-		$pos = strpos($content, '<td style="text-align: center; vertical-align: top;">');
-		$content = substr($content, 0, $pos);
+	// Проверка на пустую страницу
+	if (empty($content)) {
+		die_and_refresh('Не удается получить HTML код страницы');
+	}
 
-		if (!$content) {
+	// Парсим HTML код страницы
+	if ($message = $$tracker($content)) {
+		$id = $message['torrent']; // Идентификатор торрент-файла
+		$subject = $message['title']; // Заголовок сообщения
+
+		// Проверка идентификатора торрента
+		if (empty($id) || !is_numeric($id)) {
+			die_and_refresh('Не удается получить торрент-файл. Вот ID:' . $id);
+		}
+
+		// Проверка наличия заголовка
+		if (empty($subject)) {
+			die_and_refresh('Не получается найти заголовок темы');
+		}
+
+		// Получение торрент-файла
+		$torrent = $curl->fetchUrl($tracker_data['dl_url'] . $id);
+
+		// Декодирование торрент-файла
+		$tor = torrent_decode($torrent, $info_hash);
+
+		// Проверка на повтор
+		duplicate_check($info_hash, $subject, $url);
+
+		// Прикрепляем торрент-файл
+		attach_torrent_file($tor, $torrent, $hidden_form_fields);
+	}
+
+	($tracker == 'booktracker'){
+	$curl->storeCookies(COOKIES_PARS_DIR . '/booktracker_cookie.txt');
+
+	$submit_url = "https://booktracker.org/login.php";
+	$submit_vars = array(
+		'login_username' => $bb_cfg['torrent_parser']['auth']['booktracker']['login'],
+		'login_password' => $bb_cfg['torrent_parser']['auth']['booktracker']['pass'],
+		'login' => true,
+	);
+	$curl->sendPostData($submit_url, $submit_vars);
+
+	$content = $curl->fetchUrl($url);
+	$pos = strpos($content, '<div id="tor_info"');
+	$content = substr($content, 0, $pos);
+
+	if (!$content) {
+		meta_refresh('release.php', '2');
+		bb_die('Занято ;) - Приходите через 20 минут.');
+	}
+
+	if ($message = booktracker($content)) {
+		$id = booktracker($content, 'torrent');
+
+		if (!$id) {
 			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
+			bb_die('Торрент не найден');
 		}
 
-		if ($message = riperam($content)) {
-			$id = riperam($content, 'torrent');
-			//var_dump($id);
+		$torrent = $curl->fetchUrl("https://booktracker.org/download.php?id=$id");
 
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
+		// Декодирование торрент-файла
+		$tor = torrent_decode($torrent, $info_hash);
 
-			$torrent = $curl->fetchUrl("http://riperam.org/download/file.php?id=$id");
+		$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = riperam($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
+		if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
+			$title = booktracker($content, 'title');
+			bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 		}
-		$subject = riperam($content, 'title');
-	} elseif ($tracker == 'mptor') {
+
+		// Прикрепляем торрент-файл
+		attach_torrent_file($tor, $torrent, $hidden_form_fields);
+	}
+	$subject = booktracker($content, 'title');
+} elseif
+	($tracker == 'torrentwindows'){
+	$content = $curl->fetchUrl($url);
+
+	$pos = strpos($content, '<div class="fdl-btn-size fx-col fx-center">');
+	$content = substr($content, 0, $pos);
+//var_dump($content);
+
+	if (!$content) {
+		meta_refresh('release.php', '2');
+		bb_die('false content');
+	}
+
+	if ($message = torrentwindows($content)) {
+		$id = torrentwindows($content, 'torrent');
+		//dump($id);
+
+		if (!$id) {
+			meta_refresh('release.php', '2');
+			bb_die('Торрент не найден');
+		}
+
+		$torrent = $curl->fetchUrl("https://torrent-wind.net/index.php?do=download&id=$id");
+
+		// Декодирование торрент-файла
+		$tor = torrent_decode($torrent, $info_hash);
+
+		$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
+
+		if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
+			$title = torrentwindows($content, 'title');
+			bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
+		}
+
+		// Прикрепляем торрент-файл
+		attach_torrent_file($tor, $torrent, $hidden_form_fields);
+	}
+	$subject = torrentwindows($content, 'title');
+} elseif
+	($tracker == 'riperam'){
+	$curl->storeCookies(COOKIES_PARS_DIR . '/riperam_cookie.txt');
+
+	$submit_url = "http://riperam.org/ucp.php?mode=login";
+	$submit_vars = array(
+		'username' => $bb_cfg['torrent_parser']['auth']['riperam']['login'],
+		'password' => $bb_cfg['torrent_parser']['auth']['riperam']['pass'],
+		'autologin' => 'on',
+		'viewonline' => 'on',
+		'login' => true,
+	);
+
+	$curl->sendPostData($submit_url, $submit_vars);
+	$curl->setReferer($submit_url);
+	$content = $curl->fetchUrl($url);
+
+//var_dump($content);
+	$pos = strpos($text, '<div class="content"');
+	$text = substr($text, $pos);
+	$pos = strpos($content, '<td style="text-align: center; vertical-align: top;">');
+	$content = substr($content, 0, $pos);
+
+	if (!$content) {
+		meta_refresh('release.php', '2');
+		bb_die('Занято ;) - Приходите через 20 минут.');
+	}
+
+	if ($message = riperam($content)) {
+		$id = riperam($content, 'torrent');
+		//var_dump($id);
+
+		if (!$id) {
+			meta_refresh('release.php', '2');
+			bb_die('Торрент не найден');
+		}
+
+		$torrent = $curl->fetchUrl("http://riperam.org/download/file.php?id=$id");
+
+		// Декодирование торрент-файла
+		$tor = torrent_decode($torrent, $info_hash);
+
+		$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
+
+		if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
+			$title = riperam($content, 'title');
+			bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
+		}
+
+		// Прикрепляем торрент-файл
+		attach_torrent_file($tor, $torrent, $hidden_form_fields);
+	}
+	$subject = riperam($content, 'title');
+} elseif
+	($tracker == 'mptor'){
 		if (preg_match("#http://megapeer.vip/#", $url)) {
 			$new_host = 'megapeer.ru';
 			$url = str_replace("http://megapeer.vip/", "http://$new_host/", $url);
@@ -757,8 +645,8 @@ if (!$url) {
 		}
 		$subject = mptor($content, 'title');
 
-	} elseif ($tracker == 'tapochek') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/tapochek_cookie.txt');
+	} elseif ($tracker == 'tapochek'){
+	$curl->storeCookies(COOKIES_PARS_DIR . '/tapochek_cookie.txt');
 
 		$submit_url = "https://tapochek.net/login.php";
 		$submit_vars = array(
@@ -805,8 +693,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = tapochek($content, 'title');
-	} elseif ($tracker == 'uniongang') {
-		$curl->setReferer($url);
+	} elseif ($tracker == 'uniongang'){
+	$curl->setReferer($url);
 		$curl->storeCookies(COOKIES_PARS_DIR . '/uniongang_cookie.txt');
 
 		$submit_url = "http://uniongang.club/takelogin.php";
@@ -855,9 +743,9 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = uniongang($content, 'title');
-	} elseif ($tracker == 'kinozal') {
+	} elseif ($tracker == 'kinozal'){
 		//$curl->setReferer($url);
-		$curl->storeCookies(COOKIES_PARS_DIR . '/kinozal_cookie.txt');
+	$curl->storeCookies(COOKIES_PARS_DIR . '/kinozal_cookie.txt');
 
 		$submit_url = "http://kinozal.tv/takelogin.php";
 		$submit_vars = array(
@@ -904,9 +792,9 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = kinozal($content, 'title');
-	} elseif ($tracker == 'kinozalguru') {
+	} elseif ($tracker == 'kinozalguru'){
 		//$curl->setReferer($url);
-		$curl->storeCookies(COOKIES_PARS_DIR . '/kinozalguru_cookie.txt');
+	$curl->storeCookies(COOKIES_PARS_DIR . '/kinozalguru_cookie.txt');
 
 		$submit_url = "https://kinozal.guru/takelogin.php";
 		$submit_vars = array(
@@ -953,8 +841,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = kinozalguru($content, 'title');
-	} elseif ($tracker == 'windowssoftinfo') {
-		$content = $curl->fetchUrl($url);
+	} elseif ($tracker == 'windowssoftinfo'){
+	$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<div class="fstory-rating">');
 		$content = substr($content, 0, $pos);
 		//var_dump($content);
@@ -988,8 +876,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = windowssoftinfo($content, 'title');
-	} elseif ($tracker == 'ztorrents') {
-		$content = $curl->fetchUrl($url);
+	} elseif ($tracker == 'ztorrents'){
+	$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<div class="dle_b_appp"');
 		$content = substr($content, 0, $pos);
 		//var_dump($content);
@@ -1023,8 +911,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = ztorrents($content, 'title');
-	} elseif ($tracker == 'piratbit') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/piratbit_cookie.txt');
+	} elseif ($tracker == 'piratbit'){
+	$curl->storeCookies(COOKIES_PARS_DIR . '/piratbit_cookie.txt');
 
 		$submit_url = "https://piratbit.org/login.php";
 		$submit_vars = array(
@@ -1070,8 +958,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = piratbit($content, 'title');
-	} elseif ($tracker == 'onlysoft') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/onlysoft_cookie.txt');
+	} elseif ($tracker == 'onlysoft'){
+	$curl->storeCookies(COOKIES_PARS_DIR . '/onlysoft_cookie.txt');
 
 		$submit_url = "https://only-soft.org/login.php";
 		$submit_vars = array(
@@ -1115,8 +1003,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = onlysoft($content, 'title');
-	} elseif ($tracker == 'rutrackerru') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/rutrackerru_cookie.txt');
+	} elseif ($tracker == 'rutrackerru'){
+	$curl->storeCookies(COOKIES_PARS_DIR . '/rutrackerru_cookie.txt');
 
 		$submit_url = "http://rutracker.ru/login.php";
 		$submit_vars = array(
@@ -1161,8 +1049,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = rutrackerru($content, 'title');
-	} elseif ($tracker == 'ddgroupclub') {
-		$curl->storeCookies(COOKIES_PARS_DIR . '/ddgroupclub_cookie.txt');
+	} elseif ($tracker == 'ddgroupclub'){
+	$curl->storeCookies(COOKIES_PARS_DIR . '/ddgroupclub_cookie.txt');
 
 		$submit_url = "http://ddgroupclub.win/login.php";
 		$submit_vars = array(
@@ -1207,8 +1095,8 @@ if (!$url) {
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = ddgroupclub($content, 'title');
-	} elseif ($tracker == 'xxxtor') {
-		$content = $curl->fetchUrl($url);
+	} elseif ($tracker == 'xxxtor'){
+	$content = $curl->fetchUrl($url);
 
 		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<div id="down">');
