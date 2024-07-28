@@ -1,4 +1,13 @@
 <?php
+/**
+ * --------------------------------------------------------
+ * Парсер раздач. Специально для TorrentPier
+ *
+ * @link https://torrentpier.com/
+ * @license MIT License
+ * @author Участники torrentpier.com, Ральф, belomaxorka
+ * --------------------------------------------------------
+ */
 
 if (!defined('BB_ROOT')) die(basename(__FILE__));
 
