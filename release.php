@@ -346,20 +346,27 @@ if (!$url) {
 
 	// Проверка вводимого URL адреса
 	$tracker = null;
+	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
 		if (preg_match($data['regex'], $url)) {
-			$tracker = $name;
 			if ($data['auth'] && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
-				bb_die('Не заполнены данные авторизации для трекера:' . $name);
+				bb_die('Не заполнены данные авторизации для трекера: ' . $name);
 			}
+			$tracker = $name; // Название трекера
+			$tracker_data = $data; // Настройки трекера
 			break;
+		} else {
+			bb_die('Отсутствуют настройки для трекера: ' . $name);
 		}
 	}
-	if ($tracker === null) {
+	if ($tracker === null || !is_array($tracker_data)) {
 		die_and_refresh('Такого трекера нету у нас');
 	}
 
 	// ----------------------- Трекеры -----------------------
+	$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
+
+
 	if ($tracker == 'rutracker') {
 		$curl->storeCookies(COOKIES_PARS_DIR . '/rutracker_cookie.txt');
 
