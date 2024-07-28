@@ -398,7 +398,7 @@ if (!$url) {
 			$url = 'http://rutor.info/';
 		}
 
-		// Парсим HTML код страницы
+		// Получаем HTML код страницы
 		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<td class="header"');
 		$content = substr($content, 0, $pos);
@@ -408,6 +408,7 @@ if (!$url) {
 			die_and_refresh('Не удается получить HTML код страницы');
 		}
 
+		// Парсим HTML код страницы
 		if ($message = rutor($content)) {
 			$id = $message['torrent']; // Идентификатор торрент-файла
 			$subject = $message['title']; // Заголовок сообщения
