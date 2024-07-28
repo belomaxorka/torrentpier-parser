@@ -185,7 +185,8 @@ if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
 	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['torrent_parser']['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
 	if (!$vip) bb_die('Извините, вы не состоите в соответствующей группе');
 }
-if (!$url) {
+
+if (empty($url)) {
 	// Получаем все форумы
 	if (!$forums = $datastore->get('cat_forums')) {
 		$datastore->update('cat_forums');
@@ -448,7 +449,7 @@ if (!$url) {
 		}
 	}
 	if ($tracker === null || !is_array($tracker_data)) {
-		die_and_refresh('Такого трекера нету у нас');
+		die_and_refresh("Такого трекера нету у нас ($url)");
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
