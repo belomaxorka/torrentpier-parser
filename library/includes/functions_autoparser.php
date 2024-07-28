@@ -31,7 +31,7 @@ function insert_video_player(&$text)
 
 function rutracker($text, $mode = '')
 {
-	global $bb_cfg, $use_video_player;
+	global $bb_cfg;
 
 	$server_name = $bb_cfg['server_name'];
 	$sitename = $bb_cfg['sitename'];
@@ -52,12 +52,12 @@ function rutracker($text, $mode = '')
 		preg_match_all("/form_token.*?'(.*?)',/", $text, $token, PREG_SET_ORDER);
 		$form_token = $token[0][1];
 
-		$post_data = [
+		$post_data = array(
 			"action" => "view_post",
 			"post_id" => "$post_id",
 			"mode" => "text",
 			"form_token" => "$form_token"
-		];
+		);
 
 		$url = 'https://rutracker.org/forum/ajax.php';
 		$curl->storeCookies(COOKIES_PARS_DIR . '/rutracker_cookie.txt');
@@ -258,7 +258,7 @@ function rutracker($text, $mode = '')
 
 function rutor($text, $mode = false)
 {
-	global $bb_cfg, $use_video_player;
+	global $bb_cfg;
 
 	if ($mode == 'title') {
 		preg_match_all("#<h1>([\s\S]*?)</h1>#", $text, $source, PREG_SET_ORDER);
