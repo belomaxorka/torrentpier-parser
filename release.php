@@ -437,9 +437,6 @@ if (!$url) {
 	$tracker = null;
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
-		if (empty($data)) {
-			bb_die('Отсутствуют настройки для трекера: ' . $name);
-		}
 		if (preg_match($data['regex'], $url)) {
 			if (!$data['enabled']) {
 				bb_die("Парсинг с трекера $name отключен администратором сайта");
