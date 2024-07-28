@@ -267,6 +267,7 @@ function rutracker($text, $mode = '')
  *
  * @link https://torrentpier.com/resources/avtomaticheskij-parser-razdach-s-rutor-info.253/
  * @author _Xz_
+ * @license MIT License
  *
  * @param $text
  * @return array
