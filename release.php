@@ -40,8 +40,9 @@ function torrent_decode($torrent, &$info_hash)
 		$tor = \SandFox\Bencode\Bencode::decode($torrent);
 		$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
 	} elseif (class_exists('\Arokettu\Bencode\Bencode')) {
-		$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-		$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+		// Раскомментировать для версий v2.4.0 и выше
+		// $tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
+		// $info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
 	} else {
 		bb_die('Отсутствует библиотека для бинкодирования торрента');
 	}
