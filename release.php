@@ -389,16 +389,21 @@ if (!$url) {
 		}
 		$subject = rutracker($content, 'title');
 	} elseif ($tracker == 'rutor') {
+		// --------- Константы --------- //
+		define('RUTOR_DL_LINK', 'http://d.rutor.info/download/');
+		// ----------------------------- //
+
 		// Заменяем старые ссылки на новую
 		if (preg_match("#http://rutor.org/#", $url)) {
 			$url = 'http://rutor.info/';
 		}
 
-		// Возвращаем HTML код страницы
+		// Парсим HTML код страницы
 		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<td class="header"');
 		$content = substr($content, 0, $pos);
 
+		// Проверка на пустую страницу
 		if (empty($content)) {
 			die_and_refresh('Не удается получить HTML код страницы');
 		}
@@ -409,18 +414,16 @@ if (!$url) {
 
 			// Проверка идентификатора торрента
 			if (empty($id) || !is_numeric($id)) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
+				die_and_refresh('Не удается получить торрент-файл. Вот ID:' . $id);
 			}
 
 			// Проверка наличия заголовка
 			if (empty($subject)) {
-				meta_refresh('release.php', '2');
-				bb_die('Не получается найти заголовок темы');
+				die_and_refresh('Не получается найти заголовок темы');
 			}
 
 			// Получение торрент-файла
-			$torrent = $curl->fetchUrl("http://d.rutor.info/download/$id");
+			$torrent = $curl->fetchUrl(RUTOR_DL_LINK . $id);
 
 			// Декодирование торрент-файла
 			$tor = torrent_decode($torrent, $info_hash);
