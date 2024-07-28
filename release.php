@@ -336,12 +336,22 @@ if (!$url) {
 		'tapochek' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "/https:\/\/tapochek.net\/viewtopic.php\?t=/"
+			'regex' => "/https:\/\/tapochek.net\/viewtopic.php\?t=/",
+			'login_url' => 'https://tapochek.net/login.php',
+			'dl_url' => 'https://tapochek.net/download.php?id=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<p><img src="images/icon_dn.png"',
 		),
 		'uniongang' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#uniongang.club/torrent-#"
+			'regex' => "#uniongang.club/torrent-#",
+			'login_url' => 'http://uniongang.club/takelogin.php',
+			'dl_url' => 'http://uniongang.club/download.php?id=',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'target_element' => '<form method="post" action="takerate.php">',
 		),
 		'kinozal' => array(
 			'enabled' => true,
@@ -473,159 +483,6 @@ if (!$url) {
 	}
 
 
-	($tracker == 'mptor'){
-		if (preg_match("#http://megapeer.vip/#", $url)) {
-			$new_host = 'megapeer.ru';
-			$url = str_replace("http://megapeer.vip/", "http://$new_host/", $url);
-		}
-
-		$curl->storeCookies(COOKIES_PARS_DIR . '/mptor_cookie.txt');
-
-		$submit_url = "http://megapeer.ru/takelogin.php";
-		$submit_vars = array(
-			'username' => $bb_cfg['torrent_parser']['auth']['mptor']['login'],
-			'password' => $bb_cfg['torrent_parser']['auth']['mptor']['pass'],
-			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$content = iconv('windows-1251', 'UTF-8', $content);
-		$pos = strpos($content, '<td class="heading"');
-		//var_dump($content);
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = mptor($content)) {
-
-			$id = mptor($content, 'torrent');
-			//var_dump($id);
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("http://megapeer.ru/download/$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = mptor($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = mptor($content, 'title');
-
-	} elseif ($tracker == 'tapochek'){
-	$curl->storeCookies(COOKIES_PARS_DIR . '/tapochek_cookie.txt');
-
-		$submit_url = "https://tapochek.net/login.php";
-		$submit_vars = array(
-			'login_username' => $bb_cfg['torrent_parser']['auth']['tapochek']['login'],
-			'login_password' => $bb_cfg['torrent_parser']['auth']['tapochek']['pass'],
-			'login' => true,
-		);
-
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$content = iconv('windows-1251', 'UTF-8', $content);
-
-		$pos = strpos($content, '<p><img src="images/icon_dn.png"');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = tapochek($content)) {
-			$id = tapochek($content, 'torrent');
-			//var_dump($id);
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://tapochek.net/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = tapochek($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = tapochek($content, 'title');
-	} elseif ($tracker == 'uniongang'){
-	$curl->setReferer($url);
-		$curl->storeCookies(COOKIES_PARS_DIR . '/uniongang_cookie.txt');
-
-		$submit_url = "http://uniongang.club/takelogin.php";
-		$submit_vars = array(
-			'username' => $bb_cfg['torrent_parser']['auth']['uniongang']['login'],
-			'password' => $bb_cfg['torrent_parser']['auth']['uniongang']['pass'],
-		);
-
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$content = iconv('windows-1251', 'UTF-8', $content);
-		//var_dump($content);
-		$content = preg_replace('/([\r\n])[\s]+/is', "\\1", $content);
-		$pos = strpos($text, '<table width="100%" border="1" cellspacing="0" cellpadding="5">');
-		$text = substr($text, $pos);
-		$pos = strpos($content, '<form method="post" action="takerate.php">');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = uniongang($content)) {
-			$id = uniongang($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("http://uniongang.club/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = uniongang($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = uniongang($content, 'title');
-	} elseif ($tracker == 'kinozal'){
 		//$curl->setReferer($url);
 	$curl->storeCookies(COOKIES_PARS_DIR . '/kinozal_cookie.txt');
 
