@@ -181,6 +181,9 @@ if (!$url) {
 } else {
 	$curl = new \Dinke\CurlHttpClient;
 	$curl->setUserAgent(\Campo\UserAgent::random(array('agent_type' => 'Browser'))); // Случайный User-Agent
+	// Настройка прокси
+	// $curl->setProxy('38.170.252.172:9527'); // ip:port
+	// $curl->setProxyAuth('cZbZMH:6qFmYC'); // login:pass
 
 	if (preg_match("/https:\/\/rutracker.org\/forum\/viewtopic.php\?t=/", $url)) {
 		$tracker = 'rutracker';
@@ -395,10 +398,6 @@ if (!$url) {
 		}
 		$subject = rutor($content, 'title');
 	} elseif ($tracker == 'nnmclub') {
-		//use proxy
-		$curl->setProxy('38.170.252.172:9527');
-		//use proxy auth
-		$curl->setProxyAuth('cZbZMH:6qFmYC');
 		$curl->storeCookies(COOKIES_PARS_DIR . '/nnm_cookie.txt');
 
 		$submit_url = "https://nnmclub.to/forum/login.php";
