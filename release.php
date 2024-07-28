@@ -1,13 +1,12 @@
 <?php
 
-set_time_limit(0);
-
-//define('IN_FORUM', true);
 define('BB_SCRIPT', 'release');
 define('BB_ROOT', './');
 require __DIR__ . '/common.php';
 require INC_DIR . '/bbcode.php';
 require INC_DIR . '/functions_autoparser.php';
+
+set_time_limit(120);
 
 $url = isset($_POST['url']) ? $_POST['url'] : '';
 $url = str_replace('http://www.', 'http://', $url);
@@ -16,11 +15,37 @@ $hidden_form_fields = $message = $subject = '';
 $forum_id = (int)request_var('forum_id', '');
 
 // Start session management
-//$user->session_start(array('req_login' => true));
-
-$user->session_start(['req_login' => true]);
+$user->session_start(array('req_login' => true));
 
 $attach_dir = get_attachments_dir();
+
+/**
+ * Декодирование торрента
+ *
+ * @param $torrent
+ * @param $info_hash
+ * @return void
+ */
+function torrent_decode($torrent, &$info_hash)
+{
+	if (function_exists('bencode')) {
+		require INC_DIR . '/functions_torrent.php';
+		$tor = bdecode($torrent);
+		$info_hash = pack('H*', sha1(bencode($tor['info'])));
+	} elseif (class_exists('\SandFox\Bencode\Bencode')) {
+		$tor = \SandFox\Bencode\Bencode::decode($torrent);
+		$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
+	} elseif (class_exists('\Arokettu\Bencode\Bencode')) {
+		$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
+		$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
+	} else {
+		bb_die('Отсутствует библиотека для бинкодирования торрента');
+	}
+
+	if (empty($info_hash)) {
+		bb_die('Пустой info_hash');
+	}
+}
 
 function decodeEmailProtection($encodedString)
 {
@@ -279,18 +304,9 @@ if (!$url) {
 
 			$torrent = $curl->fetchUrl("https://rutracker.org/forum/dl.php?t=$id");
 
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -347,19 +363,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("http://d.rutor.info/download/$id");
-			//var_dump($torrent);
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -436,18 +443,9 @@ if (!$url) {
 
 			$torrent = $curl->fetchUrl("https://nnmclub.to/forum/download.php?id=$id");
 
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -513,18 +511,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("http://rustorka.com/forum/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -582,18 +572,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("https://booktracker.org/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -644,18 +626,9 @@ if (!$url) {
 
 			$torrent = $curl->fetchUrl("https://torrent-wind.net/index.php?do=download&id=$id");
 
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -721,18 +694,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("http://riperam.org/download/file.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -800,18 +765,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("http://megapeer.ru/download/$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -875,18 +832,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("https://tapochek.net/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -950,18 +899,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("http://uniongang.club/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1023,18 +964,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("http://dl.kinozal.tv/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1097,18 +1030,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("http://dl.kinozal.guru/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1158,18 +1083,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("https://windows-soft.info/engine/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1220,18 +1137,9 @@ if (!$url) {
 
 			$torrent = $curl->fetchUrl("$id");
 
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1292,15 +1200,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("https://piratbit.org/dl.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1359,18 +1262,10 @@ if (!$url) {
 			}
 
 			$torrent = $curl->fetchUrl("https://only-soft.org/download.php?id=$id");
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1430,18 +1325,9 @@ if (!$url) {
 
 			$torrent = $curl->fetchUrl("http://rutracker.ru/dl.php?id=$id");
 
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1502,18 +1388,9 @@ if (!$url) {
 
 			$torrent = $curl->fetchUrl("http://ddgroupclub.win/dl.php?id=$id");
 
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
@@ -1563,18 +1440,9 @@ if (!$url) {
 
 			$torrent = $curl->fetchUrl("https://$id");
 
-			if (class_exists('\SandFox\Bencode\Bencode')) {
-				$tor = \SandFox\Bencode\Bencode::decode($torrent);
-				$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
-			} else if (class_exists('\Arokettu\Bencode\Bencode')) {
-				$tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
-				$info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-			} else if (function_exists('bencode')) {
-				$tor = bencode($torrent);
-				$info_hash = pack('H*', sha1(bencode($tor['info'])));
-			} else {
-				bb_die('Отсутствует библиотека для бинкодирования торрента');
-			}
+			// Декодирование торрент-файла
+			torrent_decode($torrent, $info_hash);
+
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
 
