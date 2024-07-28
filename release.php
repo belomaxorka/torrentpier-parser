@@ -26,10 +26,12 @@ $attach_dir = get_attachments_dir();
  *
  * @param $torrent
  * @param $info_hash
- * @return void
+ * @return array
  */
 function torrent_decode($torrent, &$info_hash)
 {
+	$tor = array();
+
 	if (function_exists('bencode')) {
 		require_once INC_DIR . '/functions_torrent.php';
 		$tor = bdecode($torrent);
@@ -46,6 +48,39 @@ function torrent_decode($torrent, &$info_hash)
 
 	if (empty($info_hash)) {
 		bb_die('Пустой info_hash');
+	}
+
+	return $tor;
+}
+
+/**
+ * Прикрепляем торрент-файл
+ *
+ * @param $tor
+ * @param $torrent
+ * @param $hidden_form_fields
+ * @return void
+ */
+function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
+{
+	global $attach_dir;
+
+	if (is_array($tor) && count($tor)) {
+		$new_name = md5($torrent) . TIMENOW;
+		$file = fopen("$attach_dir/$new_name.torrent", 'w+');
+		fputs($file, $torrent);
+		fclose($file);
+
+		$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
+		$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
+		$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
+		$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
+		$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
+		$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="' . mime_content_type("$attach_dir/$new_name.torrent") . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
+		$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
 	}
 }
 
@@ -310,7 +345,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://rutracker.org/forum/dl.php?t=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -319,23 +354,9 @@ if (!$url) {
 				$title = rutracker($content, 'title');
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
 
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = rutracker($content, 'title');
 	} elseif ($tracker == 'rutor') {
@@ -368,7 +389,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://d.rutor.info/download/$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -378,23 +399,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = make_rand_str(6) . '_' . md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = rutor($content, 'title');
 	} elseif ($tracker == 'nnmclub') {
@@ -442,7 +448,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://nnmclub.to/forum/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -452,23 +458,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = nnmclub($content, 'title');
 	} elseif ($tracker == 'rustorka') {
@@ -510,7 +501,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://rustorka.com/forum/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -520,23 +511,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = rustorka($content, 'title');
 	} elseif ($tracker == 'booktracker') {
@@ -570,7 +546,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://booktracker.org/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -579,23 +555,9 @@ if (!$url) {
 				$title = booktracker($content, 'title');
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
-			if (is_array($tor) && count($tor)) {
-				$new_name = make_rand_str(6) . '_' . md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
 
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = booktracker($content, 'title');
 	} elseif ($tracker == 'torrentwindows') {
@@ -622,7 +584,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://torrent-wind.net/index.php?do=download&id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -632,23 +594,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = make_rand_str(6) . '_' . md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = torrentwindows($content, 'title');
 	} elseif ($tracker == 'riperam') {
@@ -690,7 +637,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://riperam.org/download/file.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -700,24 +647,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = riperam($content, 'title');
 	} elseif ($tracker == 'mptor') {
@@ -760,7 +691,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://megapeer.ru/download/$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -770,24 +701,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = mptor($content, 'title');
 
@@ -826,7 +741,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://tapochek.net/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -836,23 +751,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = tapochek($content, 'title');
 	} elseif ($tracker == 'uniongang') {
@@ -892,7 +792,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://uniongang.club/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -901,23 +801,9 @@ if (!$url) {
 				$title = uniongang($content, 'title');
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
 
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = uniongang($content, 'title');
 	} elseif ($tracker == 'kinozal') {
@@ -956,7 +842,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://dl.kinozal.tv/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -966,23 +852,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = kinozal($content, 'title');
 	} elseif ($tracker == 'kinozalguru') {
@@ -1021,7 +892,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://dl.kinozal.guru/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1031,23 +902,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = kinozalguru($content, 'title');
 	} elseif ($tracker == 'windowssoftinfo') {
@@ -1072,7 +928,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://windows-soft.info/engine/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1082,23 +938,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = windowssoftinfo($content, 'title');
 	} elseif ($tracker == 'ztorrents') {
@@ -1123,7 +964,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1133,23 +974,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = make_rand_str(6) . '_' . md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = ztorrents($content, 'title');
 	} elseif ($tracker == 'piratbit') {
@@ -1186,7 +1012,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://piratbit.org/dl.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1196,23 +1022,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = piratbit($content, 'title');
 	} elseif ($tracker == 'onlysoft') {
@@ -1247,7 +1058,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://only-soft.org/download.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1256,23 +1067,9 @@ if (!$url) {
 				$title = onlysoft($content, 'title');
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
-			if (is_array($tor) && count($tor)) {
-				$new_name = make_rand_str(6) . '_' . md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
 
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = onlysoft($content, 'title');
 	} elseif ($tracker == 'rutrackerru') {
@@ -1308,7 +1105,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://rutracker.ru/dl.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1318,23 +1115,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = rutrackerru($content, 'title');
 	} elseif ($tracker == 'ddgroupclub') {
@@ -1370,7 +1152,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("http://ddgroupclub.win/dl.php?id=$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1380,23 +1162,8 @@ if (!$url) {
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
 
-			if (is_array($tor) && count($tor)) {
-				$new_name = md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
-
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = ddgroupclub($content, 'title');
 	} elseif ($tracker == 'xxxtor') {
@@ -1422,7 +1189,7 @@ if (!$url) {
 			$torrent = $curl->fetchUrl("https://$id");
 
 			// Декодирование торрент-файла
-			torrent_decode($torrent, $info_hash);
+			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 			$info_hash_md5 = md5($info_hash);
@@ -1431,23 +1198,9 @@ if (!$url) {
 				$title = ddgroupclub($content, 'title');
 				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
 			}
-			if (count($tor)) {
-				$new_name = make_rand_str(6) . '_' . md5($torrent);
-				$file = fopen("$attach_dir/$new_name.torrent", 'w');
-				fputs($file, $torrent);
-				fclose($file);
 
-				$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-				$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="application/x-bittorrent" />';
-				$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
-				$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
-			}
+			// Прикрепляем торрент-файл
+			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
 		$subject = xxxtor($content, 'title');
 	}
