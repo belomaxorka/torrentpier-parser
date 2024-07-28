@@ -737,10 +737,10 @@ function rustorka($text, $mode = '')
 		$text = str_replace('&gt;', '>', $text);
 		$text = str_replace('&lt;', '<', $text);
 
-		$text = preg_replace_callback('/<span href="http.*?rustorka.com\/forum\/viewtopic.*?" class="postLink">(.*?)<\/span>/', function ($v) {
+		$text = preg_replace_callback('/<span href="http.*?rustorka.com\/forum\/viewtopic.*?" class="postLink">(.*?)<\/span>/', function ($v) use ($server_name) {
 			$text_data = $v[1];
 			$text_url = strip_tags($text_data);
-			return "[url=https://$server_name/tracker.php?" . http_build_query(['nm' => $text_url]) . ']' . $text_data . '[/url]';
+			return "[url=https://$server_name/tracker.php?" . http_build_query(array('nm' => $text_url)) . ']' . $text_data . '[/url]';
 		},
 			$text);
 
@@ -1028,8 +1028,8 @@ function torrentwindows($text, $mode = false)
 		$text = strip_tags(html_entity_decode($text));
 	}
 //dump($text);
-	$text = preg_replace_callback('/<a href=".*?">(.*?)<\/a>/', function ($v) {
-		return "[url=https://$server_name/tracker.php?" . http_build_query(['nm' => $v[1]]) . ']' . $v[1] . '[/url]';
+	$text = preg_replace_callback('/<a href=".*?">(.*?)<\/a>/', function ($v) use ($server_name) {
+		return "[url=https://$server_name/tracker.php?" . http_build_query(array('nm' => $v[1])) . ']' . $v[1] . '[/url]';
 	},
 		$text);
 	return $text;
@@ -1714,8 +1714,8 @@ function windowssoftinfo($text, $mode = '')
 		$text = str_replace('</ul>', '[/list]', $text);
 		$text = str_replace('<li>', "\n[*]", $text);
 		$text = str_replace('</li>', '', $text);
-		$text = preg_replace_callback('/<a href=".*?" >(.*?)<\/a>/', function ($v) {
-			return "[url=https://$server_name/tracker.php?" . http_build_query(['nm' => $v[1]]) . ']' . $v[1] . '[/url]';
+		$text = preg_replace_callback('/<a href=".*?" >(.*?)<\/a>/', function ($v) use ($server_name) {
+			return "[url=https://$server_name/tracker.php?" . http_build_query(array('nm' => $v[1])) . ']' . $v[1] . '[/url]';
 		},
 			$text);
 
@@ -1886,8 +1886,8 @@ function piratbit($text, $mode = false)
 		$text = preg_replace('/<img class="smile" src=".*?" alt="" align="absmiddle" border="0" \/>/', '', $text);
 		$text = preg_replace('/<span style="display: none">[^<]*?<(?=\/)\/span>/', '', $text);
 
-		$text = preg_replace_callback('/<a href="\/tracker\/\?ss=([^<]*?)#results"\/>[^<]*?<(?=\/)\/a>/', function ($v) {
-			return "[url=https://$server_name/tracker.php?" . http_build_query(['nm' => $v[1]]) . ']' . $v[1] . '[/url]';
+		$text = preg_replace_callback('/<a href="\/tracker\/\?ss=([^<]*?)#results"\/>[^<]*?<(?=\/)\/a>/', function ($v) use ($server_name) {
+			return "[url=https://$server_name/tracker.php?" . http_build_query(array('nm' => $v[1])) . ']' . $v[1] . '[/url]';
 		},
 			$text);
 		$text = preg_replace('/<a href="([^<]*?)"[^<]*?><var[^<]*?title="http[^<]*?rating.kinopoisk.ru[^<]*?">&#10;<\/var><\/a>/', '[kp]$1[/kp]', $text);
