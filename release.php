@@ -350,7 +350,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = rutracker($content, 'title');
@@ -380,31 +379,29 @@ if (!$url) {
 		}
 
 		if ($message = rutor($content)) {
-			$id = rutor($content, 'torrent');
-			//dump($id);
+			$id = $message['torrent']; // Идентификатор торрент-файла
+			$subject = $message['title']; // Заголовок сообщения
 
-			if (!$id) {
+			if (empty($id) || !is_numeric($id)) {
 				meta_refresh('release.php', '2');
 				bb_die('Торрент не найден');
 			}
 
+			// Получение торрент-файла
 			$torrent = $curl->fetchUrl("http://d.rutor.info/download/$id");
 
 			// Декодирование торрент-файла
 			$tor = torrent_decode($torrent, $info_hash);
 
+			// Проверка на повтор
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
-
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = rutor($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
+				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $subject . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $subject . '</a>');
 			}
 
 			// Прикрепляем торрент-файл
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
 		}
-		$subject = rutor($content, 'title');
 	} elseif ($tracker == 'nnmclub') {
 		$curl->storeCookies(COOKIES_PARS_DIR . '/nnm_cookie.txt');
 
@@ -453,7 +450,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = nnmclub($content, 'title');
@@ -506,7 +502,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = rustorka($content, 'title');
@@ -551,7 +546,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = booktracker($content, 'title');
@@ -589,7 +583,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = torrentwindows($content, 'title');
@@ -642,7 +635,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = riperam($content, 'title');
@@ -696,7 +688,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = mptor($content, 'title');
@@ -746,7 +737,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = tapochek($content, 'title');
@@ -797,7 +787,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = uniongang($content, 'title');
@@ -847,7 +836,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = kinozal($content, 'title');
@@ -897,7 +885,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = kinozalguru($content, 'title');
@@ -933,7 +920,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = windowssoftinfo($content, 'title');
@@ -969,7 +955,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = ztorrents($content, 'title');
@@ -1017,7 +1002,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = piratbit($content, 'title');
@@ -1063,7 +1047,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = onlysoft($content, 'title');
@@ -1110,7 +1093,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = rutrackerru($content, 'title');
@@ -1157,7 +1139,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = ddgroupclub($content, 'title');
@@ -1194,7 +1175,6 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			$info_hash_md5 = md5($info_hash);
 
 			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
 				$title = ddgroupclub($content, 'title');
@@ -1214,7 +1194,7 @@ if (!$url) {
 
 	$template->assign_vars(array(
 		'SUBJECT' => $subject,
-		'MESSAGE' => $message,
+		'MESSAGE' => $message['content'],
 		'S_POST_ACTION' => "posting.php",
 
 		'POSTING_SUBJECT' => true,
