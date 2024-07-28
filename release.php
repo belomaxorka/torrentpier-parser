@@ -359,6 +359,7 @@ if (!$url) {
 		die_and_refresh('Такого трекера нету у нас');
 	}
 
+	// ----------------------- Трекеры -----------------------
 	if ($tracker == 'rutracker') {
 		$curl->storeCookies(COOKIES_PARS_DIR . '/rutracker_cookie.txt');
 
