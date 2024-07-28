@@ -522,6 +522,7 @@ if (!$url) {
 		// Прикрепляем торрент-файл
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
+	// -------------------------------------------------------------------
 
 	$hidden_form_fields .= '<input type="hidden" name="mode" value="newtopic" />';
 	$hidden_form_fields .= '<input type="hidden" name="' . POST_FORUM_URL . '" value="' . $forum_id . '" />';
