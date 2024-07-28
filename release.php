@@ -399,6 +399,11 @@ if (!$url) {
 			'enabled' => true,
 			'auth' => true,
 			'regex' => "#https://only-soft.org/viewtopic.php\?t=#",
+			'login_url' => 'https://only-soft.org/login.php',
+			'dl_url' => 'https://only-soft.org/download.php?id=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<p class="small">',
 		),
 		'rutrackerru' => array(
 			'enabled' => true,
@@ -503,52 +508,6 @@ if (!$url) {
 		// Прикрепляем торрент-файл
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
-
-
-		$submit_url = "https://only-soft.org/login.php";
-		$submit_vars = array(
-			'login_username' => $bb_cfg['torrent_parser']['auth']['onlysoft']['login'],
-			'login_password' => $bb_cfg['torrent_parser']['auth']['onlysoft']['pass'],
-			'autologin' => 'on',
-			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		$pos = strpos($content, '<p class="small">');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('false content');
-		}
-
-		if ($message = onlysoft($content)) {
-			$id = onlysoft($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://only-soft.org/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = onlysoft($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = onlysoft($content, 'title');
-	} elseif ($tracker == 'rutrackerru'){
-	$curl->storeCookies(COOKIES_PARS_DIR . '/rutrackerru_cookie.txt');
 
 		$submit_url = "http://rutracker.ru/login.php";
 		$submit_vars = array(
