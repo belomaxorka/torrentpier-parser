@@ -22,6 +22,18 @@ $user->session_start(array('req_login' => true));
 $attach_dir = get_attachments_dir();
 
 /**
+ * Обновление страницы после die
+ *
+ * @param $msg
+ * @return void
+ */
+function die_and_refresh($msg)
+{
+	meta_refresh(__FILE__, 2);
+	bb_die($msg);
+}
+
+/**
  * Декодирование торрента
  *
  * @param $torrent
@@ -82,6 +94,22 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 		$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 		$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
+	}
+}
+
+/**
+ * Проверка на дубли
+ *
+ * @param $info_hash
+ * @param $subject
+ * @param $url
+ * @return void
+ */
+function duplicate_check($info_hash, $subject, $url)
+{
+	$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
+	if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
+		bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $subject . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $subject . '</a>');
 	}
 }
 
@@ -361,30 +389,34 @@ if (!$url) {
 		}
 		$subject = rutracker($content, 'title');
 	} elseif ($tracker == 'rutor') {
+		// Заменяем старые ссылки на новую
 		if (preg_match("#http://rutor.org/#", $url)) {
-			$new_host = 'rutor.info';
-			$url = str_replace("http://rutor.org/", "http://$new_host/", $url);
+			$url = 'http://rutor.info/';
 		}
 
+		// Возвращаем HTML код страницы
 		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<td class="header"');
-		//var_dump($content);
-
 		$content = substr($content, 0, $pos);
-		//var_dump($content);
 
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('false content');
+		if (empty($content)) {
+			die_and_refresh('Не удается получить HTML код страницы');
 		}
 
 		if ($message = rutor($content)) {
 			$id = $message['torrent']; // Идентификатор торрент-файла
 			$subject = $message['title']; // Заголовок сообщения
 
+			// Проверка идентификатора торрента
 			if (empty($id) || !is_numeric($id)) {
 				meta_refresh('release.php', '2');
 				bb_die('Торрент не найден');
+			}
+
+			// Проверка наличия заголовка
+			if (empty($subject)) {
+				meta_refresh('release.php', '2');
+				bb_die('Не получается найти заголовок темы');
 			}
 
 			// Получение торрент-файла
@@ -394,10 +426,7 @@ if (!$url) {
 			$tor = torrent_decode($torrent, $info_hash);
 
 			// Проверка на повтор
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $subject . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $subject . '</a>');
-			}
+			duplicate_check($info_hash, $subject, $url);
 
 			// Прикрепляем торрент-файл
 			attach_torrent_file($tor, $torrent, $hidden_form_fields);
