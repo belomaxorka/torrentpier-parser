@@ -304,17 +304,33 @@ if (!$url) {
 		),
 		'torrentwindows' => array(
 			'enabled' => true,
-			'regex' => "#torrent-wind.net/#"
+			'regex' => "#torrent-wind.net/#",
+			'dl_url' => 'https://torrent-wind.net/index.php?do=download&id=',
+			'target_element' => '<div class="fdl-btn-size fx-col fx-center">'
 		),
 		'riperam' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#riperam.org/#"
+			'regex' => "#riperam.org/#",
+			'login_url' => 'http://riperam.org/ucp.php?mode=login',
+			'dl_url' => 'http://riperam.org/download/file.php?id=',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'target_element' => '<td style="text-align: center; vertical-align: top;">'
 		),
 		'mptor' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#" // .ru, .vip
+			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#", // .ru, .vip
+			'login_url' => 'http://megapeer.ru/takelogin.php',
+			'dl_url' => 'http://megapeer.ru/download/',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'target_element' => '<td class="heading"',
+			'redirect' => array(
+				'from' => array('http://megapeer.vip/'),
+				'to' => 'http://megapeer.ru/'
+			)
 		),
 		'tapochek' => array(
 			'enabled' => true,
@@ -455,142 +471,7 @@ if (!$url) {
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
 
-	($tracker == 'booktracker'){
-	$curl->storeCookies(COOKIES_PARS_DIR . '/booktracker_cookie.txt');
 
-	$submit_url = "https://booktracker.org/login.php";
-	$submit_vars = array(
-		'login_username' => $bb_cfg['torrent_parser']['auth']['booktracker']['login'],
-		'login_password' => $bb_cfg['torrent_parser']['auth']['booktracker']['pass'],
-		'login' => true,
-	);
-	$curl->sendPostData($submit_url, $submit_vars);
-
-	$content = $curl->fetchUrl($url);
-	$pos = strpos($content, '<div id="tor_info"');
-	$content = substr($content, 0, $pos);
-
-	if (!$content) {
-		meta_refresh('release.php', '2');
-		bb_die('Занято ;) - Приходите через 20 минут.');
-	}
-
-	if ($message = booktracker($content)) {
-		$id = booktracker($content, 'torrent');
-
-		if (!$id) {
-			meta_refresh('release.php', '2');
-			bb_die('Торрент не найден');
-		}
-
-		$torrent = $curl->fetchUrl("https://booktracker.org/download.php?id=$id");
-
-		// Декодирование торрент-файла
-		$tor = torrent_decode($torrent, $info_hash);
-
-		$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-		if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-			$title = booktracker($content, 'title');
-			bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-		}
-
-		// Прикрепляем торрент-файл
-		attach_torrent_file($tor, $torrent, $hidden_form_fields);
-	}
-	$subject = booktracker($content, 'title');
-} elseif
-	($tracker == 'torrentwindows'){
-	$content = $curl->fetchUrl($url);
-
-	$pos = strpos($content, '<div class="fdl-btn-size fx-col fx-center">');
-	$content = substr($content, 0, $pos);
-//var_dump($content);
-
-	if (!$content) {
-		meta_refresh('release.php', '2');
-		bb_die('false content');
-	}
-
-	if ($message = torrentwindows($content)) {
-		$id = torrentwindows($content, 'torrent');
-		//dump($id);
-
-		if (!$id) {
-			meta_refresh('release.php', '2');
-			bb_die('Торрент не найден');
-		}
-
-		$torrent = $curl->fetchUrl("https://torrent-wind.net/index.php?do=download&id=$id");
-
-		// Декодирование торрент-файла
-		$tor = torrent_decode($torrent, $info_hash);
-
-		$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-		if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-			$title = torrentwindows($content, 'title');
-			bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-		}
-
-		// Прикрепляем торрент-файл
-		attach_torrent_file($tor, $torrent, $hidden_form_fields);
-	}
-	$subject = torrentwindows($content, 'title');
-} elseif
-	($tracker == 'riperam'){
-	$curl->storeCookies(COOKIES_PARS_DIR . '/riperam_cookie.txt');
-
-	$submit_url = "http://riperam.org/ucp.php?mode=login";
-	$submit_vars = array(
-		'username' => $bb_cfg['torrent_parser']['auth']['riperam']['login'],
-		'password' => $bb_cfg['torrent_parser']['auth']['riperam']['pass'],
-		'autologin' => 'on',
-		'viewonline' => 'on',
-		'login' => true,
-	);
-
-	$curl->sendPostData($submit_url, $submit_vars);
-	$curl->setReferer($submit_url);
-	$content = $curl->fetchUrl($url);
-
-//var_dump($content);
-	$pos = strpos($text, '<div class="content"');
-	$text = substr($text, $pos);
-	$pos = strpos($content, '<td style="text-align: center; vertical-align: top;">');
-	$content = substr($content, 0, $pos);
-
-	if (!$content) {
-		meta_refresh('release.php', '2');
-		bb_die('Занято ;) - Приходите через 20 минут.');
-	}
-
-	if ($message = riperam($content)) {
-		$id = riperam($content, 'torrent');
-		//var_dump($id);
-
-		if (!$id) {
-			meta_refresh('release.php', '2');
-			bb_die('Торрент не найден');
-		}
-
-		$torrent = $curl->fetchUrl("http://riperam.org/download/file.php?id=$id");
-
-		// Декодирование торрент-файла
-		$tor = torrent_decode($torrent, $info_hash);
-
-		$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-		if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-			$title = riperam($content, 'title');
-			bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-		}
-
-		// Прикрепляем торрент-файл
-		attach_torrent_file($tor, $torrent, $hidden_form_fields);
-	}
-	$subject = riperam($content, 'title');
-} elseif
 	($tracker == 'mptor'){
 		if (preg_match("#http://megapeer.vip/#", $url)) {
 			$new_host = 'megapeer.ru';
