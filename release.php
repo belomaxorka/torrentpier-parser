@@ -248,8 +248,8 @@ if (!$url) {
 	$curl = new \Dinke\CurlHttpClient;
 	$curl->setUserAgent(\Campo\UserAgent::random(array('agent_type' => 'Browser'))); // Случайный User-Agent
 	// Настройка прокси
-	// $curl->setProxy('38.170.252.172:9527'); // ip:port
-	// $curl->setProxyAuth('cZbZMH:6qFmYC'); // login:pass
+	// $curl->setProxy(''); // ip:port
+	// $curl->setProxyAuth('login:pass'); // login:pass
 
 	// Список всех трекеров
 	$trackers = array(
