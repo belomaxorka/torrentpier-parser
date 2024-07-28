@@ -437,18 +437,19 @@ if (!$url) {
 	$tracker = null;
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
+		if (empty($data)) {
+			bb_die('Отсутствуют настройки для трекера: ' . $name);
+		}
 		if (preg_match($data['regex'], $url)) {
 			if (!$data['enabled']) {
 				bb_die("Парсинг с трекера $name отключен администратором сайта");
 			}
-			if ($data['auth'] && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
+			if ((isset($data['auth']) && $data['auth']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
 				bb_die('Не заполнены данные авторизации для трекера: ' . $name);
 			}
 			$tracker = $name; // Название трекера
 			$tracker_data = $data; // Настройки трекера
 			break;
-		} else {
-			bb_die('Отсутствуют настройки для трекера: ' . $name);
 		}
 	}
 	if ($tracker === null || !is_array($tracker_data)) {
@@ -467,7 +468,7 @@ if (!$url) {
 	}
 
 	// Авторизация
-	if ($tracker_data['auth']) {
+	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
 		if (empty($tracker_data['login_url'])) {
 			bb_die('Отсутствует ссылка на страницу авторизации');
 		}
@@ -484,7 +485,7 @@ if (!$url) {
 
 	// Получение содержимого
 	$content = $curl->fetchUrl($url);
-	$content = iconv('windows-1251', 'UTF-8', $content);
+	$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
 	$pos = strpos($content, $tracker_data['target_element']);
 	$content = substr($content, 0, $pos);
 
@@ -494,7 +495,7 @@ if (!$url) {
 	}
 
 	// Парсим HTML код страницы
-	if ($message = $$tracker($content)) {
+	if ($message = $tracker($content)) {
 		$id = $message['torrent']; // Идентификатор торрент-файла
 		$subject = $message['title']; // Заголовок сообщения
 
