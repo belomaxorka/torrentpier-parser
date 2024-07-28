@@ -251,9 +251,7 @@ function rutracker($text, $mode = '')
 	}
 
 	// Вставка плеера
-	if ($use_video_player) {
-		insert_video_player($text);
-	}
+	insert_video_player($text);
 
 	return $text;
 }
@@ -433,9 +431,7 @@ function rutor($text, $mode = false)
 		$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
 
 		// Вставка плеера
-		if ($use_video_player) {
-			insert_video_player($text);
-		}
+		insert_video_player($text);
 
 		$text = strip_tags(html_entity_decode($text));
 	}

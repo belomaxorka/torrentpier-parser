@@ -8,10 +8,6 @@ require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
 require_once INC_DIR . '/bbcode.php';
 require_once INC_DIR . '/functions_autoparser.php';
 
-// -------------- Настройки --------------
-$use_video_player = true; // Вставлять видео-плеер с фильмов, в тех раздачах, где есть КП ID или IMDB ID (Нужен мод: https://torrentpier.com/resources/bbcode-film-po-id.302/)
-// ---------------------------------------
-
 set_time_limit(120);
 
 $url = isset($_POST['url']) ? $_POST['url'] : '';
