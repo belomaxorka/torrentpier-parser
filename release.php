@@ -2,9 +2,11 @@
 
 define('BB_SCRIPT', 'release');
 define('BB_ROOT', './');
-require __DIR__ . '/common.php';
-require INC_DIR . '/bbcode.php';
-require INC_DIR . '/functions_autoparser.php';
+require_once __DIR__ . '/common.php';
+require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
+require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
+require_once INC_DIR . '/bbcode.php';
+require_once INC_DIR . '/functions_autoparser.php';
 
 set_time_limit(120);
 
@@ -29,7 +31,7 @@ $attach_dir = get_attachments_dir();
 function torrent_decode($torrent, &$info_hash)
 {
 	if (function_exists('bencode')) {
-		require INC_DIR . '/functions_torrent.php';
+		require_once INC_DIR . '/functions_torrent.php';
 		$tor = bdecode($torrent);
 		$info_hash = pack('H*', sha1(bencode($tor['info'])));
 	} elseif (class_exists('\SandFox\Bencode\Bencode')) {
@@ -178,6 +180,7 @@ if (!$url) {
 	));
 } else {
 	$curl = new \Dinke\CurlHttpClient;
+	$curl->setUserAgent(\Campo\UserAgent::random(array('agent_type' => 'Browser'))); // Случайный User-Agent
 
 	if (preg_match("/https:\/\/rutracker.org\/forum\/viewtopic.php\?t=/", $url)) {
 		$tracker = 'rutracker';
@@ -272,7 +275,6 @@ if (!$url) {
 	}
 
 	if ($tracker == 'rutracker') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/rutracker_cookie.txt');
 
 		$submit_url = "https://rutracker.org/forum/login.php";
@@ -339,8 +341,6 @@ if (!$url) {
 			$url = str_replace("http://rutor.org/", "http://$new_host/", $url);
 		}
 
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
-
 		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<td class="header"');
 		//var_dump($content);
@@ -399,7 +399,6 @@ if (!$url) {
 		$curl->setProxy('38.170.252.172:9527');
 		//use proxy auth
 		$curl->setProxyAuth('cZbZMH:6qFmYC');
-		$curl->setUserAgent("Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:13.0) Gecko/20100101 Firefox/13.0.1");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/nnm_cookie.txt');
 
 		$submit_url = "https://nnmclub.to/forum/login.php";
@@ -474,7 +473,6 @@ if (!$url) {
 		}
 		$subject = nnmclub($content, 'title');
 	} elseif ($tracker == 'rustorka') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/rustorka_cookie.txt');
 
 		$submit_url = "http://rustorka.com/forum/login.php";
@@ -543,7 +541,6 @@ if (!$url) {
 		}
 		$subject = rustorka($content, 'title');
 	} elseif ($tracker == 'booktracker') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/booktracker_cookie.txt');
 
 		$submit_url = "https://booktracker.org/login.php";
@@ -603,7 +600,6 @@ if (!$url) {
 		}
 		$subject = booktracker($content, 'title');
 	} elseif ($tracker == 'torrentwindows') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$content = $curl->fetchUrl($url);
 
 		$pos = strpos($content, '<div class="fdl-btn-size fx-col fx-center">');
@@ -657,7 +653,6 @@ if (!$url) {
 		}
 		$subject = torrentwindows($content, 'title');
 	} elseif ($tracker == 'riperam') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/riperam_cookie.txt');
 
 		$submit_url = "http://riperam.org/ucp.php?mode=login";
@@ -732,7 +727,6 @@ if (!$url) {
 			$url = str_replace("http://megapeer.vip/", "http://$new_host/", $url);
 		}
 
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/mptor_cookie.txt');
 
 		$submit_url = "http://megapeer.ru/takelogin.php";
@@ -799,7 +793,6 @@ if (!$url) {
 		$subject = mptor($content, 'title');
 
 	} elseif ($tracker == 'tapochek') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/tapochek_cookie.txt');
 
 		$submit_url = "https://tapochek.net/login.php";
@@ -864,7 +857,6 @@ if (!$url) {
 		}
 		$subject = tapochek($content, 'title');
 	} elseif ($tracker == 'uniongang') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->setReferer($url);
 		$curl->storeCookies(COOKIES_PARS_DIR . '/uniongang_cookie.txt');
 
@@ -930,7 +922,6 @@ if (!$url) {
 		}
 		$subject = uniongang($content, 'title');
 	} elseif ($tracker == 'kinozal') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		//$curl->setReferer($url);
 		$curl->storeCookies(COOKIES_PARS_DIR . '/kinozal_cookie.txt');
 
@@ -996,7 +987,6 @@ if (!$url) {
 		}
 		$subject = kinozal($content, 'title');
 	} elseif ($tracker == 'kinozalguru') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		//$curl->setReferer($url);
 		$curl->storeCookies(COOKIES_PARS_DIR . '/kinozalguru_cookie.txt');
 
@@ -1062,8 +1052,6 @@ if (!$url) {
 		}
 		$subject = kinozalguru($content, 'title');
 	} elseif ($tracker == 'windowssoftinfo') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
-
 		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<div class="fstory-rating">');
 		$content = substr($content, 0, $pos);
@@ -1115,8 +1103,6 @@ if (!$url) {
 		}
 		$subject = windowssoftinfo($content, 'title');
 	} elseif ($tracker == 'ztorrents') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
-
 		$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<div class="dle_b_appp"');
 		$content = substr($content, 0, $pos);
@@ -1168,7 +1154,6 @@ if (!$url) {
 		}
 		$subject = ztorrents($content, 'title');
 	} elseif ($tracker == 'piratbit') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/piratbit_cookie.txt');
 
 		$submit_url = "https://piratbit.org/login.php";
@@ -1232,7 +1217,6 @@ if (!$url) {
 		}
 		$subject = piratbit($content, 'title');
 	} elseif ($tracker == 'onlysoft') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/onlysoft_cookie.txt');
 
 		$submit_url = "https://only-soft.org/login.php";
@@ -1293,7 +1277,6 @@ if (!$url) {
 		}
 		$subject = onlysoft($content, 'title');
 	} elseif ($tracker == 'rutrackerru') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/rutrackerru_cookie.txt');
 
 		$submit_url = "http://rutracker.ru/login.php";
@@ -1356,7 +1339,6 @@ if (!$url) {
 		}
 		$subject = rutrackerru($content, 'title');
 	} elseif ($tracker == 'ddgroupclub') {
-		$curl->setUserAgent("Mozilla/6.0.2 (compatible; MSIE 6.0; Windows NT 5.1)");
 		$curl->storeCookies(COOKIES_PARS_DIR . '/ddgroupclub_cookie.txt');
 
 		$submit_url = "http://ddgroupclub.win/login.php";
