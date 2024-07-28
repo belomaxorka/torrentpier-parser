@@ -408,7 +408,12 @@ if (!$url) {
 		'rutrackerru' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "/http:\/\/rutracker.ru\/viewtopic.php\?t=/"
+			'regex' => "/http:\/\/rutracker.ru\/viewtopic.php\?t=/",
+			'login_url' => 'http://rutracker.ru/login.php',
+			'dl_url' => 'http://rutracker.ru/dl.php?id=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<input type="radio" name=',
 		),
 		'ddgroupclub' => array(
 			'enabled' => true,
@@ -508,52 +513,6 @@ if (!$url) {
 		// Прикрепляем торрент-файл
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
-
-		$submit_url = "http://rutracker.ru/login.php";
-		$submit_vars = array(
-			'login_username' => $bb_cfg['torrent_parser']['auth']['rutrackerru']['login'],
-			'login_password' => $bb_cfg['torrent_parser']['auth']['rutrackerru']['pass'],
-			"autologin" => "on",
-			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		//var_dump($content);
-		$pos = strpos($content, '<input type="radio" name=');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = rutrackerru($content)) {
-			$id = rutrackerru($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("http://rutracker.ru/dl.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = rutrackerru($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = rutrackerru($content, 'title');
-	} elseif ($tracker == 'ddgroupclub'){
-	$curl->storeCookies(COOKIES_PARS_DIR . '/ddgroupclub_cookie.txt');
 
 		$submit_url = "http://ddgroupclub.win/login.php";
 		$submit_vars = array(
