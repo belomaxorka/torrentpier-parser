@@ -262,6 +262,15 @@ function rutracker($text, $mode = '')
 	return $text;
 }
 
+/**
+ * Парсер с Rutor.info
+ *
+ * @link https://torrentpier.com/resources/avtomaticheskij-parser-razdach-s-rutor-info.253/
+ * @author _Xz_
+ *
+ * @param $text
+ * @return array
+ */
 function rutor($text)
 {
 	// ------------------- Get title -------------------
