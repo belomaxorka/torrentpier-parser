@@ -91,7 +91,7 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 	global $attach_dir, $bb_cfg;
 
 	if (is_array($tor) && count($tor)) {
-		$new_name = md5($torrent) . TIMENOW;
+		$new_name = md5($torrent) . '_' . TIMENOW;
 		$file = fopen("$attach_dir/$new_name.torrent", 'w+');
 		fputs($file, $torrent);
 		fclose($file);
@@ -180,7 +180,7 @@ function insert_video_player(&$text)
 			// данные с кп приоритетнее
 			$text .= '[movie=kinopoisk]' . $has_kp . '[/movie]';
 		} elseif (is_numeric($has_imdb)) {
-			$text .= '[movie=imdb]' . $has_imdb . '[/movie]';
+			$text .= '[movie=imdb]tt' . $has_imdb . '[/movie]';
 		}
 		$text .= '[hr][br]';
 	}
