@@ -1,4 +1,12 @@
 <?php
+/**
+ * --------------------------------------------------------
+ * Парсер раздач.
+ *
+ * @license MIT License
+ * @author Участники torrentpier.com, Ральф, belomaxorka
+ * --------------------------------------------------------
+ */
 
 define('BB_SCRIPT', 'release');
 define('BB_ROOT', './');
@@ -9,16 +17,19 @@ require_once INC_DIR . '/bbcode.php';
 require_once INC_DIR . '/functions_autoparser.php';
 
 set_time_limit(120);
-
-$url = isset($_POST['url']) ? $_POST['url'] : '';
-$url = str_replace('http://www.', 'http://', $url);
 $hidden_form_fields = $message = $subject = '';
 
+// Вводимый URL адрес пользователем
+$url = isset($_POST['url']) ? $_POST['url'] : '';
+$url = preg_replace('/^(https?:\/\/)(www\.)(.*)$/', '$1$3', $url);
+
+// Форум в который сохранять раздачи
 $forum_id = (int)request_var('forum_id', '');
 
 // Start session management
 $user->session_start(array('req_login' => true));
 
+// Получаем путь до папки с торрентами
 $attach_dir = get_attachments_dir();
 
 /**
@@ -141,6 +152,14 @@ function decodeEmailProtection($encodedString)
 	return mb_convert_encoding($decodedString, 'UTF-8');
 }
 
+/**
+ * Конвертация RGB в HEX
+ *
+ * @param $r
+ * @param $g
+ * @param $b
+ * @return string
+ */
 function rgb2html($r, $g = -1, $b = -1)
 {
 	if (is_array($r) && sizeof($r) == 3)
@@ -160,36 +179,13 @@ function rgb2html($r, $g = -1, $b = -1)
 	return '#' . $color;
 }
 
-function closetags($tagstext)
-{
-	// Выбираем абсолютно все теги
-	if (preg_match_all("/<([/]?)([wd]+)[^>/]*>/", $tagstext, $matches, PREG_SET_ORDER)) {
-		$stack = array();
-		foreach ($matches as $k => $match) {
-			$tag = strtolower($match[2]);
-			if (!$match[1])
-				// если тег открывается добавляем в стек
-				$stack[] = $tag;
-			elseif (end($stack) == $tag)
-				// если тег закрывается, удаляем из стека
-				array_pop($stack);
-			else
-				// если это закрывающий тег, который не открыт, открываем
-				$tagstext = '<' . $tag . '>' . $tagstext;
-		}
-		while ($tag = array_pop($stack))
-			// закрываем все открытые теги
-			$tagstext .= '</' . $tag . '>';
-	}
-	return $tagstext;
-}
-
 if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
+	// Проверка на доступ к парсеру
 	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['torrent_parser']['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
 	if (!$vip) bb_die('Извините, вы не состоите в соответствующей группе');
 }
 if (!$url) {
-	// Get allowed for searching forums list
+	// Получаем все форумы
 	if (!$forums = $datastore->get('cat_forums')) {
 		$datastore->update('cat_forums');
 		$forums = $datastore->get('cat_forums');
@@ -217,6 +213,7 @@ if (!$url) {
 	unset($forums);
 	$datastore->rm('cat_forums');
 
+	// Формируем список форумов
 	$opt = '';
 	foreach ($cat_forum['c'] as $cat_id => $forums_ary) {
 		$opt .= '<optgroup label="&nbsp;' . $cat_title_html[$cat_id] . "\">\n";
