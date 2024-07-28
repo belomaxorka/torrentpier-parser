@@ -156,8 +156,8 @@ function closetags($tagstext)
 	return $tagstext;
 }
 
-if (!IS_AM && $bb_cfg['auth']['group_id']) {
-	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
+if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
+	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['torrent_parser']['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
 	if (!$vip) bb_die('Извините, вы не состоите в соответствующей группе');
 }
 if (!$url) {
@@ -224,7 +224,7 @@ if (!$url) {
 
 	if (preg_match("/https:\/\/rutracker.org\/forum\/viewtopic.php\?t=/", $url)) {
 		$tracker = 'rutracker';
-		if (!$bb_cfg['auth']['rutracker']['login'] || !$bb_cfg['auth']['rutracker']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['rutracker']['login'] || !$bb_cfg['torrent_parser']['auth']['rutracker']['pass']) {
 			bb_die('not auth rutracker');
 		}
 	} elseif (preg_match("#rutor.info/torrent/#", $url)) {
@@ -233,54 +233,54 @@ if (!$url) {
 		$tracker = 'rutor';
 	} elseif (preg_match("#https://nnmclub.to/forum/viewtopic.php\?t=#", $url)) {
 		$tracker = 'nnmclub';
-		if (!$bb_cfg['auth']['nnmclub']['login'] || !$bb_cfg['auth']['nnmclub']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['nnmclub']['login'] || !$bb_cfg['torrent_parser']['auth']['nnmclub']['pass']) {
 			bb_die('not auth nnmclub');
 		}
 	} elseif (preg_match("#http://rustorka.com/forum/viewtopic.php\?t=#", $url)) {
 		$tracker = 'rustorka';
-		if (!$bb_cfg['auth']['rustorka']['login'] || !$bb_cfg['auth']['rustorka']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['rustorka']['login'] || !$bb_cfg['torrent_parser']['auth']['rustorka']['pass']) {
 			bb_die('not auth rustorka');
 		}
 	} elseif (preg_match("/https:\/\/booktracker.org\/viewtopic.php\?t=/", $url)) {
 		$tracker = 'booktracker';
-		if (!$bb_cfg['auth']['booktracker']['login'] || !$bb_cfg['auth']['booktracker']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['booktracker']['login'] || !$bb_cfg['torrent_parser']['auth']['booktracker']['pass']) {
 			bb_die('not auth booktracker');
 		}
 	} elseif (preg_match("#torrent-wind.net/#", $url)) {
 		$tracker = 'torrentwindows';
 	} elseif (preg_match("#riperam.org/#", $url)) {
 		$tracker = 'riperam';
-		if (!$bb_cfg['auth']['riperam']['login'] || !$bb_cfg['auth']['riperam']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['riperam']['login'] || !$bb_cfg['torrent_parser']['auth']['riperam']['pass']) {
 			bb_die('not auth riperam');
 		}
 	} elseif (preg_match("#megapeer.ru/torrent/#", $url)) {
 		$tracker = 'mptor';
-		if (!$bb_cfg['auth']['mptor']['login'] || !$bb_cfg['auth']['mptor']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['mptor']['login'] || !$bb_cfg['torrent_parser']['auth']['mptor']['pass']) {
 			bb_die('not auth mptor');
 		}
 	} elseif (preg_match("#megapeer.vip/torrent/#", $url)) {
 		$tracker = 'mptor';
-		if (!$bb_cfg['auth']['mptor']['login'] || !$bb_cfg['auth']['mptor']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['mptor']['login'] || !$bb_cfg['torrent_parser']['auth']['mptor']['pass']) {
 			bb_die('not auth mptor');
 		}
 	} elseif (preg_match("/https:\/\/tapochek.net\/viewtopic.php\?t=/", $url)) {
 		$tracker = 'tapochek';
-		if (!$bb_cfg['auth']['tapochek']['login'] || !$bb_cfg['auth']['tapochek']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['tapochek']['login'] || !$bb_cfg['torrent_parser']['auth']['tapochek']['pass']) {
 			bb_die('not auth tapochek');
 		}
 	} elseif (preg_match("#uniongang.club/torrent-#", $url)) {
 		$tracker = 'uniongang';
-		if (!$bb_cfg['auth']['uniongang']['login'] || !$bb_cfg['auth']['uniongang']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['uniongang']['login'] || !$bb_cfg['torrent_parser']['auth']['uniongang']['pass']) {
 			bb_die('not auth uniongang');
 		}
 	} elseif (preg_match("#kinozal.tv/details.php\?id=#", $url)) {
 		$tracker = 'kinozal';
-		if (!$bb_cfg['auth']['kinozal']['login'] || !$bb_cfg['auth']['kinozal']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['kinozal']['login'] || !$bb_cfg['torrent_parser']['auth']['kinozal']['pass']) {
 			bb_die('not auth kinozal');
 		}
 	} elseif (preg_match("#kinozal.guru/details.php\?id=#", $url)) {
 		$tracker = 'kinozalguru';
-		if (!$bb_cfg['auth']['kinozal']['login'] || !$bb_cfg['auth']['kinozal']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['kinozal']['login'] || !$bb_cfg['torrent_parser']['auth']['kinozal']['pass']) {
 			bb_die('not auth kinozal');
 		}
 	} elseif (preg_match("#windows-soft.info/#", $url)) {
@@ -289,22 +289,22 @@ if (!$url) {
 		$tracker = 'ztorrents';
 	} elseif (preg_match("#piratbit.org/topic/#", $url)) {
 		$tracker = 'piratbit';
-		if (!$bb_cfg['auth']['piratbit']['login'] || !$bb_cfg['auth']['piratbit']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['piratbit']['login'] || !$bb_cfg['torrent_parser']['auth']['piratbit']['pass']) {
 			bb_die('not auth piratbit');
 		}
 	} elseif (preg_match("#https://only-soft.org/viewtopic.php\?t=#", $url)) {
 		$tracker = 'onlysoft';
-		if (!$bb_cfg['auth']['onlysoft']['login'] || !$bb_cfg['auth']['onlysoft']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['onlysoft']['login'] || !$bb_cfg['torrent_parser']['auth']['onlysoft']['pass']) {
 			bb_die('not auth only-soft');
 		}
 	} elseif (preg_match("/http:\/\/rutracker.ru\/viewtopic.php\?t=/", $url)) {
 		$tracker = 'rutrackerru';
-		if (!$bb_cfg['auth']['rutrackerru']['login'] || !$bb_cfg['auth']['rutrackerru']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['rutrackerru']['login'] || !$bb_cfg['torrent_parser']['auth']['rutrackerru']['pass']) {
 			bb_die('not auth rutrackerru');
 		}
 	} elseif (preg_match("/http:\/\/ddgroupclub.win\/viewtopic.php\?t=/", $url)) {
 		$tracker = 'ddgroupclub';
-		if (!$bb_cfg['auth']['ddgroupclub']['login'] || !$bb_cfg['auth']['ddgroupclub']['pass']) {
+		if (!$bb_cfg['torrent_parser']['auth']['ddgroupclub']['login'] || !$bb_cfg['torrent_parser']['auth']['ddgroupclub']['pass']) {
 			bb_die('not auth ddgroupclub');
 		} elseif (preg_match("#xxxtor.net#", $url)) {
 			$tracker = 'xxxtor';
@@ -319,8 +319,8 @@ if (!$url) {
 
 		$submit_url = "https://rutracker.org/forum/login.php";
 		$submit_vars = array(
-			'login_username' => $bb_cfg['auth']['rutracker']['login'],
-			'login_password' => $bb_cfg['auth']['rutracker']['pass'],
+			'login_username' => $bb_cfg['torrent_parser']['auth']['rutracker']['login'],
+			'login_password' => $bb_cfg['torrent_parser']['auth']['rutracker']['pass'],
 			'login' => true,
 		);
 		$curl->sendPostData($submit_url, $submit_vars);
@@ -411,8 +411,8 @@ if (!$url) {
 		$submit_url = "https://nnmclub.to/forum/login.php";
 		//$snoopy->_submit_method = "POST";
 		$submit_vars = array(
-			'username' => $bb_cfg['auth']['nnmclub']['login'],
-			'password' => $bb_cfg['auth']['nnmclub']['pass'],
+			'username' => $bb_cfg['torrent_parser']['auth']['nnmclub']['login'],
+			'password' => $bb_cfg['torrent_parser']['auth']['nnmclub']['pass'],
 			'login' => true,
 		);
 		$curl->sendPostData($submit_url, $submit_vars);
@@ -470,8 +470,8 @@ if (!$url) {
 		$submit_url = "http://rustorka.com/forum/login.php";
 		$submit_vars = array(
 			//"cookie_test"		=> "$cookie_id",
-			"login_username" => $bb_cfg['auth']['rustorka']['login'],
-			"login_password" => $bb_cfg['auth']['rustorka']['pass'],
+			"login_username" => $bb_cfg['torrent_parser']['auth']['rustorka']['login'],
+			"login_password" => $bb_cfg['torrent_parser']['auth']['rustorka']['pass'],
 			"autologin" => "on",
 			"login" => true,
 		);
@@ -522,8 +522,8 @@ if (!$url) {
 
 		$submit_url = "https://booktracker.org/login.php";
 		$submit_vars = array(
-			'login_username' => $bb_cfg['auth']['booktracker']['login'],
-			'login_password' => $bb_cfg['auth']['booktracker']['pass'],
+			'login_username' => $bb_cfg['torrent_parser']['auth']['booktracker']['login'],
+			'login_password' => $bb_cfg['torrent_parser']['auth']['booktracker']['pass'],
 			'login' => true,
 		);
 		$curl->sendPostData($submit_url, $submit_vars);
@@ -605,8 +605,8 @@ if (!$url) {
 
 		$submit_url = "http://riperam.org/ucp.php?mode=login";
 		$submit_vars = array(
-			'username' => $bb_cfg['auth']['riperam']['login'],
-			'password' => $bb_cfg['auth']['riperam']['pass'],
+			'username' => $bb_cfg['torrent_parser']['auth']['riperam']['login'],
+			'password' => $bb_cfg['torrent_parser']['auth']['riperam']['pass'],
 			'autologin' => 'on',
 			'viewonline' => 'on',
 			'login' => true,
@@ -663,8 +663,8 @@ if (!$url) {
 
 		$submit_url = "http://megapeer.ru/takelogin.php";
 		$submit_vars = array(
-			'username' => $bb_cfg['auth']['mptor']['login'],
-			'password' => $bb_cfg['auth']['mptor']['pass'],
+			'username' => $bb_cfg['torrent_parser']['auth']['mptor']['login'],
+			'password' => $bb_cfg['torrent_parser']['auth']['mptor']['pass'],
 			'login' => true,
 		);
 		$curl->sendPostData($submit_url, $submit_vars);
@@ -713,8 +713,8 @@ if (!$url) {
 
 		$submit_url = "https://tapochek.net/login.php";
 		$submit_vars = array(
-			'login_username' => $bb_cfg['auth']['tapochek']['login'],
-			'login_password' => $bb_cfg['auth']['tapochek']['pass'],
+			'login_username' => $bb_cfg['torrent_parser']['auth']['tapochek']['login'],
+			'login_password' => $bb_cfg['torrent_parser']['auth']['tapochek']['pass'],
 			'login' => true,
 		);
 
@@ -763,8 +763,8 @@ if (!$url) {
 
 		$submit_url = "http://uniongang.club/takelogin.php";
 		$submit_vars = array(
-			'username' => $bb_cfg['auth']['uniongang']['login'],
-			'password' => $bb_cfg['auth']['uniongang']['pass'],
+			'username' => $bb_cfg['torrent_parser']['auth']['uniongang']['login'],
+			'password' => $bb_cfg['torrent_parser']['auth']['uniongang']['pass'],
 		);
 
 		$curl->sendPostData($submit_url, $submit_vars);
@@ -814,8 +814,8 @@ if (!$url) {
 
 		$submit_url = "http://kinozal.tv/takelogin.php";
 		$submit_vars = array(
-			'username' => $bb_cfg['auth']['kinozal']['login'],
-			'password' => $bb_cfg['auth']['kinozal']['pass'],
+			'username' => $bb_cfg['torrent_parser']['auth']['kinozal']['login'],
+			'password' => $bb_cfg['torrent_parser']['auth']['kinozal']['pass'],
 			'login' => true,
 		);
 
@@ -864,8 +864,8 @@ if (!$url) {
 
 		$submit_url = "https://kinozal.guru/takelogin.php";
 		$submit_vars = array(
-			'username' => $bb_cfg['auth']['kinozal']['login'],
-			'password' => $bb_cfg['auth']['kinozal']['pass'],
+			'username' => $bb_cfg['torrent_parser']['auth']['kinozal']['login'],
+			'password' => $bb_cfg['torrent_parser']['auth']['kinozal']['pass'],
 			'login' => true,
 		);
 
@@ -985,8 +985,8 @@ if (!$url) {
 
 		$submit_url = "https://piratbit.org/login.php";
 		$submit_vars = array(
-			'login_username' => $bb_cfg['auth']['piratbit']['login'],
-			'login_password' => $bb_cfg['auth']['piratbit']['pass'],
+			'login_username' => $bb_cfg['torrent_parser']['auth']['piratbit']['login'],
+			'login_password' => $bb_cfg['torrent_parser']['auth']['piratbit']['pass'],
 			'login' => true,
 		);
 		$curl->sendPostData($submit_url, $submit_vars);
@@ -1033,8 +1033,8 @@ if (!$url) {
 
 		$submit_url = "https://only-soft.org/login.php";
 		$submit_vars = array(
-			'login_username' => $bb_cfg['auth']['onlysoft']['login'],
-			'login_password' => $bb_cfg['auth']['onlysoft']['pass'],
+			'login_username' => $bb_cfg['torrent_parser']['auth']['onlysoft']['login'],
+			'login_password' => $bb_cfg['torrent_parser']['auth']['onlysoft']['pass'],
 			'autologin' => 'on',
 			'login' => true,
 		);
@@ -1079,8 +1079,8 @@ if (!$url) {
 
 		$submit_url = "http://rutracker.ru/login.php";
 		$submit_vars = array(
-			'login_username' => $bb_cfg['auth']['rutrackerru']['login'],
-			'login_password' => $bb_cfg['auth']['rutrackerru']['pass'],
+			'login_username' => $bb_cfg['torrent_parser']['auth']['rutrackerru']['login'],
+			'login_password' => $bb_cfg['torrent_parser']['auth']['rutrackerru']['pass'],
 			"autologin" => "on",
 			'login' => true,
 		);
@@ -1126,8 +1126,8 @@ if (!$url) {
 
 		$submit_url = "http://ddgroupclub.win/login.php";
 		$submit_vars = array(
-			'login_username' => $bb_cfg['auth']['ddgroupclub']['login'],
-			'login_password' => $bb_cfg['auth']['ddgroupclub']['pass'],
+			'login_username' => $bb_cfg['torrent_parser']['auth']['ddgroupclub']['login'],
+			'login_password' => $bb_cfg['torrent_parser']['auth']['ddgroupclub']['pass'],
 			"autologin" => "on",
 			'login' => true,
 		);

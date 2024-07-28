@@ -24,22 +24,25 @@ define('COOKIES_PARS_DIR', BB_PATH . '/internal_data/cookies_pars');
 
 ------------------В самый конец вставить-------------------------
 
-// Авторизация для парсеров
-$bb_cfg['auth'] = array(
-	'group_id' => '', // разрешить только для определенной группы
-    'rutracker'     => array('login' => '', 'pass' => ''), // данные авторизации
-	'nnmclub'      	=> array('login' => '', 'pass' => ''), // данные авторизации
-    'rustorka'     	=> array('login' => '', 'pass' => ''), // данные авторизации
-	'booktracker'   => array('login' => '', 'pass' => ''), // данные авторизации
-    'riperam'     	=> array('login' => '', 'pass' => ''), // данные авторизации
-    'mptor'         => array('login' => '', 'pass' => ''), // данные авторизации
-	'tapochek'     	=> array('login' => '', 'pass' => ''), // данные авторизации
-	'uniongang'		=> array('login' => '', 'pass' => ''), // данные авторизации
-	'kinozal'		=> array('login' => '', 'pass' => ''), // данные авторизации
-    'piratbit'      => array('login' => '', 'pass' => ''), // данные авторизации
-    'onlysoft'      => array('login' => '', 'pass' => ''), // данные авторизации
-	'rutrackerru'	=> array('login' => '', 'pass' => ''), // данные авторизации
-	'ddgroupclub'	=> array('login' => '', 'pass' => ''), // данные авторизации
+// Torrent Parser
+$bb_cfg['torrent_parser'] = array(
+	'use_video_player' => true, // Вставлять видео-плеер с фильмов, в тех раздачах, где есть КП ID или IMDB ID (Нужен мод: https://torrentpier.com/resources/bbcode-film-po-id.302/)
+	'auth' => array(
+		'group_id' => '', // разрешить только для определенной группы
+		'rutracker' => array('login' => '', 'pass' => ''), // данные авторизации
+		'nnmclub' => array('login' => '', 'pass' => ''), // данные авторизации
+		'rustorka' => array('login' => '', 'pass' => ''), // данные авторизации
+		'booktracker' => array('login' => '', 'pass' => ''), // данные авторизации
+		'riperam' => array('login' => '', 'pass' => ''), // данные авторизации
+		'mptor' => array('login' => '', 'pass' => ''), // данные авторизации
+		'tapochek' => array('login' => '', 'pass' => ''), // данные авторизации
+		'uniongang' => array('login' => '', 'pass' => ''), // данные авторизации
+		'kinozal' => array('login' => '', 'pass' => ''), // данные авторизации
+		'piratbit' => array('login' => '', 'pass' => ''), // данные авторизации
+		'onlysoft' => array('login' => '', 'pass' => ''), // данные авторизации
+		'rutrackerru' => array('login' => '', 'pass' => ''), // данные авторизации
+		'ddgroupclub' => array('login' => '', 'pass' => ''), // данные авторизации
+	)
 );
 
 -------------------Открыть---------------------------------------
