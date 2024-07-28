@@ -10,6 +10,10 @@ if (!defined('BB_ROOT')) die(basename(__FILE__));
  */
 function insert_video_player(&$text)
 {
+	if (!$bb_cfg['torrent_parser']['use_video_player']) {
+		return;
+	}
+
 	// imdb
 	preg_match("/imdb\.com\/title\/tt(\d+)/", $text, $has_imdb);
 	$has_imdb = isset($has_imdb[1]) ? $has_imdb[1] : false; // В посте есть баннер imdb! Ура, победа!
@@ -1010,7 +1014,6 @@ function torrentwindows($text, $mode = false)
 
 
 		if (strlen($text) > 55) {
-			false;
 		} else {
 			$text = preg_replace('#<br />(.*?):#', "[b]$1:[/b] ", $text);
 			$text = preg_replace('#<br>(.*?):#', "[b]$1:[/b] ", $text);
@@ -1528,6 +1531,10 @@ function kinozal($text, $mode = '')
 		$text = preg_replace('#\[url=[^<]*?kinozal.*?\](.*?)\[/url\]#', "\\1", $text);
 		$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
 		$text = preg_replace('/([\r\n])[\s]+/is', "\\1", $text);
+
+		// Вставка плеера
+		insert_video_player($text);
+
 		$text = strip_tags(html_entity_decode($text));
 		$text = preg_replace('/onclick="[\s\S]*?" alt="">/', '', $text);
 		$text = preg_replace("/[hr]\n[hr]\n[hr]\n/", "[hr]\n", $text);
@@ -1656,6 +1663,10 @@ function kinozalguru($text, $mode = '')
 		$text = preg_replace('#\[url=[^<]*?kinozal.*?\](.*?)\[/url\]#', "\\1", $text);
 		$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
 		$text = preg_replace('/([\r\n])[\s]+/is', "\\1", $text);
+
+		// Вставка плеера
+		insert_video_player($text);
+
 		$text = strip_tags(html_entity_decode($text));
 		$text = preg_replace('/onclick="[\s\S]*?" alt="">/', '', $text);
 		$text = preg_replace("/[hr]\n[hr]\n[hr]\n/", "[hr]\n", $text);
@@ -2088,6 +2099,10 @@ function rutrackerru($text, $mode = '')
 			$text = preg_replace('/http:(.*?)kinopoisk.ru/', "https:$1kinopoisk.ru", $text);
 			$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
 		}
+
+		// Вставка плеера
+		insert_video_player($text);
+
 		//dump($text);
 		// Убираем пустое пространство
 		//$text = preg_replace('/([\r\n])[\s]+/is', "\\1", $text);
