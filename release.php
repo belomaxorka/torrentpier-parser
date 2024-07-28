@@ -375,11 +375,15 @@ if (!$url) {
 		),
 		'windowssoftinfo' => array(
 			'enabled' => true,
-			'regex' => "#windows-soft.info/#"
+			'regex' => "#windows-soft.info/#",
+			'dl_url' => 'https://windows-soft.info/engine/download.php?id=',
+			'target_element' => '<div class="fstory-rating">'
 		),
 		'ztorrents' => array(
 			'enabled' => true,
-			'regex' => "#z-torrents.ru/#"
+			'regex' => "#z-torrents.ru/#",
+			'dl_url' => 'https://windows-soft.info/engine/download.php?id=',
+			'target_element' => '<div class="dle_b_appp"'
 		),
 		'piratbit' => array(
 			'enabled' => true,
@@ -495,42 +499,6 @@ if (!$url) {
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
 	}
 
-	$content = $curl->fetchUrl($url);
-		$pos = strpos($content, '<div class="fstory-rating">');
-		$content = substr($content, 0, $pos);
-		//var_dump($content);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = windowssoftinfo($content)) {
-			$id = windowssoftinfo($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://windows-soft.info/engine/download.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = windowssoftinfo($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = windowssoftinfo($content, 'title');
-	} elseif ($tracker == 'ztorrents'){
-	$content = $curl->fetchUrl($url);
 		$pos = strpos($content, '<div class="dle_b_appp"');
 		$content = substr($content, 0, $pos);
 		//var_dump($content);
