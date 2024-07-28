@@ -382,7 +382,7 @@ if (!$url) {
 		'ztorrents' => array(
 			'enabled' => true,
 			'regex' => "#z-torrents.ru/#",
-			'dl_url' => '',
+			'dl_url' => '', // TODO
 			'target_element' => '<div class="dle_b_appp"'
 		),
 		'piratbit' => array(
@@ -418,11 +418,18 @@ if (!$url) {
 		'ddgroupclub' => array(
 			'enabled' => true,
 			'auth' => true,
-			'regex' => "/http:\/\/ddgroupclub.win\/viewtopic.php\?t=/"
+			'regex' => "/http:\/\/ddgroupclub.win\/viewtopic.php\?t=/",
+			'login_url' => 'http://ddgroupclub.win/login.php',
+			'dl_url' => 'http://ddgroupclub.win/dl.php?id=',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'target_element' => '<p class="small">',
 		),
 		'xxxtor' => array(
 			'enabled' => true,
-			'regex' => "#xxxtor.net#"
+			'regex' => "#xxxtor.net#",
+			'dl_url' => 'https://', // TODO
+			'target_element' => '<div id="down">',
 		)
 	);
 
@@ -512,87 +519,6 @@ if (!$url) {
 
 		// Прикрепляем торрент-файл
 		attach_torrent_file($tor, $torrent, $hidden_form_fields);
-	}
-
-		$submit_url = "http://ddgroupclub.win/login.php";
-		$submit_vars = array(
-			'login_username' => $bb_cfg['torrent_parser']['auth']['ddgroupclub']['login'],
-			'login_password' => $bb_cfg['torrent_parser']['auth']['ddgroupclub']['pass'],
-			"autologin" => "on",
-			'login' => true,
-		);
-		$curl->sendPostData($submit_url, $submit_vars);
-
-		$content = $curl->fetchUrl($url);
-		//var_dump($content);
-		$pos = strpos($content, '<p class="small">');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = ddgroupclub($content)) {
-			$id = ddgroupclub($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("http://ddgroupclub.win/dl.php?id=$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = ddgroupclub($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = ddgroupclub($content, 'title');
-	} elseif ($tracker == 'xxxtor'){
-	$content = $curl->fetchUrl($url);
-
-		$content = $curl->fetchUrl($url);
-		$pos = strpos($content, '<div id="down">');
-		$content = substr($content, 0, $pos);
-
-		if (!$content) {
-			meta_refresh('release.php', '2');
-			bb_die('Занято ;) - Приходите через 20 минут.');
-		}
-
-		if ($message = xxxtor($content)) {
-			$id = xxxtor($content, 'torrent');
-
-			if (!$id) {
-				meta_refresh('release.php', '2');
-				bb_die('Торрент не найден');
-			}
-
-			$torrent = $curl->fetchUrl("https://$id");
-
-			// Декодирование торрент-файла
-			$tor = torrent_decode($torrent, $info_hash);
-
-			$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
-
-			if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-				$title = ddgroupclub($content, 'title');
-				bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $title . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $title . '</a>');
-			}
-
-			// Прикрепляем торрент-файл
-			attach_torrent_file($tor, $torrent, $hidden_form_fields);
-		}
-		$subject = xxxtor($content, 'title');
 	}
 
 	$hidden_form_fields .= '<input type="hidden" name="mode" value="newtopic" />';
