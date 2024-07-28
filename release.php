@@ -186,6 +186,7 @@ if (!$url) {
 	}
 	unset($forums);
 	$datastore->rm('cat_forums');
+
 	$opt = '';
 	foreach ($cat_forum['c'] as $cat_id => $forums_ary) {
 		$opt .= '<optgroup label="&nbsp;' . $cat_title_html[$cat_id] . "\">\n";
