@@ -63,7 +63,7 @@ function torrent_decode($torrent, &$info_hash)
  */
 function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 {
-	global $attach_dir;
+	global $attach_dir, $bb_cfg;
 
 	if (is_array($tor) && count($tor)) {
 		$new_name = md5($torrent) . TIMENOW;
