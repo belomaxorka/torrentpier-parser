@@ -204,6 +204,7 @@ if (!$url) {
 		bb_die('Нету форумов на которых разрешена регистрация торрентов');
 	}
 
+	$cat_forum = array();
 	foreach ($allowed_forums as $forum_id) {
 		$f = $forums['f'][$forum_id];
 		$cat_forum['c'][$f['cat_id']][] = $forum_id;
