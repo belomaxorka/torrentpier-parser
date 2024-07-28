@@ -262,187 +262,54 @@ function rutracker($text, $mode = '')
 	return $text;
 }
 
-function rutor($text, $mode = false)
+function rutor($text)
 {
-	global $bb_cfg;
+	// ------------------- Get title -------------------
+	preg_match_all("#<h1>([\s\S]*?)</h1>#", $text, $source, PREG_SET_ORDER);
+	$title = $source[0][1];
 
-	if ($mode == 'title') {
-		preg_match_all("#<h1>([\s\S]*?)</h1>#", $text, $source, PREG_SET_ORDER);
-		$text = $source[0][1];
-		$text = preg_replace("/(FREEISLAND|HQCLUB|HQ-ViDEO|HELLYWOOD|ExKinoRay|NewStudio|LostFilm|RiperAM|Generalfilm|Files-x|NovaLan|Scarabey|New-Team|HD-NET|MediaClub|Baibako|CINEMANIA|Rulya74|RG WazZzuP|Ash61|egoleshik|Т-Хzona|TORRENT - BAGIRA|F-Torrents|2LT_FS|Bagira|Pshichko66|Занавес|msltel|Leo.pard|Точка Zрения|BenderBEST|PskovLine|HDReactor|Temperest|Element-Team|BT-Club|Filmoff CLUB|HD Club|HDCLUB|potroks|fox-torrents|HYPERHD|GORESEWAGE|NoLimits-Team|New Team|FireBit-Films|NNNB|New-team|Youtracker|marcury|Neofilm|Filmrus|Deadmauvlad|Torrent-Xzona|Brazzass|Кинорадиомагия|Assassin&#039;s Creed|GOLDBOY|ClubTorrent|AndreSweet|TORRENT-45|0ptimus|Torrange|Sanjar &amp; NeoJet|Leonardo|BTT-TEAM и Anything-group|BTT-TEAM|Anything-group|Gersuzu|Xixidok|PEERATES|ivandubskoj|R. G. Jolly Roger|Fredd Kruger|Киномагия|RG MixTorrent|RusTorents|Тorrent-Хzona|R.G. Mega Best|Gold Cartoon KINOREAKTOR (Sheikn)|ImperiaFilm|RG Jolly Roger|Sheikn|R.G. Mobile-Men|KinoRay &amp; Sheikn|HitWay|mcdangerous|Тorren|Stranik 2.0|Romych|R.G. AVI|Lebanon|Big111|Dizell|СИНЕМА-ГРУПП|PlanetaUA|RG Superdetki|potrokis|olegek70|bAGrat|Alekxandr48|Mao Dzedyn|Fartuna|R.G.Mega Best|DenisNN|Киномагии|UAGet|Victorious|Gold Cartoon KINOREAKTOR|KINOREAKTOR|KinoFiles|HQRips|F-Torrent|A.Star|Beeboop|Azazel|Leon-masl|Vikosol|RG Orient Extreme|R.G.TorrBy|ale x2008|Deadmauvlad|semiramida1970|Zelesk|CineLab SoundMix|Сотник|ALGORITM|E76|datynet|Дяди Лёши| leon030982|GORESEWAGE|Hot-Film|КинозалSAT|ENGINEER|CinemaClub|Zlofenix|pro100shara|FreeRutor|FreeHD|гаврила|vadi|SuperMin|GREEN TEA|Kerob|AGR - Generalfilm|R.G. DHT-Music|Витек 78|Twi7ter|KinoGadget|BitTracker|KURD28|Gears Media|KINONAVSE100|Just TeMa|OlLanDGroup|Portablius|MegaPeer|Megapeer|селезень|grab777|Twister|Twister & ExKinoRay|DrVampir|k.e.n & MegaPeer|& Хит Рус Тор|k.e.n|Batafurai Team|HEVC-CLUB|ELEKTRI4KA)/si", "Хит Рус Тор", $text);
-	} elseif ($mode == 'torrent') {
-		preg_match_all("#<a href=\".*?d.rutor.info/download/([\s\S]*?)\"><img src=\".*?down.png\"> .*? ([\s\S]*?).torrent</a>#", $text, $source, PREG_SET_ORDER);
-		$text = $source[0][1];
-	} else {
-		preg_match_all("#<tr><td style=\"vertical-align:top;\">([\s\S]*?)</td></tr>#si", $text, $source, PREG_SET_ORDER);
-		$text = $source[0][1];
+	// ------------------- Get download link -------------------
+	preg_match_all("#<a href=\".*?d.rutor.info/download/([\s\S]*?)\"><img src=\".*?down.png\"> .*? ([\s\S]*?).torrent</a>#", $text, $source, PREG_SET_ORDER);
+	$torrent = $source[0][1];
 
-		//Регулярка пидоров
+	// ------------------- Get content -------------------
+	preg_match_all("#<tr><td style=\"vertical-align:top;\"></td><td>([\s\S]*?)</td></tr>#si", $text, $source, PREG_SET_ORDER);
+	$text = $source[0][1];
 
-		$text = preg_replace("/<b>Релиз от.*?<\/b>/i", "", $text);  // вырезает
-		$text = preg_replace("/Автор рипа.*?<br \/>/i", "", $text); // вырезает
-		$text = preg_replace("/<span.*?Релиз от.*?<\/span><img.*?\/>/i", "", $text);  // вырезает
-		$text = preg_replace("/Скачать.*?<br \/>/i", "", $text); // вырезает
-		$text = preg_replace("/источник.*?<br \/>/i", "", $text); // вырезает
-		$text = preg_replace("/Рип от.*?<br \/>/i", "", $text); // вырезает
-		$text = preg_replace("/Раздача от.*?<br \/>/i", "", $text); // вырезает
-		//$text = preg_replace("/Сравнение с исходником.*?<br \/>/i", "\n", $text); // вырезает
-		//$text = preg_replace("/screenshotcomparison.com.*?<br \/>/i", "\n", $text); // вырезает
-		$text = preg_replace('/<center><img .*?><a href=".*?scarabey.org.*?" target="_blank">.*?<\/a><img.*?><\/center>/si', "", $text); // вырезает
+	$text = preg_replace('/<br.*?>/', "", $text);
+	$text = preg_replace('/<a href="\/tag\/.*?" target="_blank">([\s\S]*?)<\/a>/', '$1', $text);
+	$text = preg_replace('/<div class="hidewrap"><div class="hidehead" onclick="hideshow.*?">([\s\S]*?)<\/div><div class="hidebody"><\/div><textarea class="hidearea">([\s\S]*?)<\/textarea><\/div>/', "[spoiler=\"\\1\"]\\2[/spoiler]", $text);
 
+	$text = str_replace('<center>', '[align=center]', $text);
+	$text = str_replace('</center>', '[/align]', $text);
+	$text = str_replace('<hr />', '[hr]', $text);
 
-		$text = preg_replace("/<b>Релиз: <\/b>/i", "", $text); // вырезает
+	$text = str_replace('&#039;', "'", $text);
+	$text = str_replace('&nbsp;', ' ', $text);
+	$text = str_replace('&gt;', '>', $text);
+	$text = str_replace('&lt;', '<', $text);
 
-		//$text = preg_replace('/<a href="http:\/\/rutor.*?" target="_blank">.*?<\/a>/', "", $text);
-		$text = preg_replace('/<.*?><a href="http:\/\/rutor.*?" target="_blank">.*?<\/a><\/.*?>/', "", $text);
-
-		//$text = preg_replace('/<\/td>.*?<br \/>.*?<img src="([\s\S]*?)".*?\/>/siu', '[img=right]$1[/img]', $text);
-
-		$text = preg_replace('/<td>.*?<img src="([\s\S]*?)".*?\/>/', '[img=right]$1[/img]', $text);
-
-		$text = preg_replace('#<a href="http.*?megapeer.*?</a>#', '', $text);
-		//$text = preg_replace('#<a href="http.*?vk.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://exkinoray.tv.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://hellywood.ru/.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://hq-video.org/.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://hqclub.net/.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://exkinoray.tv.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://exkinoray.org.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://interhit.org.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://exkinoray.tv/pic/offbanner/reliz.exkinoray.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://img23.binimage.org/34/36/9a/enigmavladislav71.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://riper.am/riperam.gif.*?>#', '', $text);
-		$text = preg_replace('#<a href="http://riper.am/.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://www.generalfilm.ws.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://generalfilm.ws.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://s019.radikal.ru/i603/1209/87/535dfd778010.gif".*?>#', '', $text);
-		$text = preg_replace('#&amp; <img src="http://s017.radikal.ru/i412/1208/f2/bf3e5e3f51c8.gif.*?>#', ' ', $text);
-		$text = preg_replace('#<img src="http://2.firepic.org/2/images/2012-03/07/tp2rxwtz8xl3.gif".*?>#', '', $text);
-		$text = preg_replace('#<img src="http://www.agrmusic.org/.*?>#', '', $text);
-		$text = preg_replace('#<a href="http://tracker.nova-lan.ru/.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://nick-name.ru/.*?</a>#', ' ', $text);
-		$text = preg_replace('#<img src="http://i50.fastpic.ru/big/2013/0803/58/6cd4a3d8ac226de81209cee3369dc458.gif.*?>#', ' ', $text);
-		$text = preg_replace('#<img src="http://i92.fastpic.ru/big/2017/0727/ee/d5deb5b73669b4c45974c6b5d6c309ee.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://megarelizer.ru/.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i.imgur.com/1qnKU.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://www.freeisland.org/.*?>#', '', $text);
-		//$text = preg_replace('#<a href="http://scarabey.org/.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://new-team.org.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://i57.fastpic.ru/big/2013/1128/8e/0f1951eab7c36987190091c1d058ae8e.jpg.*?>#', ' ', $text);
-		$text = preg_replace('#<img src="http://s019.radikal.ru/i622/1306/32/980d60bc4416.gif".*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://www.hd-net.org.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://mediaclub.tv.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://i056.radikal.ru/1402/31/35cc79d56ba1.gif.*?>#', ' ', $text);
-		$text = preg_replace('#<img src="http://lostpic.net/orig_images/9/6/9/969f804e8322f6fb6bbf24462c4f3bad.png".*?>#', '', $text);
-		$text = preg_replace('#<img src="http://cinemania.cc/pic/groups/CINEMANIA.png".*?>#', '', $text);
-		$text = preg_replace('#<a href="http://cinemania.cc/.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="<img src="http://s005.radikal.ru/i212/1309/51/23eede0fecd5.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s019.radikal.ru/i624/1309/2d/7c5758387429.gif.*?>#', '', $text);
-		$text = preg_replace('#<a href="http://rutor.info.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://zerkalo-rutor.org.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://i59.fastpic.ru/big/2013/1129/34/0fc4a1022f44fd99fd69acbb5d5d1d34.jpeg.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://fotohost.kz/images/2014/03/02/JyoXZ.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s020.radikal.ru/i717/1309/b9/e1cf911f8341.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s020.radikal.ru/i718/1311/c5/6a57c000d933.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s57.radikal.ru/i157/1402/9c/352c1ea45daf.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i069.radikal.ru/1402/dd/a538fe599270.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s017.radikal.ru/i404/1309/60/16fa77685833.gif" /> <img src="http://s59.radikal.ru/i163/1308/21/6e04962f4ee1.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i056.radikal.ru/1301/d3/79bb1765a159.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i59.fastpic.ru/big/2013/1129/34/0fc4a1022f44fd99fd69acbb5d5d1d34.jpeg.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://filmrus.net/pic/groups/FilmRus.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://hdreactor.org/freehd.png.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i33.fastpic.ru/big/2012/0324/17/b3009b8b3e6c80c43db9561cab87ec17.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s018.radikal.ru/i520/1307/91/9bb3f0c192f0.png.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://www.filmrus.net/pic/groups/FfClub.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://2.firepic.org/2/images/2012-04/04/8hvkmj1lk60e.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://files-x.com/.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://firepic.org/images/2011-09/pe9tr9qjw85d24w4zizfmem17.jpg.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://2.firepic.org/2/images/2011-12/26/o2lz4uqlwnt6.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://2.firepic.org/2/images/2011-11/07/5u8270klj72q.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://rustorents.com/pic/knopka.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s.rutor.org/t/button1.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s.rutor.info/t/button1.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s019.radikal.ru/i627/1302/41/7689dc958955.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://s010.radikal.ru/i313/1412/59/8882057187ec.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://www.imageup.ru/img286/1291032/0ptimus.gif.*?>#', '', $text);
-		$text = preg_replace('#<a href="http://www.rutor.info/.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://s014.radikal.ru/i328/1410/76/bbeb05031521.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://lostpic.net/orig_images/c/2/3/c23b68bf7f9713c5bc6bca6a3c6c7f44.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i66.fastpic.ru/big/2015/0113/73/e08879f9d7f777b8bbdf2315f7995a73.jpeg.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://www.hq-video.org/images/hq_88_31.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i42.fastpic.ru/big/2012/0808/51/5a228c567a256ef93291927224da4d51.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://2.firepic.org/2/images/2015-05/30/9is8sqoz1bom.gif.*?>#', '', $text);
-		$text = preg_replace('#<a href="http://open-tor.org/.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://interhit.org/pic/pics.gif.*?>#', '', $text);
-		$text = preg_replace('#<a href="http://tor-ru.net.*?</a>#', '', $text);
-		$text = preg_replace('#<a href="http://files-x.rip.*?</a>#', '', $text);
-		$text = preg_replace('#<img src="http://2.firepic.org/2/images/2013-09/02/0h3zu24zoutd.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://i58.fastpic.ru/big/2015/0506/2d/36f03ef0ca5684e2fbf0a89b2413f52d.gif.*?>#', '', $text);
-		$text = preg_replace('#<img src="http://lostpic.net/orig_images/2/8/7/287f8a16aa58f4522ee27dbd7096fd32.gif.*?>#', '', $text);
-
-		$text = preg_replace('#<a href=".*?changecopyright.ru" target="_blank">.*?</a>#', '', $text);
-		$text = preg_replace('#<a href=".*?scarabey.*?</a>#', '', $text);
-		$text = preg_replace('#<a href=".*?zarunet.org/" target="_blank">.*?</a>#', '', $text);
-		//Регулярка пидоров конец
-		$text = preg_replace('/<td><br.*?><center><img src="([\s\S]*?)" \/><\/center>/siu', '<center>[img]$1[/img]</center>', $text);
-		$text = preg_replace('/<br.*?>/', "", $text);
-		$text = preg_replace('/<a href="\/tag\/.*?" target="_blank">([\s\S]*?)<\/a>/', '$1', $text);
-
-		$text = preg_replace('/<a href="([\s\S]*?)" target="_blank">([\s\S]*?)<\/a>/', '[url=$1]$2[/url]', $text);
-		$text = preg_replace('/<img src="(.*?)" style="float:(.*?);" \/>/', '[img=$2]$1[/img]', $text);
-		$text = preg_replace('/<img src="([\s\S]*?)" \/>/', '[img]$1[/img]', $text);
-
-		$text = str_replace('<center>', '[align=center]', $text);
-		$text = str_replace('</center>', '[/align]', $text);
-		$text = str_replace('<hr />', '[hr]', $text);
-
-		$text = str_replace('&#039;', "'", $text);
-		$text = str_replace('&nbsp;', ' ', $text);
-		$text = str_replace('&gt;', '>', $text);
-		$text = str_replace('&lt;', '<', $text);
-
-		for ($i = 0; $i <= 20; $i++) {
-			$text = preg_replace('/<b>([^<]*?)<(?=\/)\/b>/', '[b]$1[/b]', $text);
-			$text = preg_replace('/<u>([^<]*?)<(?=\/)\/u>/', '[u]$1[/u]', $text);
-			$text = preg_replace('/<i>([^<]*?)<(?=\/)\/i>/', '[i]$1[/i]', $text);
-			$text = preg_replace('/<s>([^<]*?)<(?=\/)\/s>/', '[s]$1[/s]', $text);
-			$text = preg_replace('/<font size="([^<]*?)">([^<]*?)<(?=\/)\/font>/', "[size=2\\1]\\2[/size]", $text);
-			$text = preg_replace('/<span style="color:([^<]*?);">([\s\S]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
-			$text = preg_replace('/<span style="font-family:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[font="$1"]$2[/font]', $text);
-			$text = preg_replace('/<div class="hidewrap"><div class="hidehead" onclick="hideshow.*?"><span style="color.*?">([\s\S]*?)<\/span><\/div><div class="hidebody"><\/div><textarea class="hidearea">([\s\S]*?)<\/textarea><\/div>/', "[spoiler=\"\\1\"]\\2[/spoiler]", $text);
-			/*
-
-							$text = preg_replace('/http:(.*?)fastpic.ru/', "https:$1fastpic.ru/", $text);
-							$text = preg_replace('/http:(.*?)imageban.ru/', "https:$1imageban.ru/", $text);
-							$text = preg_replace('/http:(.*?)youpic.su/', "https:$1youpic.su/", $text);
-							$text = preg_replace('/http:(.*?)lostpic.net/', "https:$1lostpic.net/", $text);
-							$text = preg_replace('/http:(.*?)radikal.ru/', "https:$1radikal.ru/", $text);
-							$text = str_replace('http://img-fotki.yandex.ru', 'https://img-fotki.yandex.ru', $text);
-			*/
-			$text = preg_replace('/http:(.*?)kinopoisk.ru/', "https:$1kinopoisk.ru/", $text);
-			$text = preg_replace('/<div class="hidewrap"><div class="hidehead" onclick="hideshow.*?">([\s\S]*?)<\/div><div class="hidebody"><\/div><textarea class="hidearea">([\s\S]*?)<\/textarea><\/div>/', "[spoiler=\"\\1\"]\\2[/spoiler]", $text);
-		}
-		//$text = preg_replace('/<td>[\s\S]*?Мы.*?<a href="http.*?vk.com\/scarabey_new_team" target="_blank"><img.*?<br \/>/siu', "", $text);
-
-		$text = str_replace('<a href="http://rublacklist.net/" target="_blank"><img src="http://rublacklist.net/media/2015/08/RKS-468_2.jpg"></a><br />', '', $text);
-
-		$text = str_replace('<a href="http://openrunet.org/" target="_blank"><img src="http://rublacklist.net/media/2015/12/openrunet_h_long_bl_468.jpg"></a><br />', '', $text);
-		$text = str_replace('<a href="http://zarunet.org/" target="_blank"><img src="http://rublacklist.net/media/2015/12/zarunet_h_1_468.png"></a><br />', '', $text);
-
-		$text = preg_replace('#\[url=http.*?imdb.com/title/(.*?)/].*?\[\/url\]#', "[imdb]https://www.imdb.com/title/$1[/imdb]", $text);
-		$text = preg_replace('#\[url=http.*?kinopoisk.ru/film/.*?-[0-9]{4}-(.*?)/].*?\[\/url\]#', "[kp]https://www.kinopoisk.ru/film/$1[/kp]", $text);
-		$text = preg_replace('#\[url=http.*?kinopoisk.ru/level/.*?/film/(.*?)/].*?\[\/url\]#', "[kp]https://www.kinopoisk.ru/film/$1[/kp]", $text);
-		$text = preg_replace('#\[url=http.*?kinopoisk.ru/film/(.*?)/].*?\[\/url\]#', "[kp]https://www.kinopoisk.ru/film/$1[/kp]", $text);
-		$text = preg_replace('/http:(.*?)kinopoisk.ru/', "https:$1kinopoisk.ru", $text);
-		$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
-
-		// Вставка плеера
-		insert_video_player($text);
-
-		$text = strip_tags(html_entity_decode($text));
+	for ($i = 0; $i <= 20; $i++) {
+		$text = preg_replace('/<a href="([^<]*?)" target="_blank">([^<]*?)<(?=\/)\/a>/siu', '[url=$1]$2[/url]', $text);
+		$text = preg_replace('/<img src="([^<]*?)" style="float:(.*?);" \/>/siu', '[img=$2]$1[/img]', $text);
+		$text = preg_replace('/<img src="([^<]*?)" \/>/siu', '[img]$1[/img]', $text);
+		$text = preg_replace('/<b>([^<]*?)<(?=\/)\/b>/', '[b]$1[/b]', $text);
+		$text = preg_replace('/<u>([^<]*?)<(?=\/)\/u>/', '[u]$1[/u]', $text);
+		$text = preg_replace('/<i>([^<]*?)<(?=\/)\/i>/', '[i]$1[/i]', $text);
+		$text = preg_replace('/<s>([^<]*?)<(?=\/)\/s>/', '[s]$1[/s]', $text);
+		$text = preg_replace('/<font size="([^<]*?)">([^<]*?)<(?=\/)\/font>/', "[size=2\\1]\\2[/size]", $text);
+		$text = preg_replace('/<span style="color:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
+		$text = preg_replace('/<span style="font-family:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[font="$1"]$2[/font]', $text);
 	}
 
-	return $text;
+	// Вставка плеера
+	insert_video_player($text);
+
+	return array(
+		'title' => $title,
+		'torrent' => $torrent,
+		'content' => strip_tags(html_entity_decode($text))
+	);
 }
 
 function nnmclub($text, $mode = '')
