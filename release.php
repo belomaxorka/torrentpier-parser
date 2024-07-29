@@ -14,8 +14,8 @@ define('BB_ROOT', './');
 require_once __DIR__ . '/common.php';
 require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
 require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
-require_once INC_DIR . '/bbcode.php';
 require_once INC_DIR . '/functions_autoparser.php';
+require_once INC_DIR . '/bbcode.php';
 
 set_time_limit(120);
 $hidden_form_fields = $message = $subject = '';
@@ -91,18 +91,24 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 	global $attach_dir, $bb_cfg;
 
 	if (is_array($tor) && count($tor)) {
+		// Создание торрент-файла
 		$new_name = md5($torrent) . '_' . TIMENOW;
-		$file = fopen("$attach_dir/$new_name.torrent", 'w+');
-		fputs($file, $torrent);
-		fclose($file);
+		$file_path = "$attach_dir/$new_name.torrent";
+		$file = new SplFileInfo($file_path);
+		if (!$file->isFile()) {
+			// Файл не существует, создаем его
+			file_put_contents($file_path, $torrent);
+		} else {
+			bb_die('Неудалось создать торрент-файл');
+		}
 
 		$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
 		$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-		$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $attach_dir . '/' . $new_name . '.torrent" />';
+		$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $file_path . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
 		$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
-		$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="' . mime_content_type("$attach_dir/$new_name.torrent") . '" />';
-		$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize("$attach_dir/$new_name.torrent") . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="' . mime_content_type($file_path) . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize($file_path) . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
 		$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
@@ -216,10 +222,17 @@ function rgb2html($r, $g = -1, $b = -1)
 if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
 	// Проверка на доступ к парсеру
 	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['torrent_parser']['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
-	if (!$vip) bb_die('Извините, вы не состоите в соответствующей группе');
+	if (!$vip) {
+		bb_die('Извините, вы не состоите в соответствующей группе');
+	}
 }
 
 if (empty($url)) {
+	// Проверка на Submit
+	if (isset($_POST['submit'])) {
+		bb_die('Введите пожалуйста адрес раздачи');
+	}
+
 	// Получаем все форумы
 	if (!$forums = $datastore->get('cat_forums')) {
 		$datastore->update('cat_forums');
@@ -558,6 +571,7 @@ if (empty($url)) {
 
 	generate_smilies('inline');
 
+	// Формирование топика
 	$template->assign_vars(array(
 		'SUBJECT' => $subject,
 		'MESSAGE' => $message['content'],
