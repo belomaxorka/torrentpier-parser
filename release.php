@@ -88,7 +88,7 @@ function torrent_decode($torrent, &$info_hash)
  */
 function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 {
-	global $attach_dir, $bb_cfg;
+	global $attach_dir;
 
 	if (is_array($tor) && count($tor)) {
 		// Создание торрент-файла
@@ -101,15 +101,16 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 			bb_die('Не удалось создать торрент-файл: ' . $file_path);
 		}
 
+		// Заполнение скрытых полей
 		$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
 		$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-		$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . $file_path . '" />';
-		$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . bb_date(TIMENOW, 'd-m-Y H:i', 'false') . '._[' . $bb_cfg['sitename'] . '].torrent" />';
+		$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . pathinfo(basename($file_path), PATHINFO_FILENAME) . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . basename($file_path) . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
 		$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="' . mime_content_type($file_path) . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize($file_path) . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="filetime_list[]" value="' . TIMENOW . '" />';
-		$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="" />';
+		$hidden_form_fields .= '<input type="hidden" name="attach_id_list[]" value="0" />';
 		$hidden_form_fields .= '<input type="hidden" name="attach_thumbnail_list[]" value="0" />';
 	}
 }
