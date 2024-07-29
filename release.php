@@ -491,7 +491,7 @@ if (empty($url)) {
 		// Проверка по регулярному выражению
 		if (preg_match($data['regex'], $url)) {
 			if (!$data['enabled']) {
-				bb_die("Парсинг с трекера $name отключен администратором сайта");
+				bb_die(sprintf($lang['PARSER_TRACKER_DISABLED'], $name));
 			}
 			if ((isset($data['auth']) && $data['auth']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
 				bb_die('Не заполнены данные авторизации для трекера: ' . $name);
