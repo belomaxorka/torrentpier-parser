@@ -96,7 +96,6 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 		$file_path = "$attach_dir/$new_name.torrent";
 		$file = new SplFileInfo($file_path);
 		if (!$file->isFile()) {
-			// Файл не существует, создаем его
 			file_put_contents($file_path, $torrent);
 		} else {
 			bb_die('Не удалось создать торрент-файл: ' . $file_path);
