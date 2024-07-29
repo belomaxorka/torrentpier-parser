@@ -117,7 +117,7 @@ $bb_cfg['torrent_parser'] = array(
 
 -------------------------Добавить в конце-------------------------------------
 
-// Парсер
+// Парсер раздач
 $lang['PARSER_TITLE'] = 'Парсер';
 $lang['PARSER_NOT_FOUND_BENCODE_LIB'] = 'Отсутствует библиотека для бинкодирования торрента';
 $lang['PARSER_EMPTY_INFO_HASH'] = 'Пустой info_hash';
