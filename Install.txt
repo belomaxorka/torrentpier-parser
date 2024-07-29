@@ -77,7 +77,7 @@ $bb_cfg['torrent_parser'] = array(
 		<h1 class="maintitle">{L_PARSER_TITLE}</h1>
 		<hr>
 		<h2>{L_PARSER_SUPPORTED_TRACKERS}</h2>
-		<span style="font-size: 13px;">{SUPPORTED_TRACKERS}</span>
+		<span class="warnColor1" style="font-size: 13px;">{SUPPORTED_TRACKERS}</span>
 	</div>
 	<table class="forums pad_10">
 		<tr class="row2">
