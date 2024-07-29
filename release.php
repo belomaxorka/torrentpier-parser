@@ -253,7 +253,7 @@ if (empty($url)) {
 	$template->assign_vars(array(
 		'SUBJECT' => $subject,
 		'MESSAGE' => $message['content'],
-		'S_POST_ACTION' => "posting.php",
+		'S_POST_ACTION' => 'posting.php',
 
 		'IN_PM' => true, // Trash...
 		'POSTING_SUBJECT' => true,
