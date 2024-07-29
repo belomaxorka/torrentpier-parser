@@ -21,7 +21,7 @@ set_time_limit(120);
 $hidden_form_fields = $message = $subject = '';
 
 // Вводимый URL адрес пользователем
-$url = isset($_POST['url']) ? $_POST['url'] : '';
+$url = isset($_POST['url']) ? htmlCHR($_POST['url']) : '';
 $url = preg_replace('/^(https?:\/\/)(www\.)(.*)$/', '$1$3', $url);
 
 // Форум в который сохранять раздачи
