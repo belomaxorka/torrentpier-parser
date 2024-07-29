@@ -109,34 +109,6 @@ function duplicate_check($info_hash, $subject, $url)
 	}
 }
 
-function decodeEmailProtection($encodedString)
-{
-	// Holds the final output
-	$decodedString = '';
-
-	// Extract the first 2 letters
-	$keyInHex = substr($encodedString, 0, 2);
-
-	// Convert the hex-encoded key into decimal
-	$key = intval($keyInHex, 16);
-
-	// Loop through the remaining encoded characters in steps of 2
-	for ($n = 2; $n < strlen($encodedString); $n += 2) {
-		// Get the next pair of characters
-		$charInHex = substr($encodedString, $n, 2);
-
-		// Convert hex to decimal
-		$char = intval($charInHex, 16);
-
-		// XOR the character with the key to get the original character
-		$output = $char ^ $key;
-
-		// Append the decoded character to the output
-		$decodedString .= chr($output);
-	}
-	return mb_convert_encoding($decodedString, 'UTF-8');
-}
-
 /**
  * Вставка видео
  *
@@ -168,31 +140,4 @@ function insert_video_player(&$text)
 		}
 		$text .= '[hr][br]';
 	}
-}
-
-/**
- * Конвертация RGB в HEX
- *
- * @param $r
- * @param $g
- * @param $b
- * @return string
- */
-function rgb2html($r, $g = -1, $b = -1)
-{
-	if (is_array($r) && sizeof($r) == 3)
-		list($r, $g, $b) = $r;
-
-	$r = intval($r);
-	$g = intval($g);
-	$b = intval($b);
-
-	$r = dechex($r < 0 ? 0 : ($r > 255 ? 255 : $r));
-	$g = dechex($g < 0 ? 0 : ($g > 255 ? 255 : $g));
-	$b = dechex($b < 0 ? 0 : ($b > 255 ? 255 : $b));
-
-	$color = (strlen($r) < 2 ? '0' : '') . $r;
-	$color .= (strlen($g) < 2 ? '0' : '') . $g;
-	$color .= (strlen($b) < 2 ? '0' : '') . $b;
-	return '#' . $color;
 }
