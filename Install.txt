@@ -106,12 +106,11 @@ $bb_cfg['torrent_parser'] = array(
 						<div class="spacer_10"></div>
 						{SELECT_FORUM}
 						<label>
-							<input type="text" name="url" size="60" placeholder="Введите адрес раздачи..." required>
+							<input type="text" name="url" size="60" placeholder="{L_PARSER_ENTER_URL}" required>
 						</label>
-						<input type="submit" value="Let's GO">
+						<input type="submit" value="{L_PARSER_START}">
 					</form>
-					<div style="display: none;" id="progress"><img alt="Загрузка..." title="Пожалуйста, подождите..."
-																   src="{PROGRESS_BAR_IMG}"></div>
+					<div style="display: none;" id="progress"><img alt="{L_PARSER_PROCESSING}" title="{L_PARSER_PROCESSING}" src="{PROGRESS_BAR_IMG}"></div>
 				</td>
 			</tr>
 		</table>
@@ -157,6 +156,9 @@ $lang['PARSER_EMPTY_AUTH_LINK'] = 'Отсутствует ссылка на ст
 $lang['PARSER_EMPTY_CONTENT'] = 'Не удается получить HTML код страницы';
 $lang['PARSER_CANT_GET_TORRENT'] = 'Не удается получить торрент-файл. Вот ID: %s';
 $lang['PARSER_CANT_GET_TITLE'] = 'Не получается найти заголовок темы';
+$lang['PARSER_ENTER_URL'] = 'Введите адрес раздачи...';
+$lang['PARSER_PROCESSING'] = 'Пожалуйста, подождите. Загрузка...';
+$lang['PARSER_START'] = 'Начать';
 
 -------------------------Открыть----------------------------------------------
 
@@ -172,6 +174,6 @@ $lang['PARSER_CANT_GET_TITLE'] = 'Не получается найти заго�
 
 -------------------------Добавить после---------------------------------------
 
-<!-- IF IS_AM --><a href="{U_RELEASE}"><b>{L_PARSER_TITLE}</b></a><!-- ENDIF -->
+<a href="{U_RELEASE}"><b>{L_PARSER_TITLE}</b></a>
 
 ------------------------------------------------------------------------------
