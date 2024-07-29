@@ -469,6 +469,16 @@ if (empty($url)) {
 	$tracker = null;
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
+		// Проверка на редиректы
+		if (!empty($data['redirect']['from'])) {
+			foreach ($data['redirect']['from'] as $fromUrl) {
+				if (strpos($url, $fromUrl) === 0) {
+					$outputUrl = str_replace($fromUrl, $data['redirect']['to'], $url);
+					break;
+				}
+			}
+		}
+		// Проверка по регулярному выражению
 		if (preg_match($data['regex'], $url)) {
 			if (!$data['enabled']) {
 				bb_die("Парсинг с трекера $name отключен администратором сайта");
@@ -486,16 +496,6 @@ if (empty($url)) {
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
-	// Проверка на редиректы
-	if (!empty($tracker_data['redirect']['from'])) {
-		foreach ($tracker_data['redirect']['from'] as $fromUrl) {
-			if (strpos($url, $fromUrl) === 0) {
-				$url = $tracker_data['redirect']['to'];
-				break;
-			}
-		}
-	}
-
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
 		if (empty($tracker_data['login_url'])) {
