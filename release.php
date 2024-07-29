@@ -494,7 +494,7 @@ if (empty($url)) {
 				bb_die(sprintf($lang['PARSER_TRACKER_DISABLED'], $name));
 			}
 			if ((isset($data['auth']) && $data['auth']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
-				bb_die('Не заполнены данные авторизации для трекера: ' . $name);
+				bb_die(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
 			}
 			$tracker = $name; // Название трекера
 			$tracker_data = $data; // Настройки трекера
