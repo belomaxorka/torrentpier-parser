@@ -54,6 +54,8 @@ function die_and_refresh($msg)
  */
 function torrent_decode($torrent, &$info_hash)
 {
+	global $lang;
+
 	$tor = array();
 
 	if (function_exists('bencode')) {
@@ -68,11 +70,11 @@ function torrent_decode($torrent, &$info_hash)
 		// $tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 		// $info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
 	} else {
-		bb_die('Отсутствует библиотека для бинкодирования торрента');
+		bb_die($lang['PARSER_NOT_FOUND_BENCODE_LIB']);
 	}
 
 	if (empty($info_hash)) {
-		bb_die('Пустой info_hash');
+		bb_die($lang['PARSER_EMPTY_INFO_HASH']);
 	}
 
 	return $tor;
@@ -88,7 +90,7 @@ function torrent_decode($torrent, &$info_hash)
  */
 function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 {
-	global $attach_dir;
+	global $attach_dir, $lang;
 
 	if (is_array($tor) && count($tor)) {
 		// Создание торрент-файла
@@ -98,7 +100,7 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 		if (!$file->isFile()) {
 			file_put_contents($file_path, $torrent);
 		} else {
-			bb_die('Не удалось создать торрент-файл: ' . $file_path);
+			bb_die(sprintf($lang['PARSER_CANT_SAVE_TORRENT'], $file_path));
 		}
 
 		// Заполнение скрытых полей
@@ -223,7 +225,7 @@ if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
 	// Проверка на доступ к парсеру
 	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['torrent_parser']['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
 	if (!$vip) {
-		bb_die('Извините, вы не состоите в соответствующей группе');
+		bb_die($lang['PARSER_NO_RIGHTS']);
 	}
 }
 
@@ -240,7 +242,7 @@ if (empty($url)) {
 	$allowed_forums = array_diff(explode(',', $forums['tracker_forums']), explode(',', $excluded_forums_csv));
 
 	if (!$allowed_forums) {
-		bb_die('Нету форумов на которых разрешена регистрация торрентов');
+		bb_die($lang['PARSER_NO_ALLOWED_FORUMS']);
 	}
 
 	$cat_forum = array();
@@ -578,7 +580,7 @@ if (empty($url)) {
 }
 
 $template->assign_vars(array(
-	'PAGE_TITLE' => $lang['RELEASE'],
+	'PAGE_TITLE' => $lang['PARSER_TITLE'],
 	'PROGRESS_BAR_IMG' => $images['progress_bar'],
 ));
 
