@@ -22,7 +22,6 @@ $hidden_form_fields = $message = $subject = '';
 
 // Вводимый URL адрес пользователем
 $url = isset($_POST['url']) ? htmlCHR($_POST['url']) : '';
-$url = preg_replace('/^(https?:\/\/)(www\.)(.*)$/', '$1$3', $url);
 
 // Форум в который сохранять раздачи
 $forum_id = (int)request_var('forum_id', '');
@@ -298,6 +297,13 @@ if (empty($url)) {
 		'SELECT_FORUM' => $cat_forum_select,
 	));
 } else {
+	// Проверка ссылки
+	if (!filter_var($url, FILTER_VALIDATE_URL)) {
+		bb_die($lang['PARSER_INVALID_URL']);
+	}
+	$url = preg_replace('/^(https?:\/\/)(www\.)(.*)$/', '$1$3', $url);
+
+	// Инициализация библиотеки для обращений
 	$curl = new \Dinke\CurlHttpClient;
 	$curl->setUserAgent(\Campo\UserAgent::random(array('agent_type' => 'Browser'))); // Случайный User-Agent
 	// Настройка прокси

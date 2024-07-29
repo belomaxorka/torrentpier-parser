@@ -146,6 +146,7 @@ $bb_cfg['torrent_parser'] = array(
 $lang['PARSER_TITLE'] = 'Парсер';
 $lang['PARSER_NOT_FOUND_BENCODE_LIB'] = 'Отсутствует библиотека для бинкодирования торрента';
 $lang['PARSER_EMPTY_INFO_HASH'] = 'Пустой info_hash';
+$lang['PARSER_INVALID_URL'] = 'Указан неправильный URL-адрес';
 $lang['PARSER_CANT_SAVE_TORRENT'] = 'Не удалось создать/сохранить торрент-файл: %s';
 $lang['PARSER_NO_GROUP_RIGHTS'] = 'Извините, вы не состоите в соответствующей группе';
 $lang['PARSER_NO_ALLOWED_FORUMS'] = 'Нету форумов на которых разрешена регистрация торрентов';
