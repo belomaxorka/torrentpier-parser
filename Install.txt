@@ -73,7 +73,7 @@ $bb_cfg['torrent_parser'] = array(
 
 <!-- IF IN_PARSER -->
 <div class="f_tbl_wrap">
-	<div class="tCenter row1 pad_6" style="padding-left: 25px; padding-right: 25px;">
+	<div class="tCenter row1" style="padding: 5px 25px 10px;">
 		<h1 class="maintitle">{L_PARSER_TITLE}</h1>
 		<hr>
 		<h2>{L_PARSER_SUPPORTED_TRACKERS}</h2>
