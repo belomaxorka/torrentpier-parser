@@ -99,7 +99,7 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 			// Файл не существует, создаем его
 			file_put_contents($file_path, $torrent);
 		} else {
-			bb_die('Не удалось создать торрент-файл');
+			bb_die('Не удалось создать торрент-файл: ' . $file_path);
 		}
 
 		$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
