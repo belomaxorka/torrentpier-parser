@@ -45,6 +45,7 @@ $bb_cfg['torrent_parser'] = array(
 
 	/**
 	 * Настройки доступа для участников групп
+	 * Примечание: Работает в том случае, если 'parser_auth' не равен IS_GUEST
 	 * Формат: array('group_id1', 'group_id2')
 	 */
 	'group_id' => array(),
