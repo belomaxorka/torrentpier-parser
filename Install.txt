@@ -44,7 +44,7 @@ $bb_cfg['torrent_parser'] = array(
 	 * * Модераторы - 'moderator'
 	 * * Администраторы и модераторы - 'both'
 	 */
-	'parser_auth' => 'user',
+	'parser_auth' => 'both',
 
 	/**
 	 * Настройки доступа для участников групп
