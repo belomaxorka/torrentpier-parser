@@ -32,7 +32,7 @@ function torrent_decode($torrent, &$info_hash)
 {
 	global $lang;
 
-	$tor = array();
+	$tor = null;
 
 	if (function_exists('bencode')) {
 		require_once INC_DIR . '/functions_torrent.php';
@@ -45,7 +45,9 @@ function torrent_decode($torrent, &$info_hash)
 		// Раскомментировать для версий v2.4.0 и выше
 		// $tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 		// $info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
-	} else {
+	}
+
+	if (!isset($tor) || !isset($info_hash)) {
 		bb_die($lang['PARSER_NOT_FOUND_BENCODE_LIB']);
 	}
 
