@@ -139,7 +139,7 @@ if (empty($url)) {
 } else {
 	// Проверка ссылки
 	if (!filter_var($url, FILTER_VALIDATE_URL)) {
-		bb_die($lang['PARSER_INVALID_URL']);
+		die_and_refresh($lang['PARSER_INVALID_URL']);
 	}
 	$url = preg_replace('/^(https?:\/\/)(www\.)(.*)$/', '$1$3', $url);
 
@@ -167,11 +167,11 @@ if (empty($url)) {
 		if (preg_match($data['regex'], $url)) {
 			if (!$data['enabled']) {
 				// Парсинг с трекера отключен
-				bb_die(sprintf($lang['PARSER_TRACKER_DISABLED'], $name));
+				die_and_refresh(sprintf($lang['PARSER_TRACKER_DISABLED'], $name));
 			}
 			if ((isset($data['auth']) && $data['auth']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
 				// Неверные данные авторизации
-				bb_die(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
+				die_and_refresh(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
 			}
 			$tracker = $name; // Название трекера
 			$tracker_data = $data; // Настройки трекера
@@ -189,7 +189,7 @@ if (empty($url)) {
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
 		if (empty($tracker_data['login_url'])) {
-			bb_die($lang['PARSER_EMPTY_AUTH_LINK']);
+			die_and_refresh($lang['PARSER_EMPTY_AUTH_LINK']);
 		}
 
 		$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
