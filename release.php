@@ -228,11 +228,6 @@ if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
 }
 
 if (empty($url)) {
-	// Проверка на Submit
-	if (isset($_POST['submit'])) {
-		bb_die('Введите пожалуйста адрес раздачи');
-	}
-
 	// Получаем все форумы
 	if (!$forums = $datastore->get('cat_forums')) {
 		$datastore->update('cat_forums');
