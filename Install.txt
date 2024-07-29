@@ -42,7 +42,7 @@ $bb_cfg['torrent_parser'] = array(
 		'enabled' => false,
 		'url' => 'ip:port',
 		'use_socks5' => false,
-		'auth' => ''
+		'auth' => '' // login:pass
 	),
 
 	/**
