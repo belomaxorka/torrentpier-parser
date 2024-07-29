@@ -502,7 +502,7 @@ if (empty($url)) {
 		}
 	}
 	if ($tracker === null || !is_array($tracker_data)) {
-		die_and_refresh("Такого трекера нету у нас ($url)");
+		die_and_refresh(sprintf($lang['PARSER_INVALID_TRACKER'], $url));
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
