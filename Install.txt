@@ -85,7 +85,7 @@ $bb_cfg['torrent_parser'] = array(
 						<input type="submit" value="Let's GO">
 					</form>
 					<div style="display: none;" id="progress"><img alt="Загрузка..." title="Пожалуйста, подождите..."
-																   src="styles/images/progress_bar.gif"></div>
+																   src="{PROGRESS_BAR_IMG}"></div>
 				</td>
 			</tr>
 		</table>

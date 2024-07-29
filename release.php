@@ -579,6 +579,7 @@ if (empty($url)) {
 
 $template->assign_vars(array(
 	'PAGE_TITLE' => $lang['RELEASE'],
+	'PROGRESS_BAR_IMG' => $images['progress_bar'],
 ));
 
 print_page('posting.tpl');
