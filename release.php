@@ -28,7 +28,7 @@ $url = preg_replace('/^(https?:\/\/)(www\.)(.*)$/', '$1$3', $url);
 $forum_id = (int)request_var('forum_id', '');
 
 // Start session management
-$user->session_start(array('req_login' => true));
+$user->session_start(array('req_login' => ($bb_cfg['torrent_parser']['parser_auth'] !== 'guest')));
 
 // Получаем путь до папки с торрентами
 $attach_dir = get_attachments_dir();
@@ -221,14 +221,23 @@ function rgb2html($r, $g = -1, $b = -1)
 	return '#' . $color;
 }
 
-if (!IS_AM && !empty($bb_cfg['torrent_parser']['group_id'])) {
-	// Проверка на доступ к парсеру
+if ($bb_cfg['torrent_parser']['parser_auth'] === 'user' && (IS_GROUP_MEMBER && !empty($bb_cfg['torrent_parser']['group_id']))) {
+	// Проверка на участника группы
 	$groups = implode(',', $bb_cfg['torrent_parser']['group_id']);
 	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id IN($groups) AND user_id = " . $userdata['user_id']);
 	if (!$vip) {
-		bb_die($lang['PARSER_NO_RIGHTS']);
+		bb_die($lang['PARSER_NO_GROUP_RIGHTS']);
 	}
 	unset($groups, $vip);
+} else {
+	// Проверка на наличие доступа
+	if (in_array($bb_cfg['torrent_parser']['parser_auth'], array('both', 'admin', 'moderator', 'user')) &&
+		((!IS_AM && $bb_cfg['torrent_parser']['parser_auth'] === 'both') ||
+			(!IS_ADMIN && $bb_cfg['torrent_parser']['parser_auth'] === 'admin') ||
+			(!IS_MOD && $bb_cfg['torrent_parser']['parser_auth'] === 'moderator') ||
+			(IS_GUEST && $bb_cfg['torrent_parser']['parser_auth'] === 'user'))) {
+		bb_die($lang['NOT_AUTHORISED']);
+	}
 }
 
 if (empty($url)) {
