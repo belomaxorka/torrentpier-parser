@@ -41,7 +41,7 @@ $attach_dir = get_attachments_dir();
  */
 function die_and_refresh($msg)
 {
-	meta_refresh(__FILE__, 5);
+	meta_refresh('release.php', 5);
 	bb_die($msg);
 }
 
