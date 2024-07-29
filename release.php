@@ -532,7 +532,7 @@ if (empty($url)) {
 
 	// Проверка на пустую страницу
 	if (empty($content)) {
-		die_and_refresh('Не удается получить HTML код страницы');
+		die_and_refresh($lang['PARSER_EMPTY_CONTENT']);
 	}
 
 	// Парсим HTML код страницы
@@ -542,7 +542,7 @@ if (empty($url)) {
 
 		// Проверка идентификатора торрента
 		if (empty($id) || !is_numeric($id)) {
-			die_and_refresh('Не удается получить торрент-файл. Вот ID:' . $id);
+			die_and_refresh(sprintf($lang['PARSER_CANT_GET_TORRENT'], $id));
 		}
 
 		// Проверка наличия заголовка
