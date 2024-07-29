@@ -251,6 +251,7 @@ if (empty($url)) {
 
 	generate_smilies('inline');
 	$template->assign_vars(array(
+		'POSTING_TYPE_TITLE' => $lang['POST_A_NEW_TOPIC'],
 		'SUBJECT' => $subject,
 		'MESSAGE' => $message['content'],
 		'S_POST_ACTION' => 'posting.php',
