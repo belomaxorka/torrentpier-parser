@@ -18,6 +18,7 @@ define('TEMPLATES_DIR', BB_PATH . '/styles/templates');
 
 ------------------Добавить ниже----------------------------------
 
+// NextGen Парсер раздач
 define('COOKIES_PARS_DIR', BB_PATH . '/internal_data/cookies_pars');
 
 -------------------Открыть---------------------------------------
@@ -26,7 +27,7 @@ define('COOKIES_PARS_DIR', BB_PATH . '/internal_data/cookies_pars');
 
 ------------------В самый конец вставить-------------------------
 
-// Torrent Parser
+// NextGen Парсер раздач
 $bb_cfg['torrent_parser'] = array(
 	/**
 	 * Вставлять видео-плеер с фильмов, в тех раздачах, где есть КП ID или IMDB ID
@@ -83,7 +84,7 @@ $bb_cfg['torrent_parser'] = array(
 		<tr class="row2">
 			<td class="tCenter">
 				<form method="post" onsubmit="$(this).hide(); $('#progress').show();">
-                    {SELECT_FORUM}
+					{SELECT_FORUM}
 					<label>
 						<input type="text" name="url" size="60" placeholder="{L_PARSER_ENTER_URL}" required>
 					</label>
@@ -115,6 +116,7 @@ $bb_cfg['torrent_parser'] = array(
 
 -----------------------Добавить после-----------------------------------------
 
+// NextGen Парсер раздач
 'U_RELEASE' => "release.php",
 
 -------------------------Открыть----------------------------------------------
@@ -123,7 +125,7 @@ $bb_cfg['torrent_parser'] = array(
 
 -------------------------Добавить в конце-------------------------------------
 
-// Парсер раздач
+// NextGen Парсер раздач
 $lang['PARSER_TITLE'] = 'Парсер раздач';
 $lang['PARSER_NOT_FOUND_BENCODE_LIB'] = 'Отсутствует библиотека для бинкодирования торрента';
 $lang['PARSER_EMPTY_INFO_HASH'] = 'Пустой info_hash';
