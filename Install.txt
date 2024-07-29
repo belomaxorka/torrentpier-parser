@@ -84,7 +84,7 @@ $bb_cfg['torrent_parser'] = array(
 <!-- IF IN_PARSER -->
 <div class="f_tbl_wrap">
 	<div class="tCenter row1" style="font-size: 13px;">
-		
+
 	</div>
 	<div class="f_tbl_wrap">
 		<table class="forums">
@@ -132,7 +132,7 @@ $bb_cfg['torrent_parser'] = array(
 -------------------------Добавить в конце-------------------------------------
 
 // Парсер раздач
-$lang['PARSER_TITLE'] = 'Парсер';
+$lang['PARSER_TITLE'] = 'Парсер раздач';
 $lang['PARSER_NOT_FOUND_BENCODE_LIB'] = 'Отсутствует библиотека для бинкодирования торрента';
 $lang['PARSER_EMPTY_INFO_HASH'] = 'Пустой info_hash';
 $lang['PARSER_INVALID_URL'] = 'Указан неправильный URL-адрес';
