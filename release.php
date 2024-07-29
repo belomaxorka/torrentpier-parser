@@ -138,6 +138,9 @@ if (empty($url)) {
 	));
 } else {
 	// Проверка ссылки
+	if (!preg_match('/^(https?:\/\/)/', $url)) {
+		$url = 'http://' . $url;
+	}
 	if (!filter_var($url, FILTER_VALIDATE_URL)) {
 		die_and_refresh($lang['PARSER_INVALID_URL']);
 	}
