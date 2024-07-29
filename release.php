@@ -93,7 +93,7 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 	if (is_array($tor) && count($tor)) {
 		// Создание торрент-файла
 		$new_name = md5($torrent) . '_' . TIMENOW;
-		$file_path = "$attach_dir/$new_name.torrent";
+		$file_path = "$attach_dir/$new_name";
 		$file = new SplFileInfo($file_path);
 		if (!$file->isFile()) {
 			file_put_contents($file_path, $torrent);
@@ -104,8 +104,8 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 		// Заполнение скрытых полей
 		$hidden_form_fields .= '<input type="hidden" name="add_attachment_body" value="0" />';
 		$hidden_form_fields .= '<input type="hidden" name="posted_attachments_body" value="0" />';
-		$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . pathinfo(basename($file_path), PATHINFO_FILENAME) . '" />';
-		$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . basename($file_path) . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="attachment_list[]" value="' . basename($file_path) . '" />';
+		$hidden_form_fields .= '<input type="hidden" name="filename_list[]" value="' . basename($file_path) . '.torrent" />';
 		$hidden_form_fields .= '<input type="hidden" name="extension_list[]" value="torrent" />';
 		$hidden_form_fields .= '<input type="hidden" name="mimetype_list[]" value="' . mime_content_type($file_path) . '" />';
 		$hidden_form_fields .= '<input type="hidden" name="filesize_list[]" value="' . filesize($file_path) . '" />';
