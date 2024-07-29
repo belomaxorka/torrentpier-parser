@@ -147,8 +147,12 @@ if (empty($url)) {
 	$curl = new \Dinke\CurlHttpClient;
 	$curl->setUserAgent(\Campo\UserAgent::random(array('agent_type' => 'Browser'))); // Случайный User-Agent
 	// Настройка прокси
-	// $curl->setProxy(''); // ip:port
-	// $curl->setProxyAuth('login:pass'); // login:pass
+	if ($bb_cfg['torrent_parser']['proxy']['enabled']) {
+		$curl->setProxy($bb_cfg['torrent_parser']['proxy']['url'], $bb_cfg['torrent_parser']['proxy']['use_socks5']);
+		if (!empty($bb_cfg['torrent_parser']['proxy']['auth'])) {
+			$curl->setProxyAuth($bb_cfg['torrent_parser']['proxy']['auth']);
+		}
+	}
 
 	// Проверка вводимого URL адреса
 	$tracker = null;
