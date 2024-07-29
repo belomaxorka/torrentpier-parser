@@ -511,7 +511,7 @@ if (empty($url)) {
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
 		if (empty($tracker_data['login_url'])) {
-			bb_die('Отсутствует ссылка на страницу авторизации');
+			bb_die($lang['PARSER_EMPTY_AUTH_LINK']);
 		}
 
 		$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
