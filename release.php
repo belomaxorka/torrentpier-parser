@@ -547,7 +547,7 @@ if (empty($url)) {
 
 		// Проверка наличия заголовка
 		if (empty($subject)) {
-			die_and_refresh('Не получается найти заголовок темы');
+			die_and_refresh($lang['PARSER_CANT_GET_TITLE']);
 		}
 
 		// Получение торрент-файла
