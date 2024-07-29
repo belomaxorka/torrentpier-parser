@@ -55,19 +55,7 @@ $bb_cfg['torrent_parser'] = array(
 	 * Формат: array('login' => 'ваш логин', 'pass' => 'ваш пароль')
 	 */
 	'auth' => array(
-		'rutracker' => array('login' => '', 'pass' => ''),
-		'nnmclub' => array('login' => '', 'pass' => ''),
-		'rustorka' => array('login' => '', 'pass' => ''),
-		'booktracker' => array('login' => '', 'pass' => ''),
-		'riperam' => array('login' => '', 'pass' => ''),
-		'mptor' => array('login' => '', 'pass' => ''),
-		'tapochek' => array('login' => '', 'pass' => ''),
-		'uniongang' => array('login' => '', 'pass' => ''),
-		'kinozal' => array('login' => '', 'pass' => ''),
-		'piratbit' => array('login' => '', 'pass' => ''),
-		'onlysoft' => array('login' => '', 'pass' => ''),
-		'rutrackerru' => array('login' => '', 'pass' => ''),
-		'ddgroupclub' => array('login' => '', 'pass' => '')
+		// Будет добавлено в будущем... 🙂
 	)
 );
 
