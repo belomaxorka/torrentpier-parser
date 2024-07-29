@@ -105,7 +105,7 @@ function duplicate_check($info_hash, $subject, $url)
 {
 	$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 	if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-		bb_die('Повтор. <a target="_blank" href="' . $url . '">' . $subject . '</a> - <a href="./viewtopic.php?t=' . $row['topic_id'] . '">' . $subject . '</a>');
+		bb_die('Повтор.<br><hr>Оригинальная тема - <a target="_blank" href="' . $url . '">' . $subject . '</a><br>Ваш релиз- <a href="' . TOPIC_URL . $row['topic_id'] . '">' . $subject . '</a>');
 	}
 }
 
