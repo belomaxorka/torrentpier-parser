@@ -89,7 +89,10 @@ $bb_cfg['torrent_parser'] = array(
 					</label>
 					<input type="submit" value="{L_PARSER_START}">
 				</form>
-				<div style="display: none;" id="progress"><img alt="{L_PARSER_PROCESSING}" title="{L_PARSER_PROCESSING}" src="{PROGRESS_BAR_IMG}"></div>
+				<div style="display: none;" id="progress">
+					<h4 style="margin-bottom: 7px;">{L_PARSER_PROCESSING}</h4>
+					<img alt="{L_PARSER_PROCESSING}" title="{L_PARSER_PROCESSING}" src="{PROGRESS_BAR_IMG}">
+				</div>
 			</td>
 		</tr>
 	</table>
