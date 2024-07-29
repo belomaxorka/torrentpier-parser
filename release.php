@@ -491,9 +491,11 @@ if (empty($url)) {
 		// Проверка по регулярному выражению
 		if (preg_match($data['regex'], $url)) {
 			if (!$data['enabled']) {
+				// Парсинг с трекера отключен
 				bb_die(sprintf($lang['PARSER_TRACKER_DISABLED'], $name));
 			}
 			if ((isset($data['auth']) && $data['auth']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
+				// Неверные данные авторизации
 				bb_die(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
 			}
 			$tracker = $name; // Название трекера
