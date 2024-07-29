@@ -64,6 +64,9 @@ function rutor($text)
 	// Вставка плеера
 	insert_video_player($text);
 
+	// Удаление последовательности [hr]
+	$text = preg_replace('/\[hr](\[hr])+/', '[hr]', $text);
+
 	return array(
 		'title' => $title,
 		'torrent' => $torrent,
