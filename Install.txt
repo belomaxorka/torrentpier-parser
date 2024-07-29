@@ -83,28 +83,27 @@ $bb_cfg['torrent_parser'] = array(
 
 <!-- IF IN_PARSER -->
 <div class="f_tbl_wrap">
-	<div class="tCenter row1" style="font-size: 13px;">
-
+	<div class="tCenter row1 pad_6" style="padding-left: 25px; padding-right: 25px;">
+		<h1 class="maintitle">{L_PARSER_TITLE}</h1>
+		<hr>
+		<h2>Список поддерживаемых трекеров</h2>
+		<span style="font-size: 13px;">{SUPPORTED_TRACKERS}</span>
 	</div>
-	<div class="f_tbl_wrap">
-		<table class="forums">
-			<tr>
-				<td class="row2 tCenter">
-					{SUPPORTED_TRACKERS}
-					<div class="spacer_10"></div>
-					<form method="post" onsubmit="$(this).hide(); $('#progress').show();">
-						{SELECT_FORUM}
-						<label>
-							<input type="text" name="url" size="60" placeholder="{L_PARSER_ENTER_URL}" required>
-						</label>
-						<input type="submit" value="{L_PARSER_START}">
-					</form>
-					<div style="display: none;" id="progress"><img alt="{L_PARSER_PROCESSING}" title="{L_PARSER_PROCESSING}" src="{PROGRESS_BAR_IMG}"></div>
-				</td>
-			</tr>
-		</table>
-		<div class="cat_footer"></div>
-	</div>
+	<table class="forums pad_10">
+		<tr class="row2">
+			<td class="tCenter">
+				<form method="post" onsubmit="$(this).hide(); $('#progress').show();">
+                    {SELECT_FORUM}
+					<label>
+						<input type="text" name="url" size="60" placeholder="{L_PARSER_ENTER_URL}" required>
+					</label>
+					<input type="submit" value="{L_PARSER_START}">
+				</form>
+				<div style="display: none;" id="progress"><img alt="{L_PARSER_PROCESSING}" title="{L_PARSER_PROCESSING}" src="{PROGRESS_BAR_IMG}"></div>
+			</td>
+		</tr>
+	</table>
+	<div class="cat_footer"></div>
 </div>
 <!-- ELSE -->
 <!-- IF TPL_SHOW_NEW_POSTS -->
