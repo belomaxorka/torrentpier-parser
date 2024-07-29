@@ -221,12 +221,14 @@ function rgb2html($r, $g = -1, $b = -1)
 	return '#' . $color;
 }
 
-if (!IS_AM && $bb_cfg['torrent_parser']['auth']['group_id']) {
+if (!IS_AM && !empty($bb_cfg['torrent_parser']['group_id'])) {
 	// Проверка на доступ к парсеру
-	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id in({$bb_cfg['torrent_parser']['auth']['group_id']}) AND user_id = " . $userdata['user_id']);
+	$groups = implode(',', $bb_cfg['torrent_parser']['group_id']);
+	$vip = DB()->fetch_row("SELECT user_id FROM  " . BB_USER_GROUP . " WHERE group_id IN($groups) AND user_id = " . $userdata['user_id']);
 	if (!$vip) {
 		bb_die($lang['PARSER_NO_RIGHTS']);
 	}
+	unset($groups, $vip);
 }
 
 if (empty($url)) {

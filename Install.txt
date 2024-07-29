@@ -26,22 +26,47 @@ define('COOKIES_PARS_DIR', BB_PATH . '/internal_data/cookies_pars');
 
 // Torrent Parser
 $bb_cfg['torrent_parser'] = array(
-	'use_video_player' => true, // Вставлять видео-плеер с фильмов, в тех раздачах, где есть КП ID или IMDB ID (Нужен мод: https://torrentpier.com/resources/bbcode-film-po-id.302/)
+	/**
+	 * Вставлять видео-плеер с фильмов, в тех раздачах, где есть КП ID или IMDB ID
+	 * Нужен мод: https://torrentpier.com/resources/bbcode-film-po-id.302/
+	 */
+	'use_video_player' => true,
+
+	/**
+	 * Кто имеет доступ
+	 * Варианты:
+	 * * Гости - IS_GUEST
+	 * * Пользователи (обычные) - !IS_GUEST
+	 * * Администраторы - IS_ADMIN
+	 * * Модераторы - IS_MOD
+	 * * Администраторы и модераторы - IS_AM
+	 */
+	'parser_auth' => IS_AM,
+
+	/**
+	 * Настройки доступа для участников групп
+	 * Формат: array('group_id1', 'group_id2')
+	 */
+	'group_id' => array(),
+
+	/**
+	 * Надстройки авторизации
+	 * Формат: array('login' => 'ваш логин', 'pass' => 'ваш пароль')
+	 */
 	'auth' => array(
-		'group_id' => '', // разрешить только для определенной группы
-		'rutracker' => array('login' => '', 'pass' => ''), // данные авторизации
-		'nnmclub' => array('login' => '', 'pass' => ''), // данные авторизации
-		'rustorka' => array('login' => '', 'pass' => ''), // данные авторизации
-		'booktracker' => array('login' => '', 'pass' => ''), // данные авторизации
-		'riperam' => array('login' => '', 'pass' => ''), // данные авторизации
-		'mptor' => array('login' => '', 'pass' => ''), // данные авторизации
-		'tapochek' => array('login' => '', 'pass' => ''), // данные авторизации
-		'uniongang' => array('login' => '', 'pass' => ''), // данные авторизации
-		'kinozal' => array('login' => '', 'pass' => ''), // данные авторизации
-		'piratbit' => array('login' => '', 'pass' => ''), // данные авторизации
-		'onlysoft' => array('login' => '', 'pass' => ''), // данные авторизации
-		'rutrackerru' => array('login' => '', 'pass' => ''), // данные авторизации
-		'ddgroupclub' => array('login' => '', 'pass' => ''), // данные авторизации
+		'rutracker' => array('login' => '', 'pass' => ''),
+		'nnmclub' => array('login' => '', 'pass' => ''),
+		'rustorka' => array('login' => '', 'pass' => ''),
+		'booktracker' => array('login' => '', 'pass' => ''),
+		'riperam' => array('login' => '', 'pass' => ''),
+		'mptor' => array('login' => '', 'pass' => ''),
+		'tapochek' => array('login' => '', 'pass' => ''),
+		'uniongang' => array('login' => '', 'pass' => ''),
+		'kinozal' => array('login' => '', 'pass' => ''),
+		'piratbit' => array('login' => '', 'pass' => ''),
+		'onlysoft' => array('login' => '', 'pass' => ''),
+		'rutrackerru' => array('login' => '', 'pass' => ''),
+		'ddgroupclub' => array('login' => '', 'pass' => '')
 	)
 );
 
