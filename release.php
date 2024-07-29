@@ -349,6 +349,9 @@ if (empty($url)) {
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
+	// Подключение парсера
+	require_once INC_DIR . "/parser/trackers/$tracker.php";
+
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
 		if (empty($tracker_data['login_url'])) {
