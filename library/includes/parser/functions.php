@@ -103,9 +103,11 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
  */
 function duplicate_check($info_hash, $subject, $url)
 {
+	global $lang;
+
 	$info_hash_sql = rtrim(DB()->escape($info_hash), ' ');
 	if ($row = DB()->fetch_row("SELECT topic_id FROM " . BB_BT_TORRENTS . " WHERE info_hash = '$info_hash_sql' LIMIT 1")) {
-		bb_die('Повтор. Такая тема уже существует.<br><hr>Оригинальная тема - <a target="_blank" href="' . $url . '">' . $subject . '</a><br>Ваш релиз - <a href="' . TOPIC_URL . $row['topic_id'] . '">' . $subject . '</a>');
+		bb_die(sprintf($lang['PARSER_DUPLICATE_TORRENT'], $url, $subject, TOPIC_URL . $row['topic_id'], $subject));
 	}
 }
 
