@@ -255,6 +255,7 @@ if (empty($url)) {
 		'MESSAGE' => $message['content'],
 		'S_POST_ACTION' => "posting.php",
 
+		'IN_PM' => true, // Trash...
 		'POSTING_SUBJECT' => true,
 		'S_HIDDEN_FORM_FIELDS' => $hidden_form_fields,
 	));
