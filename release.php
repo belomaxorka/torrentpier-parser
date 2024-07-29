@@ -473,7 +473,7 @@ if (empty($url)) {
 		if (!empty($data['redirect']['from'])) {
 			foreach ($data['redirect']['from'] as $fromUrl) {
 				if (strpos($url, $fromUrl) === 0) {
-					$outputUrl = str_replace($fromUrl, $data['redirect']['to'], $url);
+					$url = str_replace($fromUrl, $data['redirect']['to'], $url);
 					break;
 				}
 			}
