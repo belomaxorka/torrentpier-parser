@@ -187,8 +187,6 @@ if (empty($url)) {
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
-	// Подключение html5-php (https://github.com/Masterminds/html5-php)
-	require_once INC_DIR . "/parser/html5/vendor/autoload.php";
 	// Подключение парсера
 	require_once INC_DIR . "/parser/trackers/$tracker.php";
 
