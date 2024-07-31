@@ -481,7 +481,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param array $sources An array containing the source of the document to be inserted in the following format: [ ['source'=>'', 'target'=>''], ['source'=>'', 'target'=>''], ... ]
      * @throws \Exception
      */
-    public function insertHTMLMulti(array $sources)
+    public function insertHTMLMulti($sources)
     {
         if (!$this->loaded) {
             $this->loadHTML('');
