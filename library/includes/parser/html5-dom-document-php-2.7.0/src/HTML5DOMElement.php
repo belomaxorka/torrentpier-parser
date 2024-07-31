@@ -52,7 +52,7 @@ class HTML5DOMElement extends \DOMElement
      * @return string
      * @throws \Exception
      */
-    public function __get(string $name)
+    public function __get($name)
     {
         if ($name === 'innerHTML') {
             if ($this->firstChild === null) {
@@ -93,7 +93,7 @@ class HTML5DOMElement extends \DOMElement
      * @param string $value
      * @throws \Exception
      */
-    public function __set(string $name, $value)
+    public function __set($name, $value)
     {
         if ($name === 'innerHTML') {
             while ($this->hasChildNodes()) {
@@ -134,7 +134,7 @@ class HTML5DOMElement extends \DOMElement
      * @param string $value
      * @return string The updated value
      */
-    private function updateResult(string $value): string
+    private function updateResult($value)
     {
         $value = str_replace(self::$foundEntitiesCache[0], self::$foundEntitiesCache[1], $value);
         if (strstr($value, 'html5-dom-document-internal-entity') !== false) {
@@ -162,7 +162,7 @@ class HTML5DOMElement extends \DOMElement
      *
      * @return string The updated $nodeValue
      */
-    public function getNodeValue(): string
+    public function getNodeValue()
     {
         return $this->updateResult($this->nodeValue);
     }
@@ -172,7 +172,7 @@ class HTML5DOMElement extends \DOMElement
      *
      * @return string The updated $textContent
      */
-    public function getTextContent(): string
+    public function getTextContent()
     {
         return $this->updateResult($this->textContent);
     }
@@ -184,7 +184,7 @@ class HTML5DOMElement extends \DOMElement
      * @return string The attribute value.
      * @throws \InvalidArgumentException
      */
-    public function getAttribute($name): string
+    public function getAttribute($name)
     {
         if ($this->attributes->length === 0) { // Performance optimization
             return '';
@@ -198,7 +198,7 @@ class HTML5DOMElement extends \DOMElement
      *
      * @return array An associative array containing all attributes.
      */
-    public function getAttributes(): array
+    public function getAttributes()
     {
         $attributes = [];
         foreach ($this->attributes as $attributeName => $attribute) {
@@ -213,7 +213,7 @@ class HTML5DOMElement extends \DOMElement
      *
      * @return string The element outerHTML.
      */
-    public function __toString(): string
+    public function __toString()
     {
         return $this->outerHTML;
     }
@@ -225,7 +225,7 @@ class HTML5DOMElement extends \DOMElement
      * @return HTML5DOMElement|null The result DOMElement or null if not found.
      * @throws \InvalidArgumentException
      */
-    public function querySelector(string $selector)
+    public function querySelector($selector)
     {
         return $this->internalQuerySelector($selector);
     }
@@ -237,7 +237,7 @@ class HTML5DOMElement extends \DOMElement
      * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
      * @throws \InvalidArgumentException
      */
-    public function querySelectorAll(string $selector)
+    public function querySelectorAll($selector)
     {
         return $this->internalQuerySelectorAll($selector);
     }
