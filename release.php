@@ -225,12 +225,12 @@ if (empty($url)) {
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content)) {
-		$id = $message['torrent']; // Идентификатор торрент-файла
+		$torrent_file = $message['torrent']; // Идентификатор торрент-файла
 		$subject = $message['title']; // Заголовок сообщения
 
 		// Проверка идентификатора торрента
-		if (empty($id) || !is_numeric($id)) {
-			die_and_refresh(sprintf($lang['PARSER_CANT_GET_TORRENT'], $id));
+		if (empty($torrent_file)) {
+			die_and_refresh(sprintf($lang['PARSER_CANT_GET_TORRENT'], $torrent_file));
 		}
 
 		// Проверка наличия заголовка
@@ -239,8 +239,10 @@ if (empty($url)) {
 		}
 
 		// Получение торрент-файла
-		$tracker_data['dl_url'] = isset($tracker_data['dl_url']) ? $tracker_data['dl_url'] : '';
-		$torrent = $curl->fetchUrl($tracker_data['dl_url'] . $id);
+		if (!preg_match('/^(https?:\/\/)/', $torrent_file)) {
+			$torrent_file = 'http://' . str_replace("//", "", $torrent_file);
+		}
+		$torrent = $curl->fetchUrl($torrent_file);
 
 		// Декодирование торрент-файла
 		$tor = torrent_decode($torrent, $info_hash);
