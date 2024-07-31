@@ -221,11 +221,10 @@ if (empty($url)) {
 	// Инициализация класса для работы с DOM
 	$dom = new \IvoPetkov\HTML5DOMDocument();
 	$dom->loadHTML($content);
-	unset($content);
-	// $content = $dom->querySelector($tracker_data['target_element'])->innerHTML;
+	$content = $dom->querySelector($tracker_data['target_element'])->innerHTML;
 
 	// Парсим HTML код страницы
-	if ($message = $tracker($dom, $tracker_data['target_element'])) {
+	if ($message = $tracker($content)) {
 		$torrent_file = $message['torrent']; // Идентификатор торрент-файла
 		$subject = $message['title']; // Заголовок сообщения
 
