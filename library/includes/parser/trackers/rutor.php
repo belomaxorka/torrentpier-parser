@@ -46,7 +46,7 @@ function rutor($content, $target_element)
 
 	// Ссылки
 	$html = preg_replace('/<a href="\/.*?">(.*?)<\/a>/i', '$1', $html); // Удаление ссылок, с относительными ссылками
-	$html = preg_replace('/<a href="([^<]*?)" target="_blank">([^<]*?)<(?=\/)\/a>/siu', '[url=$1]$2[/url]', $html);
+	$html = preg_replace('/<a href="(.*?)".*?>(.*?)<\/a>/i', '[url=$1]$2[/url]', $html);
 
 	// Спойлеры
 	$html = preg_replace('/<div class="hidewrap"><div class="hidehead" onclick="hideshow.*?">([\s\S]*?)<\/div><div class="hidebody"><\/div><textarea class="hidearea">([\s\S]*?)<\/textarea><\/div>/', "[spoiler=\"\\1\"]\\2[/spoiler]", $html);
