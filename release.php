@@ -216,12 +216,11 @@ if (empty($url)) {
 		}
 		$dom = new \IvoPetkov\HTML5DOMDocument();
 		$dom->loadHTML($content);
-		$error_message = $dom->querySelector($tracker_data['login_error_element'])->textContent;
-		if (!empty($error_message)) {
+		if ($dom->querySelector($tracker_data['login_error_element'])->isConnected) {
 			// Ошибка авторизации
-			bb_die(sprintf($lang['PARSER_AUTH_ERROR'], $error_message));
+			bb_die($lang['PARSER_AUTH_ERROR']);
 		}
-		unset($dom, $content, $error_message);
+		unset($dom, $content);
 	}
 
 	// Получение содержимого
