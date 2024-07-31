@@ -9,7 +9,9 @@
  * --------------------------------------------------------
  */
 
-if (!defined('BB_ROOT')) die(basename(__FILE__));
+if (!defined('BB_ROOT')) {
+	die(basename(__FILE__));
+}
 
 /**
  * Обновление страницы после die

@@ -2,6 +2,10 @@
 
 namespace Dinke;
 
+if (!defined('BB_ROOT')) {
+	die(basename(__FILE__));
+}
+
 /**
  * @version   2.0.x
  * @copyright &copy; 2015 Lampix.net
