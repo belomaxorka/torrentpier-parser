@@ -13,6 +13,18 @@ if (!defined('BB_ROOT')) {
 	die(basename(__FILE__));
 }
 
+/**
+ * Rutor.info Parser
+ *
+ * @param string $content
+ * @param string $target_element
+ * @return array
+ * @throws Exception
+ *
+ * @license MIT License
+ * @author belomaxorka
+ *
+ */
 function rutor($content, $target_element)
 {
 	// Инициализация класса для работы с DOM
