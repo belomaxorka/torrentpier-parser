@@ -30,7 +30,7 @@ function rutor($content, $target_element)
 	// Инициализация класса для работы с DOM
 	$dom = new \IvoPetkov\HTML5DOMDocument();
 	$dom->loadHTML($content);
-	$html = $dom->querySelector($target_element)->innerHTML;
+	$html = $dom->querySelector($target_element)->textContent;
 
 	// Основные замены
 	$html = parser_base($html);
@@ -41,8 +41,8 @@ function rutor($content, $target_element)
 	$html = preg_replace('/<span style="font-family:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[font="$1"]$2[/font]', $html);
 
 	// Картинки
-	$html = preg_replace('/<img src="([^<]*?)" style="float:(.*?);" \/>/siu', '[img=$2]$1[/img]', $html);
-	$html = preg_replace('/<img src="([^<]*?)" \/>/siu', '[img]$1[/img]', $html);
+	$html = preg_replace('/<img src="(.*?)" (?:\s+[^>]+)*?style="(?:.*?float:(?:left|right);.*?)?" (.*?)>/siu', '[img=$2]$1[/img]', $html);
+	$html = preg_replace('/<img[^>]*?src="(.*?)"[^>]*?>/i', '[img]$1[/img]', $html);
 
 	// Ссылки
 	$html = preg_replace('/<a href="\/.*?">(.*?)<\/a>/i', '$1', $html); // Удаление ссылок, с относительными ссылками

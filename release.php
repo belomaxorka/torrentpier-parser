@@ -209,24 +209,36 @@ if (empty($url)) {
 		);
 		$curl->sendPostData($tracker_data['login_url'], $submit_vars);
 		// Проверка авторизации
-		// TODO
+		$content = $curl->fetchUrl($tracker_data['login_url']);
+		if (empty($content)) {
+			// Проверка на пустую страницу
+			die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $tracker_data['login_url']));
+		}
+		$dom = new \IvoPetkov\HTML5DOMDocument();
+		$dom->loadHTML($content);
+		$error_message = $dom->querySelector($tracker_data['login_error_element'])->textContent;
+		if (!empty($error_message)) {
+			// Ошибка авторизации
+			bb_die(sprintf($lang['PARSER_AUTH_ERROR'], $error_message));
+		}
+		unset($dom, $content, $error_message);
 	}
 
 	// Получение содержимого
 	$content = $curl->fetchUrl($url);
 	if (empty($content)) {
 		// Проверка на пустую страницу
-		die_and_refresh($lang['PARSER_EMPTY_CONTENT']);
+		die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $url));
 	}
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content, $tracker_data['target_element'])) {
-		$torrent_file = $message['torrent']; // Идентификатор торрент-файла
+		$torrent_file = $message['torrent']; // Ссылка на торрент-файл
 		$subject = $message['title']; // Заголовок сообщения
 
 		// Проверка идентификатора торрента
 		if (empty($torrent_file)) {
-			die_and_refresh(sprintf($lang['PARSER_CANT_GET_TORRENT'], $torrent_file));
+			die_and_refresh($lang['PARSER_CANT_GET_TORRENT']);
 		}
 
 		// Проверка наличия заголовка
