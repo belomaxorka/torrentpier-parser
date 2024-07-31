@@ -30,7 +30,7 @@ function rutor($content, $target_element)
 	// Инициализация класса для работы с DOM
 	$dom = new \IvoPetkov\HTML5DOMDocument();
 	$dom->loadHTML($content);
-	$html = $dom->querySelector($target_element)->textContent;
+	$html = $dom->querySelector($target_element)->innerHTML;
 
 	// Основные замены
 	$html = parser_base($html);
