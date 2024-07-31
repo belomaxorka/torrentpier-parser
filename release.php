@@ -212,7 +212,7 @@ if (empty($url)) {
 
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
-		if (empty($tracker_data['login_url'])) {
+		if (!filter_var($tracker_data['login_url'], FILTER_VALIDATE_URL)) {
 			bb_die($lang['PARSER_EMPTY_AUTH_LINK']);
 		}
 
@@ -253,7 +253,7 @@ if (empty($url)) {
 		$subject = $message['title']; // Заголовок сообщения
 
 		// Проверка идентификатора торрента
-		if (empty($torrent_file)) {
+		if (!filter_var($torrent_file, FILTER_VALIDATE_URL)) {
 			die_and_refresh($lang['PARSER_CANT_GET_TORRENT']);
 		}
 
