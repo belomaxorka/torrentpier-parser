@@ -214,17 +214,18 @@ if (empty($url)) {
 
 	// Получение содержимого
 	$content = $curl->fetchUrl($url);
-	$dom = new \IvoPetkov\HTML5DOMDocument();
-	$dom->loadHTML($content);
-	// $content = $dom->querySelector($tracker_data['target_element'])->innerHTML;
-
-	// Проверка на пустую страницу
 	if (empty($content)) {
+		// Проверка на пустую страницу
 		die_and_refresh($lang['PARSER_EMPTY_CONTENT']);
 	}
+	// Инициализация класса для работы с DOM
+	$dom = new \IvoPetkov\HTML5DOMDocument();
+	$dom->loadHTML($content);
+	unset($content);
+	// $content = $dom->querySelector($tracker_data['target_element'])->innerHTML;
 
 	// Парсим HTML код страницы
-	if ($message = $tracker($content, $tracker_data['target_element'])) {
+	if ($message = $tracker($dom, $tracker_data['target_element'])) {
 		$torrent_file = $message['torrent']; // Идентификатор торрент-файла
 		$subject = $message['title']; // Заголовок сообщения
 
