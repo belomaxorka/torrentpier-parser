@@ -17,7 +17,7 @@ trait QuerySelectors
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
      * @return HTML5DOMElement|null The result DOMElement or null if not found
      */
-    private function internalQuerySelector(string $selector)
+    private function internalQuerySelector($selector)
     {
         $result = $this->internalQuerySelectorAll($selector, 1);
         return $result->item(0);
@@ -28,10 +28,10 @@ trait QuerySelectors
      *
      * @param string $selector A CSS query selector. Available values: *, tagname, tagname#id, #id, tagname.classname, .classname, tagname[attribute-selector] and [attribute-selector].
      * @param int|null $preferredLimit Preferred maximum number of elements to return.
-     * @return DOMNodeList Returns a list of DOMElements matching the criteria.
+     * @return \DOMNodeList Returns a list of DOMElements matching the criteria.
      * @throws \InvalidArgumentException
      */
-    private function internalQuerySelectorAll(string $selector, $preferredLimit = null)
+    private function internalQuerySelectorAll($selector, $preferredLimit = null)
     {
         $selector = trim($selector);
 
@@ -98,7 +98,7 @@ trait QuerySelectors
         $simpleSelectors = [];
 
         // all
-        $simpleSelectors['\*'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['\*'] = function ($mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
             if ($mode === 'validate') {
                 return true;
             } else {
@@ -111,7 +111,7 @@ trait QuerySelectors
         };
 
         // tagname
-        $simpleSelectors['[a-zA-Z0-9\-]+'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['[a-zA-Z0-9\-]+'] = function ($mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $tagNames = [];
             foreach ($matches as $match) {
                 $tagNames[] = strtolower($match[0]);
@@ -127,7 +127,7 @@ trait QuerySelectors
         };
 
         // tagname[target] or [target] // Available values for targets: attr, attr="value", attr~="value", attr|="value", attr^="value", attr$="value", attr*="value"
-        $simpleSelectors['(?:[a-zA-Z0-9\-]*)(?:\[.+?\])'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-zA-Z0-9\-]*)(?:\[.+?\])'] = function ($mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $run = function ($match) use ($mode, $context, $add, $walkChildren) {
                 $attributeSelectors = explode('][', substr($match[2], 1, -1));
                 foreach ($attributeSelectors as $i => $attributeSelector) {
@@ -233,7 +233,7 @@ trait QuerySelectors
         };
 
         // tagname#id or #id
-        $simpleSelectors['(?:[a-zA-Z0-9\-]*)#(?:[a-zA-Z0-9\-\_]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($getElementById) {
+        $simpleSelectors['(?:[a-zA-Z0-9\-]*)#(?:[a-zA-Z0-9\-\_]+?)'] = function ($mode, array $matches, \DOMNode $context, callable $add = null) use ($getElementById) {
             $run = function ($match) use ($mode, $context, $add, $getElementById) {
                 $tagName = strlen($match[1]) > 0 ? strtolower($match[1]) : null;
                 $id = $match[2];
@@ -262,7 +262,7 @@ trait QuerySelectors
         };
 
         // tagname.classname, .classname, tagname.classname.classname2, .classname.classname2
-        $simpleSelectors['(?:[a-zA-Z0-9\-]*)\.(?:[a-zA-Z0-9\-\_\.]+?)'] = function (string $mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
+        $simpleSelectors['(?:[a-zA-Z0-9\-]*)\.(?:[a-zA-Z0-9\-\_\.]+?)'] = function ($mode, array $matches, \DOMNode $context, callable $add = null) use ($walkChildren) {
             $rawData = []; // Array containing [tag, classnames]
             $tagNames = [];
             foreach ($matches as $match) {
@@ -310,7 +310,7 @@ trait QuerySelectors
             });
         };
 
-        $isMatchingElement = function (\DOMNode $context, string $selector) use ($simpleSelectors) {
+        $isMatchingElement = function (\DOMNode $context, $selector) use ($simpleSelectors) {
             foreach ($simpleSelectors as $simpleSelector => $callback) {
                 $match = null;
                 if (preg_match('/^' . (str_replace('?:', '', $simpleSelector)) . '$/', $selector, $match) === 1) {
@@ -321,9 +321,9 @@ trait QuerySelectors
 
         $complexSelectors = [];
 
-        $getMatchingElements = function (\DOMNode $context, string $selector, $preferredLimit = null) use (&$simpleSelectors, &$complexSelectors) {
+        $getMatchingElements = function (\DOMNode $context, $selector, $preferredLimit = null) use (&$simpleSelectors, &$complexSelectors) {
 
-            $processSelector = function (string $mode, string $selector, $operator = null) use (&$processSelector, $simpleSelectors, $complexSelectors, $context, $preferredLimit) {
+            $processSelector = function ($mode, $selector, $operator = null) use (&$processSelector, $simpleSelectors, $complexSelectors, $context, $preferredLimit) {
                 $supportedSimpleSelectors = array_keys($simpleSelectors);
                 $supportedSimpleSelectorsExpression = '(?:(?:' . implode(')|(?:', $supportedSimpleSelectors) . '))';
                 $supportedSelectors = $supportedSimpleSelectors;
