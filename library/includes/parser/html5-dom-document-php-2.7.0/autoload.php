@@ -7,6 +7,10 @@
  * Free to use under the MIT license.
  */
 
+if (!defined('BB_ROOT')) {
+	die(basename(__FILE__));
+}
+
 $classes = array(
     'IvoPetkov\HTML5DOMDocument' => __DIR__ . '/src/HTML5DOMDocument.php',
     'IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors' => __DIR__ . '/src/HTML5DOMDocument/Internal/QuerySelectors.php',

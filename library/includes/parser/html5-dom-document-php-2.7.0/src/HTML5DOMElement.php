@@ -11,9 +11,13 @@ namespace IvoPetkov;
 
 use IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
 
+if (!defined('BB_ROOT')) {
+	die(basename(__FILE__));
+}
+
 /**
  * Represents a live (can be manipulated) representation of an element in a HTML5 document.
- * 
+ *
  * @property string $innerHTML The HTML code inside the element.
  * @property string $outerHTML The HTML code for the element including the code inside.
  * @property \IvoPetkov\HTML5DOMTokenList $classList A collection of the class attributes of the element.
@@ -36,7 +40,7 @@ class HTML5DOMElement extends \DOMElement
     static private $newObjectsCache = [];
 
     /*
-     * 
+     *
      * @var HTML5DOMTokenList
      */
     private $classList = null;
@@ -155,7 +159,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Returns the updated nodeValue Property
-     * 
+     *
      * @return string The updated $nodeValue
      */
     public function getNodeValue(): string
@@ -165,7 +169,7 @@ class HTML5DOMElement extends \DOMElement
 
     /**
      * Returns the updated $textContent Property
-     * 
+     *
      * @return string The updated $textContent
      */
     public function getTextContent(): string

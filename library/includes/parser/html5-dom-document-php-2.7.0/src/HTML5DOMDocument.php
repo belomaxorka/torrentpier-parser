@@ -11,9 +11,13 @@ namespace IvoPetkov;
 
 use IvoPetkov\HTML5DOMDocument\Internal\QuerySelectors;
 
+if (!defined('BB_ROOT')) {
+	die(basename(__FILE__));
+}
+
 /**
  * Represents a live (can be manipulated) representation of a HTML5 document.
- * 
+ *
  * @method \IvoPetkov\HTML5DOMElement|false createElement(string $localName, string $value = '') Create new element node.
  * @method \IvoPetkov\HTML5DOMElement|false createElementNS(?string $namespace, string $qualifiedName, string $value = '') Create new element node with an associated namespace.
  * @method ?\IvoPetkov\HTML5DOMElement getElementById(string $elementId) Searches for an element with a certain id.
@@ -227,7 +231,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Load HTML from a file.
-     * 
+     *
      * @param string $filename The path to the HTML file.
      * @param integer $options Additional Libxml parameters.
      * @return boolean
@@ -401,7 +405,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Dumps the internal document into a file using HTML formatting.
-     * 
+     *
      * @param string $filename The path to the saved HTML document.
      * @return int|false the number of bytes written or FALSE if an error occurred.
      */
@@ -614,7 +618,7 @@ class HTML5DOMDocument extends \DOMDocument
 
     /**
      * Applies the modifications specified to the DOM document.
-     * 
+     *
      * @param integer $modifications The modifications to apply. Available values:
      *  - HTML5DOMDocument::FIX_MULTIPLE_TITLES - removes all but the last title elements.
      *  - HTML5DOMDocument::FIX_DUPLICATE_METATAGS - removes all but the last metatags with matching name or property attributes.
