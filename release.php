@@ -224,7 +224,7 @@ if (empty($url)) {
 	}
 
 	// Парсим HTML код страницы
-	if ($message = $tracker($content)) {
+	if ($message = $tracker($content, $tracker_data['target_element'])) {
 		$torrent_file = $message['torrent']; // Идентификатор торрент-файла
 		$subject = $message['title']; // Заголовок сообщения
 
