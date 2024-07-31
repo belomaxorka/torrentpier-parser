@@ -35,6 +35,10 @@ function rutor($content, $target_element)
 	// Основные замены
 	$html = parser_base($html);
 
+	// Картинки
+	$html = preg_replace('/<img src="([^<]*?)" style="float:(.*?);" \/>/siu', '[img=$2]$1[/img]', $html);
+	$html = preg_replace('/<img src="([^<]*?)" \/>/siu', '[img]$1[/img]', $html);
+
 	// Удаление ссылок, с относительными ссылками
 	$html = preg_replace('/<a href="\/.*?">(.*?)<\/a>/i', '$1', $html);
 
