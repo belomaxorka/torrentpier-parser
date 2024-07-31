@@ -187,6 +187,8 @@ if (empty($url)) {
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
+	// Подключение HTML5 DOM
+	require_once INC_DIR . "/parser/html5-dom-document-php-2.7.0/autoload.php";
 	// Подключение парсера
 	if (!file_exists(INC_DIR . "/parser/trackers/$tracker.php")) {
 		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], $tracker));
@@ -213,9 +215,9 @@ if (empty($url)) {
 
 	// Получение содержимого
 	$content = $curl->fetchUrl($url);
-	$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
-	$pos = strpos($content, $tracker_data['target_element']);
-	$content = substr($content, 0, $pos);
+	$dom = new \IvoPetkov\HTML5DOMDocument();
+	$dom->loadHTML($content);
+	// $content = $dom->querySelector($tracker_data['target_element'])->innerHTML;
 
 	// Проверка на пустую страницу
 	if (empty($content)) {
