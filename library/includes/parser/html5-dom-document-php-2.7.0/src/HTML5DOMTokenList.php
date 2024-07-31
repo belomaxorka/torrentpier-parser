@@ -51,7 +51,7 @@ class HTML5DOMTokenList
      * @param DOMElement $element The DOM element.
      * @param string $attributeName The name of the attribute.
      */
-    public function __construct(DOMElement $element, string $attributeName)
+    public function __construct(DOMElement $element, $attributeName)
     {
         $this->element = $element;
         $this->attributeName = $attributeName;
@@ -109,7 +109,7 @@ class HTML5DOMTokenList
      * @param int $index The zero-based index of the item you want to return.
      * @return null|string
      */
-    public function item(int $index)
+    public function item($index)
     {
         $this->tokenize();
         if ($index >= count($this->tokens)) {
@@ -125,7 +125,7 @@ class HTML5DOMTokenList
      * @param bool $force A Boolean that, if included, turns the toggle into a one way-only operation. If set to false, the token will only be removed but not added again. If set to true, the token will only be added but not removed again.
      * @return bool false if the token is not in the list after the call, or true if the token is in the list after the call.
      */
-    public function toggle(string $token, bool $force = null): bool
+    public function toggle($token, $force = null)
     {
         $this->tokenize();
         $isThereAfter = false;
@@ -159,7 +159,7 @@ class HTML5DOMTokenList
      * @param string $token The token you want to check for the existence of in the list.
      * @return bool true if the list contains the given token, otherwise false.
      */
-    public function contains(string $token): bool
+    public function contains($token)
     {
         $this->tokenize();
         return in_array($token, $this->tokens);
@@ -172,7 +172,7 @@ class HTML5DOMTokenList
      * @param string $new The token you want to replace $old with.
      * @return void
      */
-    public function replace(string $old, string $new)
+    public function replace($old, $new)
     {
         if ($old === $new) {
             return;
@@ -194,7 +194,7 @@ class HTML5DOMTokenList
      *
      * @return string
      */
-    public function __toString(): string
+    public function __toString()
     {
         $this->tokenize();
         return implode(' ', $this->tokens);
@@ -205,7 +205,7 @@ class HTML5DOMTokenList
      *
      * @return ArrayIterator
      */
-    public function entries(): ArrayIterator
+    public function entries()
     {
         $this->tokenize();
         return new ArrayIterator($this->tokens);
@@ -218,7 +218,7 @@ class HTML5DOMTokenList
      * @return string The value of the property specified
      * @throws \Exception
      */
-    public function __get(string $name)
+    public function __get($name)
     {
         if ($name === 'length') {
             $this->tokenize();
