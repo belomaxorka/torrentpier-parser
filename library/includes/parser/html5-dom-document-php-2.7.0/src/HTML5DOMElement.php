@@ -184,6 +184,7 @@ class HTML5DOMElement extends \DOMElement
      * @return string The attribute value.
      * @throws \InvalidArgumentException
      */
+    #[\ReturnTypeWillChange]
     public function getAttribute($name)
     {
         if ($this->attributes->length === 0) { // Performance optimization

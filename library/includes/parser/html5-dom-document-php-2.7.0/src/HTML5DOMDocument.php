@@ -81,6 +81,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $version The version number of the document as part of the XML declaration.
      * @param string $encoding The encoding of the document as part of the XML declaration.
      */
+    #[\ReturnTypeWillChange]
     public function __construct($version = '1.0', $encoding = '')
     {
         parent::__construct($version, $encoding);
@@ -305,6 +306,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param \DOMNode $node Optional parameter to output a subset of the document.
      * @return string The document (or node) HTML code as string.
      */
+    #[\ReturnTypeWillChange]
     public function saveHTML(\DOMNode $node = null)
     {
         $nodeMode = $node !== null;
