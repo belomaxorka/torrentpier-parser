@@ -251,6 +251,7 @@ if (empty($url)) {
 			$torrent_file = 'http://' . str_replace("//", "", $torrent_file);
 		}
 		$torrent = $curl->fetchUrl($torrent_file);
+		$curl->close();
 
 		// Декодирование торрент-файла
 		$tor = torrent_decode($torrent, $info_hash);
