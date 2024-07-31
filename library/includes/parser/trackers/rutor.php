@@ -51,7 +51,7 @@ function rutor($content, $target_element)
 	// Формирование выходных данных
 	return array(
 		'title' => $dom->querySelector('h1')->textContent,
-		'torrent' => $dom->querySelector('a[href^="//d.rutor.info/download/"]')->getAttribute('href'),
+		'torrent' => 'http://' . str_replace("//", "", $dom->querySelector('a[href^="//d.rutor.info/download/"]')->getAttribute('href')),
 		'content' => strip_tags($html)
 	);
 }
