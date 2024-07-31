@@ -16,7 +16,7 @@ if (!defined('BB_ROOT')) {
 /**
  * Обновление страницы после die
  *
- * @param $msg
+ * @param string $msg
  * @return void
  */
 function die_and_refresh($msg)
@@ -28,8 +28,8 @@ function die_and_refresh($msg)
 /**
  * Декодирование торрента
  *
- * @param $torrent
- * @param $info_hash
+ * @param string $torrent
+ * @param string $info_hash
  * @return array
  */
 function torrent_decode($torrent, &$info_hash)
@@ -65,9 +65,9 @@ function torrent_decode($torrent, &$info_hash)
 /**
  * Прикрепляем торрент-файл
  *
- * @param $tor
- * @param $torrent
- * @param $hidden_form_fields
+ * @param array $tor
+ * @param string $torrent
+ * @param string $hidden_form_fields
  * @return void
  */
 function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
@@ -102,9 +102,9 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 /**
  * Проверка на дубли
  *
- * @param $info_hash
- * @param $subject
- * @param $url
+ * @param string $info_hash
+ * @param string $subject
+ * @param string $url
  * @return void
  */
 function duplicate_check($info_hash, $subject, $url)
@@ -120,7 +120,7 @@ function duplicate_check($info_hash, $subject, $url)
 /**
  * Вставка видео
  *
- * @param $text
+ * @param string $text
  * @return void
  */
 function insert_video_player(&$text)
@@ -148,4 +148,31 @@ function insert_video_player(&$text)
 		}
 		$text .= '[hr][br]';
 	}
+}
+
+/**
+ * Основные замены
+ *
+ * @param string $html
+ * @return array|string|string[]|null
+ */
+function parser_base($html)
+{
+	// Misc
+	$html = str_replace('&#039;', "'", $html);
+	$html = str_replace('&nbsp;', ' ', $html);
+	$html = str_replace('&gt;', '>', $html);
+	$html = str_replace('&lt;', '<', $html);
+	// To [align=center]
+	$html = preg_replace('/<center>/i', '[align=center]', $html);
+	$html = preg_replace('/<\/center>/i', '[/align]', $html);
+	// To [hr]
+	$html = preg_replace('/<hr\s*\/?>/i', '[hr]', $html);
+	$html = preg_replace('/\[hr](\[hr])+/', '[hr]', $html);
+	// To [br]
+	$html = preg_replace('/<br\s*\/?>/i', '', $html);
+	// To [b], [i], [u] and [s]
+	$html = preg_replace('/<([ibus])>([^<]*)<\/\1>/i', '[$1]$2[/$1]', $html);
+
+	return $html;
 }

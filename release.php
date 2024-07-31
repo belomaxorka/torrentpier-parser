@@ -41,7 +41,7 @@ $trackers = array(
 	'rutor' => array(
 		'enabled' => true,
 		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
-		'target_element' => 'body', // вся страница целиком
+		'target_element' => 'td[style^="vertical-align:"] + td',
 		'redirect' => array(
 			'from' => array('http://rutor.org/'),
 			'to' => 'http://rutor.info/'
@@ -218,13 +218,9 @@ if (empty($url)) {
 		// Проверка на пустую страницу
 		die_and_refresh($lang['PARSER_EMPTY_CONTENT']);
 	}
-	// Инициализация класса для работы с DOM
-	$dom = new \IvoPetkov\HTML5DOMDocument();
-	$dom->loadHTML($content);
-	$content = $dom->querySelector($tracker_data['target_element'])->innerHTML;
 
 	// Парсим HTML код страницы
-	if ($message = $tracker($content)) {
+	if ($message = $tracker($content, $tracker_data['target_element'])) {
 		$torrent_file = $message['torrent']; // Идентификатор торрент-файла
 		$subject = $message['title']; // Заголовок сообщения
 
