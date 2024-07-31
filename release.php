@@ -41,7 +41,7 @@ $trackers = array(
 	'rutor' => array(
 		'enabled' => true,
 		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
-		'target_element' => 'td[style^="vertical-align:"] + td',
+		'target_element' => 'td[style="vertical-align:top;"] + td',
 		'redirect' => array(
 			'from' => array('http://rutor.org/'),
 			'to' => 'http://rutor.info/'
