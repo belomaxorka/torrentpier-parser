@@ -188,6 +188,9 @@ if (empty($url)) {
 
 	// ----------------------- Обращение к трекеру -----------------------
 	// Подключение парсера
+	if (!file_exists(INC_DIR . "/parser/trackers/$tracker.php")) {
+		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], $tracker));
+	}
 	require_once INC_DIR . "/parser/trackers/$tracker.php";
 
 	// Авторизация
