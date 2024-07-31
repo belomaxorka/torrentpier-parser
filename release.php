@@ -152,7 +152,7 @@ if (empty($url)) {
 		'SELECT_FORUM' => $cat_forum_select,
 	));
 } else {
-	// Проверка ссылки
+	// Проверка ссылки на корректность
 	if (!filter_var($url, FILTER_VALIDATE_URL)) {
 		die_and_refresh($lang['PARSER_INVALID_URL']);
 	}
@@ -252,7 +252,7 @@ if (empty($url)) {
 		$torrent_file = $message['torrent']; // Ссылка на торрент-файл
 		$subject = $message['title']; // Заголовок сообщения
 
-		// Проверка идентификатора торрента
+		// Проверка ссылки на торрент-файл на корректность
 		if (!filter_var($torrent_file, FILTER_VALIDATE_URL)) {
 			die_and_refresh($lang['PARSER_CANT_GET_TORRENT']);
 		}
