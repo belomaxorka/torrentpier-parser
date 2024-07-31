@@ -263,9 +263,6 @@ if (empty($url)) {
 		}
 
 		// Получение торрент-файла
-		if (!preg_match('/^(https?:\/\/)/', $torrent_file)) {
-			$torrent_file = 'http://' . str_replace("//", "", $torrent_file);
-		}
 		$torrent = $curl->fetchUrl($torrent_file);
 		$curl->close();
 
