@@ -232,11 +232,12 @@ if (empty($url)) {
 		}
 		$dom = new \IvoPetkov\HTML5DOMDocument();
 		$dom->loadHTML($content);
-		if ($dom->querySelector($tracker_data['login_has_error_element'])->isConnected) {
+		$login_error_element = $dom->querySelector($tracker_data['login_has_error_element']);
+		if ($login_error_element && $login_error_element->tagName) {
 			// Ошибка авторизации
 			bb_die($lang['PARSER_AUTH_ERROR']);
 		}
-		unset($dom, $content);
+		unset($dom, $content, $login_error_element);
 	}
 
 	// Получение содержимого
