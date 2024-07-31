@@ -41,8 +41,7 @@ $trackers = array(
 	'rutor' => array(
 		'enabled' => true,
 		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
-		'dl_url' => 'http://d.rutor.info/download/',
-		'target_element' => '<td class="header"',
+		'target_element' => 'body', // вся страница целиком
 		'redirect' => array(
 			'from' => array('http://rutor.org/'),
 			'to' => 'http://rutor.info/'
