@@ -81,7 +81,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $version The version number of the document as part of the XML declaration.
      * @param string $encoding The encoding of the document as part of the XML declaration.
      */
-    public function __construct(string $version = '1.0', string $encoding = '')
+    public function __construct($version = '1.0', $encoding = '')
     {
         parent::__construct($version, $encoding);
         $this->registerNodeClass('DOMElement', '\IvoPetkov\HTML5DOMElement');
@@ -247,7 +247,7 @@ class HTML5DOMDocument extends \DOMDocument
      *
      * @return boolean TRUE on success, FALSE otherwise.
      */
-    private function addHtmlElementIfMissing(): bool
+    private function addHtmlElementIfMissing()
     {
         if ($this->getElementsByTagName('html')->length === 0) {
             if (!isset(self::$newObjectsCache['htmlelement'])) {
@@ -264,7 +264,7 @@ class HTML5DOMDocument extends \DOMDocument
      *
      * @return boolean TRUE on success, FALSE otherwise.
      */
-    private function addHeadElementIfMissing(): bool
+    private function addHeadElementIfMissing()
     {
         if ($this->getElementsByTagName('head')->length === 0) {
             $htmlElement = $this->getElementsByTagName('html')->item(0);
@@ -287,7 +287,7 @@ class HTML5DOMDocument extends \DOMDocument
      *
      * @return boolean TRUE on success, FALSE otherwise.
      */
-    private function addBodyElementIfMissing(): bool
+    private function addBodyElementIfMissing()
     {
         if ($this->getElementsByTagName('body')->length === 0) {
             if (!isset(self::$newObjectsCache['bodyelement'])) {
@@ -305,7 +305,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param \DOMNode $node Optional parameter to output a subset of the document.
      * @return string The document (or node) HTML code as string.
      */
-    public function saveHTML(\DOMNode $node = null): string
+    public function saveHTML(\DOMNode $node = null)
     {
         $nodeMode = $node !== null;
         if ($nodeMode && $node instanceof \DOMDocument) {
@@ -431,7 +431,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @return HTML5DOMElement|null The result DOMElement or null if not found.
      * @throws \InvalidArgumentException
      */
-    public function querySelector(string $selector)
+    public function querySelector($selector)
     {
         return $this->internalQuerySelector($selector);
     }
@@ -443,7 +443,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @return HTML5DOMNodeList Returns a list of DOMElements matching the criteria.
      * @throws \InvalidArgumentException
      */
-    public function querySelectorAll(string $selector)
+    public function querySelectorAll($selector)
     {
         return $this->internalQuerySelectorAll($selector);
     }
@@ -454,7 +454,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $name The name of the insert target.
      * @return HTML5DOMElement A new DOMElement that must be set in the place where the new body will be inserted.
      */
-    public function createInsertTarget(string $name)
+    public function createInsertTarget($name)
     {
         if (!$this->loaded) {
             $this->loadHTML('');
@@ -470,7 +470,7 @@ class HTML5DOMDocument extends \DOMDocument
      * @param string $source The HTML code to be inserted.
      * @param string $target Body target position. Available values: afterBodyBegin, beforeBodyEnd or insertTarget name.
      */
-    public function insertHTML(string $source, string $target = 'beforeBodyEnd')
+    public function insertHTML($source, $target = 'beforeBodyEnd')
     {
         $this->insertHTMLMulti([['source' => $source, 'target' => $target]]);
     }
