@@ -38,6 +38,9 @@ function rutor($content, $target_element)
 	// Удаление ссылок, с относительными ссылками
 	$html = preg_replace('/<a href="\/.*?">(.*?)<\/a>/i', '$1', $html);
 
+	// Спойлеры
+	$html = preg_replace('/<div class="hidewrap"><div class="hidehead" onclick="hideshow.*?">([\s\S]*?)<\/div><div class="hidebody"><\/div><textarea class="hidearea">([\s\S]*?)<\/textarea><\/div>/', "[spoiler=\"\\1\"]\\2[/spoiler]", $html);
+
 	// Вставка плеера
 	insert_video_player($html);
 
