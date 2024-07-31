@@ -62,10 +62,10 @@ class HTML5DOMTokenList
     /**
      * Adds the given tokens to the list.
      *
-     * @param string[] $tokens The tokens you want to add to the list.
+     * @param array $tokens The tokens you want to add to the list.
      * @return void
      */
-    public function add(string ...$tokens)
+    public function add($tokens)
     {
         if (count($tokens) === 0) {
             return;
@@ -82,10 +82,10 @@ class HTML5DOMTokenList
     /**
      * Removes the specified tokens from the list. If the string does not exist in the list, no error is thrown.
      *
-     * @param string[] $tokens The token you want to remove from the list.
+     * @param array $tokens The token you want to remove from the list.
      * @return void
      */
-    public function remove(string ...$tokens)
+    public function remove($tokens)
     {
         if (count($tokens) === 0) {
             return;
