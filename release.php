@@ -216,7 +216,7 @@ if (empty($url)) {
 		}
 		$dom = new \IvoPetkov\HTML5DOMDocument();
 		$dom->loadHTML($content);
-		if ($dom->querySelector($tracker_data['login_error_element'])->isConnected) {
+		if ($dom->querySelector($tracker_data['login_has_error_element'])->isConnected) {
 			// Ошибка авторизации
 			bb_die($lang['PARSER_AUTH_ERROR']);
 		}
