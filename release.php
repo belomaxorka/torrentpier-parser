@@ -75,7 +75,7 @@ if (empty($url)) {
 	$cat_title_html = $forums['cat_title_html'];
 	$forum_name_html = $forums['forum_name_html'];
 
-	$excluded_forums_csv = $user->get_excluded_forums(AUTH_READ);
+	$excluded_forums_csv = $user->get_excluded_forums(AUTH_ATTACH);
 	$allowed_forums = array_diff(explode(',', $forums['tracker_forums']), explode(',', $excluded_forums_csv));
 
 	if (!$allowed_forums) {
