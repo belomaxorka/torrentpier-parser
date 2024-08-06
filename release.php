@@ -173,7 +173,7 @@ if (empty($url)) {
 	// Подключение HTML5 DOM
 	require_once INC_DIR . "/parser/html5-dom-document-php-2.7.0/autoload.php";
 	// Подключение парсера
-	$tracker_file_path = INC_DIR . "/parser/trackers/$tracker.php";
+	$tracker_file_path = INC_DIR . "/parser/trackers/$tracker/$tracker.php";
 	if (!file_exists($tracker_file_path)) {
 		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], $tracker_file_path));
 	}
