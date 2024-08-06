@@ -52,7 +52,11 @@ function torrent_decode($torrent, &$info_hash)
 	}
 
 	if (!isset($tor) || !isset($info_hash)) {
-		bb_die($lang['PARSER_NOT_FOUND_BENCODE_LIB']);
+		if (class_exists('\Arokettu\Bencode\Bencode')) {
+			bb_die($lang['PARSER_NOT_FOUND_BENCODE_LIB_NEW']);
+		} else {
+			bb_die($lang['PARSER_NOT_FOUND_BENCODE_LIB']);
+		}
 	}
 
 	if (empty($info_hash)) {

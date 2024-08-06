@@ -143,6 +143,7 @@ $bb_cfg['torrent_parser'] = array(
 // NextGen Парсер раздач
 $lang['PARSER_TITLE'] = 'Парсер раздач';
 $lang['PARSER_NOT_FOUND_BENCODE_LIB'] = 'Отсутствует библиотека для бинкодирования торрента';
+$lang['PARSER_NOT_FOUND_BENCODE_LIB_NEW'] = 'Раскомментируйте строчки кода для работы парсера. Следуйте согласно <a target="_blank" href="https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96551">этой</a> инструкции';
 $lang['PARSER_EMPTY_INFO_HASH'] = 'Пустой info_hash';
 $lang['PARSER_INVALID_URL'] = 'Указан неправильный URL-адрес';
 $lang['PARSER_CANT_SAVE_TORRENT'] = 'Не удалось создать/сохранить торрент-файл: <b>%s</b>';
