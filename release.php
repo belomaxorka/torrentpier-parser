@@ -224,7 +224,7 @@ if (empty($url)) {
 		}
 
 		// Получение торрент-файла
-		$torrent = $curl->fetchUrl($torrent_file);
+		$torrent = fetch_content($curl, $torrent_file);
 		$curl->close();
 
 		// Декодирование торрент-файла
