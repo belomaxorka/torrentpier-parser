@@ -47,15 +47,16 @@ if ($bb_cfg['torrent_parser']['parser_auth'] === 'user' && (IS_GROUP_MEMBER && !
 	}
 	unset($groups, $vip);
 } else {
-	if (!in_array($bb_cfg['torrent_parser']['parser_auth'], array('both', 'admin', 'moderator', 'user'))) {
-		$bb_cfg['torrent_parser']['parser_auth'] = 'both';
-	}
 	// Проверка на наличие доступа
-	if (in_array($bb_cfg['torrent_parser']['parser_auth'], array('both', 'admin', 'moderator', 'user')) &&
-		((!IS_AM && $bb_cfg['torrent_parser']['parser_auth'] === 'both') ||
+	if (in_array($bb_cfg['torrent_parser']['parser_auth'], array('both', 'admin', 'moderator', 'user'))) {
+		if ((!IS_AM && $bb_cfg['torrent_parser']['parser_auth'] === 'both') ||
 			(!IS_ADMIN && $bb_cfg['torrent_parser']['parser_auth'] === 'admin') ||
 			(!IS_MOD && !IS_ADMIN && $bb_cfg['torrent_parser']['parser_auth'] === 'moderator') ||
-			(IS_GUEST && $bb_cfg['torrent_parser']['parser_auth'] === 'user'))) {
+			(IS_GUEST && $bb_cfg['torrent_parser']['parser_auth'] === 'user')
+		) {
+			bb_die($lang['NOT_AUTHORISED']);
+		}
+	} elseif ($bb_cfg['torrent_parser']['parser_auth'] !== 'guest') {
 		bb_die($lang['NOT_AUTHORISED']);
 	}
 }
