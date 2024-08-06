@@ -205,10 +205,11 @@ if (empty($url)) {
 	// Подключение HTML5 DOM
 	require_once INC_DIR . "/parser/html5-dom-document-php-2.7.0/autoload.php";
 	// Подключение парсера
-	if (!file_exists(INC_DIR . "/parser/trackers/$tracker.php")) {
-		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], $tracker));
+	$tracker_file_path = INC_DIR . "/parser/trackers/$tracker.php";
+	if (!file_exists($tracker_file_path)) {
+		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], $tracker_file_path));
 	}
-	require_once INC_DIR . "/parser/trackers/$tracker.php";
+	require_once $tracker_file_path;
 
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
