@@ -12,6 +12,7 @@
 define('BB_SCRIPT', 'release');
 define('BB_ROOT', './');
 require_once __DIR__ . '/common.php';
+require_once INC_DIR . '/parser/trackers.php';
 require_once INC_DIR . '/parser/functions.php';
 require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
 require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
@@ -31,26 +32,6 @@ $user->session_start(array('req_login' => ($bb_cfg['torrent_parser']['parser_aut
 
 // Получаем путь до папки с торрентами
 $attach_dir = get_attachments_dir();
-
-/**
- * ------------------------------------------------------
- * Список доступных трекеров
- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- * Описание структуры массива можно почитать тут:
- * https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96591
- * ------------------------------------------------------
- */
-$trackers = array(
-	'rutor' => array(
-		'enabled' => true,
-		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
-		'target_element' => 'td[style="vertical-align:top;"] + td',
-		'redirect' => array(
-			'from' => array('http://rutor.org/'),
-			'to' => 'http://rutor.info/'
-		)
-	),
-);
 
 /**
  * ------------------------------------------------------
