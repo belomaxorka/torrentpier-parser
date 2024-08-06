@@ -21,7 +21,7 @@ if (!defined('BB_ROOT')) {
  */
 function die_and_refresh($msg)
 {
-	meta_refresh('release.php', 5);
+	meta_refresh('release.php', 10);
 	bb_die($msg);
 }
 
