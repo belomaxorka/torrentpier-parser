@@ -226,11 +226,7 @@ if (empty($url)) {
 		);
 		$curl->sendPostData($tracker_data['login_url'], $submit_vars);
 		// Проверка авторизации
-		$content = $curl->fetchUrl($tracker_data['login_url']);
-		if (empty($content)) {
-			// Проверка на пустую страницу
-			die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $tracker_data['login_url']));
-		}
+		$content = fetch_content($curl, $tracker_data['login_url']);
 		$dom = new \IvoPetkov\HTML5DOMDocument();
 		$dom->loadHTML($content);
 		$login_error_element = $dom->querySelector($tracker_data['login_has_error_element']);
@@ -242,11 +238,7 @@ if (empty($url)) {
 	}
 
 	// Получение содержимого
-	$content = $curl->fetchUrl($url);
-	if (empty($content)) {
-		// Проверка на пустую страницу
-		die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $url));
-	}
+	$content = fetch_content($curl, $url);
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content, $tracker_data['target_element'])) {

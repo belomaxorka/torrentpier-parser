@@ -26,6 +26,27 @@ function die_and_refresh($msg)
 }
 
 /**
+ * Получение содержимого страницы
+ *
+ * @param object $curl
+ * @param string $url
+ * @return mixed
+ */
+function fetch_content($curl, $url)
+{
+	global $lang;
+
+	// Получение контента
+	$content = $curl->fetchUrl($url);
+	if (empty($content)) {
+		// Проверка на пустую страницу
+		die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $url));
+	}
+
+	return $content;
+}
+
+/**
  * Декодирование торрента
  *
  * @param string $torrent
