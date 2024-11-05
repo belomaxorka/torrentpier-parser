@@ -118,9 +118,14 @@ if (empty($url)) {
 	$search_all_opt = '<option disabled value="0">&nbsp;' . htmlCHR($lang['ALL_AVAILABLE']) . "</option>\n";
 	$cat_forum_select = "\n<select class=\"form-control form-control-sm\" id=\"fs\" name=\"forum_id\" style=\"font-size: small;\">\n" . $search_all_opt . $opt . "</select>\n";
 
+	$supported_trackers = array();
+	foreach ($trackers as $tracker) {
+		$supported_trackers[] = '<div style="display: flex; align-items: center; justify-content: center;"><span>' . $tracker['name'] . '</span>&nbsp;<img style="width: 20px; height: 20px;" alt="' . $tracker['name'] . '" src="' . $tracker['icon'] . '"></div>';
+	}
+
 	$template->assign_vars(array(
 		'IN_PARSER' => true,
-		'SUPPORTED_TRACKERS' => implode(', ', array_keys($trackers)),
+		'SUPPORTED_TRACKERS' => implode(', ', $supported_trackers),
 		'SELECT_FORUM' => $cat_forum_select,
 	));
 } else {

@@ -9,6 +9,10 @@
  * --------------------------------------------------------
  */
 
+if (!defined('BB_ROOT')) {
+	die(basename(__FILE__));
+}
+
 /**
  * ------------------------------------------------------
  * Список доступных трекеров
@@ -20,6 +24,8 @@
 $trackers = array(
 	'rutor' => array(
 		'enabled' => true,
+		'name' => 'RuTor.info',
+		'icon' => BB_ROOT . 'styles/images/trackers/rutor.ico',
 		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
 		'target_element' => 'td[style="vertical-align:top;"] + td',
 		'redirect' => array(
