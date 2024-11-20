@@ -24,7 +24,7 @@ if (!defined('BB_ROOT')) {
 $trackers = array(
 	'rutor' => array(
 		'enabled' => true,
-		'name' => 'RuTor.info',
+		'name' => 'Rutor.info',
 		'icon' => BB_ROOT . 'styles/images/trackers/rutor.ico',
 		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
 		'target_element' => 'td[style="vertical-align:top;"] + td',
