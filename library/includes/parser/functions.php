@@ -101,7 +101,7 @@ function attach_torrent_file($tor, $torrent, &$hidden_form_fields)
 
 	if (is_array($tor) && count($tor)) {
 		// Создание торрент-файла
-		$new_name = md5($torrent) . '_' . TIMENOW;
+		$new_name = hash('md5', $torrent) . '_' . TIMENOW;
 		$file_path = "$attach_dir/$new_name";
 		$file = new SplFileInfo($file_path);
 		if (!$file->isFile()) {
