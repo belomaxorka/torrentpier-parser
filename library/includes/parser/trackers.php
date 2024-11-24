@@ -65,4 +65,16 @@ $trackers = array(
 		'regex' => "#z-torrents\.ru/[a-z]+/\d+-\S+\.html#",
 		'target_element' => '<div class="dle_b_appp"',
 	),
+	'booktracker' => array(
+		'enabled' => true,
+		'auth' => true,
+		'name' => 'booktracker.org',
+		'icon' => BB_ROOT . 'styles/images/trackers/booktracker.ico',
+		'regex' => "#booktracker\.org/viewtopic\.php\?t=\d+#",
+		'login_url' => 'https://booktracker.org/login.php',
+		'dl_url' => 'https://booktracker.org/download.php?id=',
+		'login_input_name' => 'login_username',
+		'password_input_name' => 'login_password',
+		'target_element' => '<div id="tor_info"',
+	),
 );
