@@ -200,16 +200,7 @@ if (empty($url)) {
 			'autologin' => 'on',
 		);
 		$curl->sendPostData($tracker_data['login_url'], $submit_vars);
-		// Проверка авторизации
-		$content = fetch_content($curl, $tracker_data['login_url']);
-		$dom = new \IvoPetkov\HTML5DOMDocument();
-		$dom->loadHTML($content);
-		$login_error_element = $dom->querySelector($tracker_data['login_has_error_element']);
-		if ($login_error_element && $login_error_element->tagName) {
-			// Ошибка авторизации
-			bb_die($lang['PARSER_AUTH_ERROR']);
-		}
-		unset($dom, $content, $login_error_element);
+		// TODO: Проверка на успешную авторизацию
 	}
 
 	// Получение содержимого
