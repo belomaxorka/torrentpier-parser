@@ -93,6 +93,9 @@ function booktracker($text)
 		$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
 	}
 
+	// Вставка плеера
+	insert_video_player($text);
+
 	return array(
 		'title' => $title,
 		'torrent' => $torrent,
