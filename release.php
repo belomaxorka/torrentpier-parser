@@ -213,10 +213,10 @@ if (empty($url)) {
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content)) {
-		$torrent_file = $message['torrent']; // Идентификатор торрент-файла
+		$torrent_file = $message['torrent']; // Ссылка на торрент-файл / attach_id
 		$subject = $message['title']; // Заголовок сообщения
 
-		// Проверка идентификатора торрента
+		// Проверка ссылки на торрент
 		if (empty($torrent_file)) {
 			die_and_refresh($lang['PARSER_CANT_GET_TORRENT']);
 		}
