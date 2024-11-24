@@ -212,8 +212,8 @@ if (empty($url)) {
 		$torrent_file = $message['torrent']; // Ссылка на торрент-файл
 		$subject = $message['title']; // Заголовок сообщения
 
-		// Проверка ссылки на торрент-файл на корректность
-		if (!filter_var($torrent_file, FILTER_VALIDATE_URL)) {
+		// Проверка идентификатора торрента
+		if (empty($torrent_file) || !is_numeric($torrent_file)) {
 			die_and_refresh($lang['PARSER_CANT_GET_TORRENT']);
 		}
 
