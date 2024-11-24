@@ -77,16 +77,4 @@ $trackers = array(
 		'password_input_name' => 'login_password',
 		'target_element' => '<div id="tor_info"',
 	),
-	'riperam' => array(
-		'enabled' => true,
-		'auth' => true,
-		'name' => 'riperam.org',
-		'icon' => BB_ROOT . 'styles/images/trackers/riperam.ico',
-		'regex' => "#riperam\.org/[a-z]+/\S+\.html#",
-		'login_url' => 'https://riperam.org/ucp.php?mode=login',
-		'dl_url' => 'https://riperam.org/download/file.php?id=',
-		'login_input_name' => 'username',
-		'password_input_name' => 'password',
-		'target_element' => '<td style="text-align: center; vertical-align: top;">',
-	),
 );
