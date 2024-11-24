@@ -9,49 +9,67 @@
  * --------------------------------------------------------
  */
 
-if (!defined('BB_ROOT')) {
-	die(basename(__FILE__));
-}
+if (!defined('BB_ROOT')) die(basename(__FILE__));
 
 /**
- * Rutor.info Parser
+ * Парсер с Rutor.info
  *
- * @param string $content
- * @param string $target_element
- * @return array
- * @throws Exception
- *
+ * @link https://torrentpier.com/resources/avtomaticheskij-parser-razdach-s-rutor-info.253/
+ * @author _Xz_
  * @license MIT License
- * @author belomaxorka
  *
+ * @param $text
+ * @return array
  */
-function rutor($content, $target_element)
+function rutor($text)
 {
-	// Инициализация класса для работы с DOM
-	$dom = new \IvoPetkov\HTML5DOMDocument();
-	$dom->loadHTML($content);
-	$html = $dom->querySelector($target_element)->innerHTML;
+	// ------------------- Get title -------------------
+	preg_match("#<h1>([\s\S]*?)</h1>#", $text, $matches);
+	$title = $matches[1];
 
-	// Основные замены
-	$html = parser_base($html);
+	// ------------------- Get download link -------------------
+	preg_match("#<a href=\".*?d.rutor.info/download/([\s\S]*?)\"><img src=\".*?down.png\"> .*? ([\s\S]*?).torrent</a>#", $text, $matches);
+	$torrent = $matches[1];
 
-	// TODO Refactor
-	$html = preg_replace('/<a href="\/tag\/.*?" target="_blank">([\s\S]*?)<\/a>/', '$1', $html);
-	$html = preg_replace('/<div class="hidewrap"><div class="hidehead" onclick="hideshow.*?">([\s\S]*?)<\/div><div class="hidebody"><\/div><textarea class="hidearea">([\s\S]*?)<\/textarea><\/div>/', "[spoiler=\"\\1\"]\\2[/spoiler]", $html);
-	$html = preg_replace('/<a href="([^<]*?)" target="_blank">([^<]*?)<(?=\/)\/a>/siu', '[url=$1]$2[/url]', $html);
-	$html = preg_replace('/<img src="([^<]*?)" style="float:(.*?);" \/>/siu', '[img=$2]$1[/img]', $html);
-	$html = preg_replace('/<img src="([^<]*?)" \/>/siu', '[img]$1[/img]', $html);
-	$html = preg_replace('/<font size="([^<]*?)">([^<]*?)<(?=\/)\/font>/', "[size=2\\1]\\2[/size]", $html);
-	$html = preg_replace('/<span style="color:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $html);
-	$html = preg_replace('/<span style="font-family:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[font="$1"]$2[/font]', $html);
+	// ------------------- Get content -------------------
+	preg_match("#<tr><td style=\"vertical-align:top;\"></td><td>([\s\S]*?)</td></tr>#si", $text, $matches);
+	$text = $matches[1];
+
+	$text = preg_replace('/<br.*?>/', "", $text);
+	$text = preg_replace('/<a href="\/tag\/.*?" target="_blank">([\s\S]*?)<\/a>/', '$1', $text);
+	$text = preg_replace('/<div class="hidewrap"><div class="hidehead" onclick="hideshow.*?">([\s\S]*?)<\/div><div class="hidebody"><\/div><textarea class="hidearea">([\s\S]*?)<\/textarea><\/div>/', "[spoiler=\"\\1\"]\\2[/spoiler]", $text);
+
+	$text = str_replace('<center>', '[align=center]', $text);
+	$text = str_replace('</center>', '[/align]', $text);
+	$text = str_replace('<hr />', '[hr]', $text);
+
+	$text = str_replace('&#039;', "'", $text);
+	$text = str_replace('&nbsp;', ' ', $text);
+	$text = str_replace('&gt;', '>', $text);
+	$text = str_replace('&lt;', '<', $text);
+
+	for ($i = 0; $i <= 20; $i++) {
+		$text = preg_replace('/<a href="([^<]*?)" target="_blank">([^<]*?)<(?=\/)\/a>/siu', '[url=$1]$2[/url]', $text);
+		$text = preg_replace('/<img src="([^<]*?)" style="float:(.*?);" \/>/siu', '[img=$2]$1[/img]', $text);
+		$text = preg_replace('/<img src="([^<]*?)" \/>/siu', '[img]$1[/img]', $text);
+		$text = preg_replace('/<b>([^<]*?)<(?=\/)\/b>/', '[b]$1[/b]', $text);
+		$text = preg_replace('/<u>([^<]*?)<(?=\/)\/u>/', '[u]$1[/u]', $text);
+		$text = preg_replace('/<i>([^<]*?)<(?=\/)\/i>/', '[i]$1[/i]', $text);
+		$text = preg_replace('/<s>([^<]*?)<(?=\/)\/s>/', '[s]$1[/s]', $text);
+		$text = preg_replace('/<font size="([^<]*?)">([^<]*?)<(?=\/)\/font>/', "[size=2\\1]\\2[/size]", $text);
+		$text = preg_replace('/<span style="color:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
+		$text = preg_replace('/<span style="font-family:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[font="$1"]$2[/font]', $text);
+	}
 
 	// Вставка плеера
-	insert_video_player($html);
+	insert_video_player($text);
 
-	// Формирование выходных данных
+	// Удаление последовательности [hr]
+	$text = preg_replace('/\[hr](\[hr])+/', '[hr]', $text);
+
 	return array(
-		'title' => $dom->querySelector('h1')->textContent,
-		'torrent' => 'http://' . ltrim($dom->querySelector('a[href^="//d.rutor.info/download/"]')->getAttribute('href'), '//'),
-		'content' => strip_tags($html)
+		'title' => $title,
+		'torrent' => $torrent,
+		'content' => strip_tags(html_entity_decode($text))
 	);
 }

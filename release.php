@@ -179,8 +179,6 @@ if (empty($url)) {
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
-	// Подключение HTML5 DOM
-	require_once INC_DIR . '/parser/html5-dom-document-php-2.7.0/autoload.php';
 	// Подключение парсера
 	$tracker_file_path = INC_DIR . "/parser/trackers/$tracker/$tracker.php";
 	if (!file_exists($tracker_file_path)) {
