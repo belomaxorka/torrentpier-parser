@@ -53,6 +53,7 @@ $trackers = array(
 		'password_input_name' => 'login_password',
 		'target_element' => '<input type="radio" name=',
 		'redirect' => array(
+			// from https -> http
 			'from' => array('https://rutracker.ru/'),
 			'to' => 'http://rutracker.ru/'
 		)
