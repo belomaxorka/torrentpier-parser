@@ -12,16 +12,15 @@
 if (!defined('BB_ROOT')) die(basename(__FILE__));
 
 /**
- * Парсер с Rutor.info
- *
- * @link https://torrentpier.com/resources/avtomaticheskij-parser-razdach-s-rutor-info.253/
- * @author _Xz_
- * @license MIT License
+ * Парсер с xxxtor.com
  *
  * @param $text
  * @return array
+ * @author ivangord aka Ральф
+ * @license MIT License
+ *
  */
-function rutor($text)
+function xxxtor($text)
 {
 	// ------------------- Get title -------------------
 	preg_match("#<h1>([\s\S]*?)</h1>#i", $text, $matches);
