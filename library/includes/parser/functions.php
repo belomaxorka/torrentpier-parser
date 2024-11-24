@@ -30,16 +30,21 @@ function die_and_refresh($msg)
  *
  * @param object $curl
  * @param string $url
+ * @param string $target_element
  * @return mixed
  */
-function fetch_content($curl, $url)
+function fetch_content($curl, $url, $target_element)
 {
 	global $lang;
 
 	// Получение контента
 	$content = $curl->fetchUrl($url);
+	$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
+	$pos = strpos($content, $target_element);
+	$content = substr($content, 0, $pos);
+
+	// Проверка на пустую страницу
 	if (empty($content)) {
-		// Проверка на пустую страницу
 		die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $url));
 	}
 

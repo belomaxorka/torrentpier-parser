@@ -204,10 +204,10 @@ if (empty($url)) {
 	}
 
 	// Получение содержимого
-	$content = fetch_content($curl, $url);
+	$content = fetch_content($curl, $url, $tracker_data['target_element']);
 
 	// Парсим HTML код страницы
-	if ($message = $tracker($content, $tracker_data['target_element'])) {
+	if ($message = $tracker($content)) {
 		$torrent_file = $message['torrent']; // Ссылка на торрент-файл
 		$subject = $message['title']; // Заголовок сообщения
 
@@ -222,7 +222,8 @@ if (empty($url)) {
 		}
 
 		// Получение торрент-файла
-		$torrent = fetch_content($curl, $torrent_file);
+		$tracker_data['dl_url'] = isset($tracker_data['dl_url']) ? $tracker_data['dl_url'] : '';
+		$torrent = $curl->fetchUrl($tracker_data['dl_url'] . $torrent_file);
 		$curl->close();
 
 		// Декодирование торрент-файла
