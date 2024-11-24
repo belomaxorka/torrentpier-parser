@@ -201,6 +201,7 @@ if (empty($url)) {
 		);
 		$curl->sendPostData($tracker_data['login_url'], $submit_vars);
 		// TODO: Проверка на успешную авторизацию
+		// $lang['PARSER_AUTH_ERROR']
 	}
 
 	// Получение содержимого
