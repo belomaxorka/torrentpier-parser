@@ -68,6 +68,9 @@ function torrent_decode($torrent, &$info_hash)
 		require_once INC_DIR . '/functions_torrent.php';
 		$tor = bdecode($torrent);
 		$info_hash = pack('H*', sha1(bencode($tor['info'])));
+	} elseif (class_exists('\Rych\Bencode\Bencode')) {
+		$tor = \Rych\Bencode\Bencode::decode($torrent);
+		$info_hash = pack('H*', sha1(\Rych\Bencode\Bencode::encode($tor['info'])));
 	} elseif (class_exists('\SandFox\Bencode\Bencode')) {
 		$tor = \SandFox\Bencode\Bencode::decode($torrent);
 		$info_hash = pack('H*', sha1(\SandFox\Bencode\Bencode::encode($tor['info'])));
