@@ -120,7 +120,11 @@ if (empty($url)) {
 
 	$supported_trackers = array();
 	foreach ($trackers as $tracker) {
-		$supported_trackers[] = '<div style="display: flex; align-items: center; justify-content: center;"><span>' . $tracker['name'] . '</span>&nbsp;<img style="width: 20px; height: 20px;" alt="' . $tracker['name'] . '" src="' . $tracker['icon'] . '"></div>';
+		$icon = '';
+		if (!empty($tracker['icon'])) {
+			$icon = '&nbsp;<img style="width: 20px; height: 20px;" alt="' . $tracker['name'] . '" src="' . $tracker['icon'] . '">';
+		}
+		$supported_trackers[] = '<div style="display: flex; align-items: center; justify-content: center;"><span>' . $tracker['name'] . '</span>' . $icon . '</div>';
 	}
 
 	$template->assign_vars(array(
