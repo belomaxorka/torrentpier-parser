@@ -174,30 +174,3 @@ function insert_video_player(&$html)
 		$html .= '[hr][br]';
 	}
 }
-
-/**
- * Основные замены
- *
- * @param string $html
- * @return array|string|string[]|null
- */
-function parser_base($html)
-{
-	// Misc
-	$html = str_replace('&#039;', "'", $html);
-	$html = str_replace('&nbsp;', ' ', $html);
-	$html = str_replace('&gt;', '>', $html);
-	$html = str_replace('&lt;', '<', $html);
-	// To [align=center]
-	$html = preg_replace('/<center>/i', '[align=center]', $html);
-	$html = preg_replace('/<\/center>/i', '[/align]', $html);
-	// To [hr]
-	$html = preg_replace('/<hr\s*\/?>/i', '[hr]', $html);
-	$html = preg_replace('/\[hr](\[hr])+/', '[hr]', $html);
-	// To [br]
-	$html = preg_replace('/<br\s*\/?>/i', '', $html);
-	// To [b], [i], [u] and [s]
-	$html = preg_replace('/<([ibus])>([^<]*)<\/\1>/i', '[$1]$2[/$1]', $html);
-
-	return $html;
-}
