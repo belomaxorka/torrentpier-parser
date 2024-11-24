@@ -12,7 +12,7 @@
 if (!defined('BB_ROOT')) die(basename(__FILE__));
 
 /**
- * Парсер с xxxtor.com
+ * Парсер с xxxtor.net
  *
  * @param $text
  * @return array
@@ -25,6 +25,8 @@ function xxxtor($text)
 	// ------------------- Get title -------------------
 	preg_match("#<h1>([\s\S]*?)</h1>#i", $text, $matches);
 	$title = $matches[1];
+	$title = preg_replace('/\[[\s\S]*?\.[\s\S]*? \/ [\s\S]*?\.[\s\S]*?\]/', '', $title);
+	$title = preg_replace('/\[[\s\S]*?\.[\s\S]*?\]/', '', $title);
 
 	// ------------------- Get download link -------------------
 	preg_match('#<a class="yellowBtn" href=".*?var=//(.*?)&.*?var2.*?</a>#', $text, $matches);

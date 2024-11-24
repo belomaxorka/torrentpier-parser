@@ -217,7 +217,7 @@ if (empty($url)) {
 		$subject = $message['title']; // Заголовок сообщения
 
 		// Проверка идентификатора торрента
-		if (empty($torrent_file) || !is_numeric($torrent_file)) {
+		if (empty($torrent_file)) {
 			die_and_refresh($lang['PARSER_CANT_GET_TORRENT']);
 		}
 
