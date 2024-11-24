@@ -43,9 +43,10 @@ $trackers = array(
 	),
 	'rutracker_ru' => array(
 		'enabled' => true,
+		'auth' => true,
 		'name' => 'rutracker.ru',
 		'icon' => BB_ROOT . 'styles/images/trackers/rutracker_ru.ico',
-		'regex' => "#http:\/\/rutracker.ru\/viewtopic.php\?t=#",
+		'regex' => "#rutracker.ru\/viewtopic.php\?t=#",
 		'login_url' => 'http://rutracker.ru/login.php',
 		'dl_url' => 'http://rutracker.ru/dl.php?id=',
 		'login_input_name' => 'login_username',
