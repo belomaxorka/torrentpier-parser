@@ -38,7 +38,7 @@ $trackers = array(
 		'enabled' => true,
 		'name' => 'xxxtor.net',
 		'icon' => BB_ROOT . 'styles/images/trackers/xxxtor.ico',
-		'regex' => "#xxxtor.net#",
+		'regex' => "/^xxxtor\.net\/\d+-?\d+\.html$/",
 		'dl_url' => '', // empty
 		'target_element' => '<div id="down">',
 	),
