@@ -46,13 +46,15 @@ function ztorrents($text)
 	$text = preg_replace('/<img id=.*?>/', '', $text);
 
 	$text = preg_replace_callback(
-		"/<span style=\"color:rgb\(([\s\S]*?)\);\">/msi",
+		"/<span style=\"color:rgb\(([\s\S]*?)\);\">/mi",
 		function ($matches) {
-			foreach ($matches as $match) {
-				$match = rgb2html($match);
-				return "<span style=\"color: rgb$match;\">";
+			$rgb = $matches[1];
+			$html_color = rgb2html($rgb);
+			if ($html_color) {
+				return "<span style=\"color:$html_color;\">";
+			} else {
+				return "<span style=\"color:rgb($rgb);\">";
 			}
-			return '';
 		}, $text);
 
 	$text = str_replace('<div', '<span', $text);
@@ -90,6 +92,7 @@ function ztorrents($text)
 		$text = str_replace('<s>', "[s]", $text);
 		$text = str_replace('</s>', "[/s]", $text);
 		$text = str_replace('<hr>', '[hr]', $text);
+		$text = preg_replace('/<span style="color:#([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[color=#$1]$2[/color]', $text);
 		$text = preg_replace('/<span style="color:rgb([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
 		$text = preg_replace('/<span style="text-align:([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[align=$1]$2[/align]', $text);
 		$text = preg_replace('/<span style="font-family:([^<]*?),.*?;">([^<]*?)<(?=\/)\/span>/', '[font="$1"]$2[/font]', $text);
