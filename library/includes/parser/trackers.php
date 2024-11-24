@@ -65,20 +65,4 @@ $trackers = array(
 		'regex' => "#z-torrents\.ru/[a-z]+/\d+-\S+\.html#",
 		'target_element' => '<div class="dle_b_appp"',
 	),
-	'uniongang' => array(
-		'enabled' => true,
-		'auth' => true,
-		'name' => 'uniongang.org',
-		'icon' => BB_ROOT . 'styles/images/trackers/uniongang.ico',
-		'regex' => "#uniongang\.org/details\.php\?id=\d+#",
-		'login_url' => 'https://uniongang.org/takelogin.php',
-		'dl_url' => 'https://uniongang.org/download.php?id=',
-		'login_input_name' => 'username',
-		'password_input_name' => 'password',
-		'target_element' => '<form method="post" action="takerate.php">',
-		'redirect' => array(
-			'from' => array('https://uniongang.club/'),
-			'to' => 'https://uniongang.org/'
-		)
-	),
 );
