@@ -162,6 +162,11 @@ if (empty($url)) {
 	$tracker = null;
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
+		// Проверка настроек трекера
+		if (!is_array($data['settings']) || empty($data['settings'])) {
+			bb_die(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
+		}
+
 		// Проверка на редиректы
 		if (!empty($data['redirect']['from'])) {
 			foreach ($data['redirect']['from'] as $fromUrl) {
@@ -207,7 +212,7 @@ if (empty($url)) {
 		// Создание папки для куки
 		if (!is_dir(COOKIES_PARS_DIR)) {
 			if (!mkdir(COOKIES_PARS_DIR, 0777)) {
-				bb_die($lang['PARSER_CANT_CREATE_COOKIES_DIR']);
+				die_and_refresh($lang['PARSER_CANT_CREATE_COOKIES_DIR']);
 			}
 		}
 
