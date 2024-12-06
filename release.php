@@ -199,7 +199,7 @@ if (empty($url)) {
 	require_once $tracker_file_path;
 
 	// Авторизация
-	if (isset($tracker_data['auth']) && $tracker_data['auth']) {
+	if (isset($tracker_data['auth']) && is_array($tracker_data['auth']) && $tracker_data['auth']['enabled']) {
 		if (!filter_var($tracker_data['login_url'], FILTER_VALIDATE_URL)) {
 			bb_die($lang['PARSER_EMPTY_AUTH_LINK']);
 		}
