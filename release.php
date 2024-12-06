@@ -200,7 +200,7 @@ if (empty($url)) {
 
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']['enabled']) {
-		if (!filter_var($tracker_data['login_url'], FILTER_VALIDATE_URL)) {
+		if (!filter_var($tracker_data['settings']['login_url'], FILTER_VALIDATE_URL)) {
 			bb_die($lang['PARSER_EMPTY_AUTH_LINK']);
 		}
 
@@ -216,19 +216,19 @@ if (empty($url)) {
 
 		// Отправка данных
 		$submit_vars = array(
-			$tracker_data['login_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['login'],
-			$tracker_data['password_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['pass'],
+			$tracker_data['auth']['login_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['login'],
+			$tracker_data['auth']['password_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['pass'],
 			'login' => true,
 			'autologin' => 'on',
 		);
-		$curl->sendPostData($tracker_data['login_url'], $submit_vars);
+		$curl->sendPostData($tracker_data['auth']['login_url'], $submit_vars);
 
 		// TODO: Проверка на успешную авторизацию
 		// $lang['PARSER_AUTH_ERROR']
 	}
 
 	// Получение содержимого
-	$content = fetch_content($curl, $url, $tracker_data['target_element']);
+	$content = fetch_content($curl, $url, $tracker_data['settings']['target_element']);
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content)) {
@@ -246,8 +246,8 @@ if (empty($url)) {
 		}
 
 		// Получение торрент-файла
-		$tracker_data['dl_url'] = isset($tracker_data['dl_url']) ? $tracker_data['dl_url'] : '';
-		$torrent = $curl->fetchUrl($tracker_data['dl_url'] . $torrent_file);
+		$tracker_data['settings']['dl_url'] = isset($tracker_data['settings']['dl_url']) ? $tracker_data['settings']['dl_url'] : '';
+		$torrent = $curl->fetchUrl($tracker_data['settings']['dl_url'] . $torrent_file);
 		$curl->close();
 
 		// Декодирование торрент-файла
