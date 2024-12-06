@@ -209,11 +209,8 @@ if (empty($url)) {
 			}
 		}
 		// Сохранение куки
-		if (is_dir(COOKIES_PARS_DIR)) {
-			$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
-		} else {
-			bb_die($lang['PARSER_CANT_FIND_COOKIES_DIR']);
-		}
+		$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
+		// Отправка данных
 		$submit_vars = array(
 			$tracker_data['login_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['login'],
 			$tracker_data['password_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['pass'],
