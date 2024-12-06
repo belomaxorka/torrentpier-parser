@@ -77,11 +77,15 @@ $trackers = array(
 	),
 	'ztorrents' => array(
 		'enabled' => true,
-		'name' => 'z-torrents.ru',
-		'href' => 'http://z-torrents.ru',
-		'icon' => BB_ROOT . 'styles/images/trackers/z-torrents.ico',
-		'regex' => "#z-torrents\.ru/[a-z]+/\d+-\S+\.html#",
-		'target_element' => '<div class="dle_b_appp"',
+		'info' => array(
+			'name' => 'z-torrents.ru',
+			'href' => 'http://z-torrents.ru',
+			'icon' => BB_ROOT . 'styles/images/trackers/z-torrents.ico',
+		),
+		'settings' => array(
+			'regex' => "#z-torrents\.ru/[a-z]+/\d+-\S+\.html#",
+			'target_element' => '<div class="dle_b_appp"',
+		),
 	),
 	'booktracker' => array(
 		'enabled' => true,
