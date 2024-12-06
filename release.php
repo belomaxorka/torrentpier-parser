@@ -164,7 +164,7 @@ if (empty($url)) {
 	foreach ($trackers as $name => $data) {
 		// Проверка настроек трекера
 		if (!is_array($data['settings']) || empty($data['settings'])) {
-			bb_die(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
+			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], 'settings'));
 		}
 
 		// Проверка на редиректы
