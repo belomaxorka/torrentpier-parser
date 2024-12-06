@@ -37,15 +37,19 @@ $trackers = array(
 		'redirect' => array(
 			'from' => array('http://rutor.org/'),
 			'to' => 'http://rutor.info/'
-		)
+		),
 	),
 	'xxxtor' => array(
 		'enabled' => true,
-		'name' => 'xxxtor.net',
-		'href' => 'http://xxxtor.net',
-		'icon' => BB_ROOT . 'styles/images/trackers/xxxtor.ico',
-		'regex' => "#xxxtor\.net/\d+-\d+\.html#",
-		'target_element' => '<div id="down">',
+		'info' => array(
+			'name' => 'xxxtor.net',
+			'href' => 'http://xxxtor.net',
+			'icon' => BB_ROOT . 'styles/images/trackers/xxxtor.ico',
+		),
+		'settings' => array(
+			'regex' => "#xxxtor\.net/\d+-\d+\.html#",
+			'target_element' => '<div id="down">',
+		),
 	),
 	'rutracker_ru' => array(
 		'enabled' => true,
