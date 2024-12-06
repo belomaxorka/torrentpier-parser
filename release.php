@@ -267,8 +267,8 @@ if (empty($url)) {
 		}
 
 		// Получение торрент-файла
-		$tracker_data['settings']['dl_url'] = isset($tracker_data['settings']['dl_url']) ? $tracker_data['settings']['dl_url'] : '';
-		$torrent = $curl->fetchUrl($tracker_data['settings']['dl_url'] . $torrent_file);
+		$dl_url = isset($tracker_data['settings']['dl_url']) ? $tracker_data['settings']['dl_url'] : '';
+		$torrent = $curl->fetchUrl($dl_url . $torrent_file);
 		$curl->close();
 
 		// Декодирование торрент-файла
