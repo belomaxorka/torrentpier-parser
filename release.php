@@ -202,7 +202,18 @@ if (empty($url)) {
 			bb_die($lang['PARSER_EMPTY_AUTH_LINK']);
 		}
 
-		$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
+		// Создание папки для куки
+		if (!is_dir(COOKIES_PARS_DIR)) {
+			if (!mkdir(COOKIES_PARS_DIR, 0777)) {
+				bb_die($lang['PARSER_CANT_CREATE_COOKIES_DIR']);
+			}
+		}
+		// Сохранение куки
+		if (is_dir(COOKIES_PARS_DIR)) {
+			$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
+		} else {
+			bb_die($lang['PARSER_CANT_FIND_COOKIES_DIR']);
+		}
 		$submit_vars = array(
 			$tracker_data['login_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['login'],
 			$tracker_data['password_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['pass'],
