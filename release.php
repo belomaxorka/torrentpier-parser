@@ -208,8 +208,10 @@ if (empty($url)) {
 				bb_die($lang['PARSER_CANT_CREATE_COOKIES_DIR']);
 			}
 		}
+
 		// Сохранение куки
 		$curl->storeCookies(COOKIES_PARS_DIR . '/' . $tracker . '_cookie.txt');
+
 		// Отправка данных
 		$submit_vars = array(
 			$tracker_data['login_input_name'] => $bb_cfg['torrent_parser']['auth'][$tracker]['login'],
@@ -218,6 +220,7 @@ if (empty($url)) {
 			'autologin' => 'on',
 		);
 		$curl->sendPostData($tracker_data['login_url'], $submit_vars);
+
 		// TODO: Проверка на успешную авторизацию
 		// $lang['PARSER_AUTH_ERROR']
 	}
