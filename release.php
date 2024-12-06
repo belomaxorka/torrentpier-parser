@@ -163,8 +163,17 @@ if (empty($url)) {
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
 		// Проверка настроек трекера
+		if (!is_array($data) || empty($data)) {
+			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], '*empty*'));
+		}
 		if (!is_array($data['settings']) || empty($data['settings'])) {
 			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], 'settings'));
+		}
+		if (isset($data['auth']) && !is_array($data['auth'])) {
+			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], 'auth'));
+		}
+		if (isset($data['redirect']) && !is_array($data['redirect'])) {
+			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], 'redirect'));
 		}
 
 		// Проверка на редиректы
