@@ -12,11 +12,11 @@
 define('BB_SCRIPT', 'release');
 define('BB_ROOT', './');
 require_once __DIR__ . '/common.php';
-require_once INC_DIR . 'parser/trackers.php';
-require_once INC_DIR . 'parser/functions.php';
-require_once INC_DIR . 'parser/curl/CurlHttpClient.php';
-require_once INC_DIR . 'parser/random_user_agent/UserAgent.php';
-require_once INC_DIR . 'bbcode.php';
+require_once INC_DIR . '/parser/trackers.php';
+require_once INC_DIR . '/parser/functions.php';
+require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
+require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
+require_once INC_DIR . '/bbcode.php';
 
 set_time_limit($bb_cfg['torrent_parser']['time_limit']);
 $hidden_form_fields = $message = $subject = '';
@@ -216,7 +216,7 @@ if (empty($url)) {
 
 	// ----------------------- Обращение к трекеру -----------------------
 	// Подключение парсера
-	$tracker_file_path = INC_DIR . "parser/trackers/$tracker/$tracker.php";
+	$tracker_file_path = INC_DIR . "/parser/trackers/$tracker/$tracker.php";
 	if (!file_exists($tracker_file_path)) {
 		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], hide_bb_path($tracker_file_path)));
 	}
