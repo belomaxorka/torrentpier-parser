@@ -98,9 +98,11 @@ $bb_cfg['torrent_parser'] = array(
 <div class="f_tbl_wrap">
 	<div class="tCenter row1" style="padding: 5px 25px 10px;">
 		<h1 class="maintitle">{L_PARSER_TITLE}</h1>
+		<!-- IF SUPPORTED_TRACKERS -->
 		<hr>
 		<h2>{L_PARSER_SUPPORTED_TRACKERS}</h2>
 		<span class="warnColor1" style="font-size: 13px;">{SUPPORTED_TRACKERS}</span>
+		<!-- ENDIF -->
 	</div>
 	<table class="forums pad_10">
 		<tr class="row2">
