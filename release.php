@@ -185,6 +185,7 @@ if (empty($url)) {
 				}
 			}
 		}
+
 		// Проверка по регулярному выражению
 		if (preg_match($data['settings']['regex'], $url)) {
 			if (!$data['enabled']) {
