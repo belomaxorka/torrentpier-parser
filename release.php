@@ -12,11 +12,11 @@
 define('BB_SCRIPT', 'release');
 define('BB_ROOT', './');
 require_once __DIR__ . '/common.php';
-require_once INC_DIR . '/parser/trackers.php';
-require_once INC_DIR . '/parser/functions.php';
-require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
-require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
-require_once INC_DIR . '/bbcode.php';
+require_once INC_DIR . 'parser/trackers.php';
+require_once INC_DIR . 'parser/functions.php';
+require_once INC_DIR . 'parser/curl/CurlHttpClient.php';
+require_once INC_DIR . 'parser/random_user_agent/UserAgent.php';
+require_once INC_DIR . 'bbcode.php';
 
 set_time_limit($bb_cfg['torrent_parser']['time_limit']);
 $hidden_form_fields = $message = $subject = '';
@@ -166,6 +166,9 @@ if (empty($url)) {
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
 		// Проверка настроек трекера
+		if (!is_string($name)) {
+			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], '*tracker name (key)*'));
+		}
 		if (empty($data) || !is_array($data)) {
 			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], '*empty*'));
 		}
@@ -204,15 +207,15 @@ if (empty($url)) {
 			break;
 		}
 	}
-	if ($tracker === null || !is_array($tracker_data)) {
+	if ($tracker === null) {
 		die_and_refresh(sprintf($lang['PARSER_INVALID_TRACKER'], $url));
 	}
 
 	// ----------------------- Обращение к трекеру -----------------------
 	// Подключение парсера
-	$tracker_file_path = INC_DIR . "/parser/trackers/$tracker/$tracker.php";
+	$tracker_file_path = INC_DIR . "parser/trackers/$tracker/$tracker.php";
 	if (!file_exists($tracker_file_path)) {
-		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], $tracker_file_path));
+		bb_die(sprintf($lang['PARSER_CANT_FIND_PARSER'], hide_bb_path($tracker_file_path)));
 	}
 	require_once $tracker_file_path;
 
