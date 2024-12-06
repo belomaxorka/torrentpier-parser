@@ -155,6 +155,7 @@ $lang['PARSER_NO_GROUP_RIGHTS'] = 'Извините, вы не состоите 
 $lang['PARSER_NO_ALLOWED_FORUMS'] = 'Нету форумов на которых разрешена регистрация торрентов';
 $lang['PARSER_TRACKER_DISABLED'] = 'Парсинг с трекера <b>%s</b> отключен администратором сайта';
 $lang['PARSER_EMPTY_AUTH'] = 'Не заполнены данные авторизации для трекера: <b>%s</b>';
+$lang['PARSER_INVALID_TRACKER_CONFIG'] = 'Неверные формат настроек трекера / отсутствует секция <b>%s</b>';
 $lang['PARSER_INVALID_TRACKER'] = 'Неверный URL-адрес / неподдерживаемый трекер (<b>%s</b>)';
 $lang['PARSER_CANT_FIND_PARSER'] = 'Не удается найти файл парсера: <b>%s</b>';
 $lang['PARSER_CANT_CREATE_COOKIES_DIR'] = 'Не получается создать папку для куки файлов. Попробуйте повторить попытку парсинга';
