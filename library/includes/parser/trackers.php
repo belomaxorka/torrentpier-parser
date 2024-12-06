@@ -36,7 +36,7 @@ $trackers = array(
 		),
 		'redirect' => array(
 			'from' => array('http://rutor.org/'),
-			'to' => 'http://rutor.info/'
+			'to' => 'http://rutor.info/',
 		),
 	),
 	'xxxtor' => array(
@@ -53,21 +53,27 @@ $trackers = array(
 	),
 	'rutracker_ru' => array(
 		'enabled' => true,
-		'auth' => true,
-		'name' => 'rutracker.ru',
-		'href' => 'http://rutracker.ru',
-		'icon' => BB_ROOT . 'styles/images/trackers/rutracker_ru.ico',
-		'regex' => "#rutracker\.ru/viewtopic\.php\?t=\d+#",
-		'login_url' => 'http://rutracker.ru/login.php',
-		'dl_url' => 'http://rutracker.ru/dl.php?id=',
-		'login_input_name' => 'login_username',
-		'password_input_name' => 'login_password',
-		'target_element' => '<input type="radio" name=',
+		'info' => array(
+			'name' => 'rutracker.ru',
+			'href' => 'http://rutracker.ru',
+			'icon' => BB_ROOT . 'styles/images/trackers/rutracker_ru.ico',
+		),
+		'settings' => array(
+			'regex' => "#rutracker\.ru/viewtopic\.php\?t=\d+#",
+			'dl_url' => 'http://rutracker.ru/dl.php?id=',
+			'target_element' => '<input type="radio" name=',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'http://rutracker.ru/login.php',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+		),
 		'redirect' => array(
 			// from https -> http
 			'from' => array('https://rutracker.ru/'),
-			'to' => 'http://rutracker.ru/'
-		)
+			'to' => 'http://rutracker.ru/',
+		),
 	),
 	'ztorrents' => array(
 		'enabled' => true,
