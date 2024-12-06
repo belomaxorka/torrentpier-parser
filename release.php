@@ -200,7 +200,7 @@ if (empty($url)) {
 
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']['enabled']) {
-		if (!filter_var($tracker_data['settings']['login_url'], FILTER_VALIDATE_URL)) {
+		if (!filter_var($tracker_data['auth']['login_url'], FILTER_VALIDATE_URL)) {
 			bb_die($lang['PARSER_EMPTY_AUTH_LINK']);
 		}
 
