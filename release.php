@@ -120,6 +120,9 @@ if (empty($url)) {
 
 	$supported_trackers = array();
 	foreach ($trackers as $tracker) {
+		if (!isset($tracker['info']) || !is_array($tracker['info'])) {
+			continue;
+		}
 		$icon = $href = '';
 		$tracker = $tracker['info'];
 
@@ -137,7 +140,7 @@ if (empty($url)) {
 
 	$template->assign_vars(array(
 		'IN_PARSER' => true,
-		'SUPPORTED_TRACKERS' => implode(', ', $supported_trackers),
+		'SUPPORTED_TRACKERS' => !empty($supported_trackers) ? implode(', ', $supported_trackers) : false,
 		'SELECT_FORUM' => $cat_forum_select,
 	));
 } else {
