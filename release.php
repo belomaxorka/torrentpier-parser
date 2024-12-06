@@ -163,10 +163,10 @@ if (empty($url)) {
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
 		// Проверка настроек трекера
-		if (!is_array($data) || empty($data)) {
+		if (empty($data) || !is_array($data)) {
 			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], '*empty*'));
 		}
-		if (!is_array($data['settings']) || empty($data['settings'])) {
+		if (empty($data['settings']) || !is_array($data['settings'])) {
 			bb_die(sprintf($lang['PARSER_INVALID_TRACKER_CONFIG'], 'settings'));
 		}
 		if (isset($data['auth']) && !is_array($data['auth'])) {
