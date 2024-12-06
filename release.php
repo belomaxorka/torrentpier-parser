@@ -162,22 +162,26 @@ if (empty($url)) {
 	$tracker = null;
 	$tracker_data = array();
 	foreach ($trackers as $name => $data) {
+		$settings = $data['settings'];
+		$auth = $data['auth'];
+		$redirect = $data['redirect'];
+
 		// Проверка на редиректы
-		if (!empty($data['redirect']['from'])) {
-			foreach ($data['redirect']['from'] as $fromUrl) {
+		if (!empty($redirect['from'])) {
+			foreach ($redirect['from'] as $fromUrl) {
 				if (strpos($url, $fromUrl) === 0) {
-					$url = str_replace($fromUrl, $data['redirect']['to'], $url);
+					$url = str_replace($fromUrl, $redirect['to'], $url);
 					break;
 				}
 			}
 		}
 		// Проверка по регулярному выражению
-		if (preg_match($data['regex'], $url)) {
+		if (preg_match($settings['regex'], $url)) {
 			if (!$data['enabled']) {
 				// Парсинг с трекера отключен
 				die_and_refresh(sprintf($lang['PARSER_TRACKER_DISABLED'], $name));
 			}
-			if ((isset($data['auth']) && is_array($data['auth']) && $data['auth']['enabled']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
+			if ((isset($auth) && is_array($auth) && $auth['enabled']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
 				// Неверные данные авторизации
 				bb_die(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
 			}
