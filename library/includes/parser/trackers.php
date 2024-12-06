@@ -89,15 +89,21 @@ $trackers = array(
 	),
 	'booktracker' => array(
 		'enabled' => true,
-		'auth' => true,
-		'name' => 'booktracker.org',
-		'href' => 'http://booktracker.org',
-		'icon' => BB_ROOT . 'styles/images/trackers/booktracker.ico',
-		'regex' => "#booktracker\.org/viewtopic\.php\?t=\d+#",
-		'login_url' => 'https://booktracker.org/login.php',
-		'dl_url' => 'https://booktracker.org/download.php?id=',
-		'login_input_name' => 'login_username',
-		'password_input_name' => 'login_password',
-		'target_element' => '<div id="tor_info"',
+		'info' => array(
+			'name' => 'booktracker.org',
+			'href' => 'http://booktracker.org',
+			'icon' => BB_ROOT . 'styles/images/trackers/booktracker.ico',
+		),
+		'settings' => array(
+			'regex' => "#booktracker\.org/viewtopic\.php\?t=\d+#",
+			'dl_url' => 'https://booktracker.org/download.php?id=',
+			'target_element' => '<div id="tor_info"',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'https://booktracker.org/login.php',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+		),
 	),
 );
