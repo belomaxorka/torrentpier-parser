@@ -120,11 +120,17 @@ if (empty($url)) {
 
 	$supported_trackers = array();
 	foreach ($trackers as $tracker) {
-		$icon = '';
+		$icon = $href = '';
 		if (!empty($tracker['icon'])) {
 			$icon = '&nbsp;<img style="width: 20px; height: 20px;" alt="' . $tracker['name'] . '" src="' . $tracker['icon'] . '">';
 		}
-		$supported_trackers[] = '<div style="display: inline-flex; align-items: center; justify-content: center;"><span>' . $tracker['name'] . '</span>' . $icon . '</div>';
+
+		$tracker_name = '<div style="display: inline-flex; align-items: center; justify-content: center;"><span>' . $tracker['name'] . '</span>' . $icon . '</div>';
+		if (!empty($tracker['href'])) {
+			$supported_trackers[] = '<a target="_blank" href="' . $tracker['href'] . '">' . $tracker_name . '</a>';
+		} else {
+			$supported_trackers[] = $tracker_name;
+		}
 	}
 
 	$template->assign_vars(array(

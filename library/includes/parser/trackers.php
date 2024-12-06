@@ -24,7 +24,8 @@ if (!defined('BB_ROOT')) {
 $trackers = array(
 	'rutor' => array(
 		'enabled' => true,
-		'name' => 'Rutor.info',
+		'name' => 'rutor.info',
+		'href' => 'http://rutor.info',
 		'icon' => BB_ROOT . 'styles/images/trackers/rutor.ico',
 		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
 		'dl_url' => 'http://d.rutor.info/download/',
@@ -37,6 +38,7 @@ $trackers = array(
 	'xxxtor' => array(
 		'enabled' => true,
 		'name' => 'xxxtor.net',
+		'href' => 'http://xxxtor.net',
 		'icon' => BB_ROOT . 'styles/images/trackers/xxxtor.ico',
 		'regex' => "#xxxtor\.net/\d+-\d+\.html#",
 		'target_element' => '<div id="down">',
@@ -45,6 +47,7 @@ $trackers = array(
 		'enabled' => true,
 		'auth' => true,
 		'name' => 'rutracker.ru',
+		'href' => 'http://rutracker.ru',
 		'icon' => BB_ROOT . 'styles/images/trackers/rutracker_ru.ico',
 		'regex' => "#rutracker\.ru/viewtopic\.php\?t=\d+#",
 		'login_url' => 'http://rutracker.ru/login.php',
@@ -61,6 +64,7 @@ $trackers = array(
 	'ztorrents' => array(
 		'enabled' => true,
 		'name' => 'z-torrents.ru',
+		'href' => 'http://z-torrents.ru',
 		'icon' => BB_ROOT . 'styles/images/trackers/z-torrents.ico',
 		'regex' => "#z-torrents\.ru/[a-z]+/\d+-\S+\.html#",
 		'target_element' => '<div class="dle_b_appp"',
@@ -69,6 +73,7 @@ $trackers = array(
 		'enabled' => true,
 		'auth' => true,
 		'name' => 'booktracker.org',
+		'href' => 'http://booktracker.org',
 		'icon' => BB_ROOT . 'styles/images/trackers/booktracker.ico',
 		'regex' => "#booktracker\.org/viewtopic\.php\?t=\d+#",
 		'login_url' => 'https://booktracker.org/login.php',
