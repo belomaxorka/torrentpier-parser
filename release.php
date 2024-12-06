@@ -177,7 +177,7 @@ if (empty($url)) {
 				// Парсинг с трекера отключен
 				die_and_refresh(sprintf($lang['PARSER_TRACKER_DISABLED'], $name));
 			}
-			if ((isset($data['auth']) && is_array($data['auth']) && $data['auth']['enabled']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
+			if ((isset($data['auth']) && $data['auth']['enabled']) && (empty($bb_cfg['torrent_parser']['auth'][$name]['login']) || empty($bb_cfg['torrent_parser']['auth'][$name]['pass']))) {
 				// Неверные данные авторизации
 				bb_die(sprintf($lang['PARSER_EMPTY_AUTH'], $name));
 			}
