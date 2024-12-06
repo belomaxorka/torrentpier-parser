@@ -121,6 +121,8 @@ if (empty($url)) {
 	$supported_trackers = array();
 	foreach ($trackers as $tracker) {
 		$icon = $href = '';
+		$tracker = $tracker['info'];
+
 		if (!empty($tracker['icon'])) {
 			$icon = '&nbsp;<img style="width: 20px; height: 20px;" alt="' . $tracker['name'] . '" src="' . $tracker['icon'] . '">';
 		}

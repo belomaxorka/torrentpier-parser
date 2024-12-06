@@ -24,12 +24,16 @@ if (!defined('BB_ROOT')) {
 $trackers = array(
 	'rutor' => array(
 		'enabled' => true,
-		'name' => 'rutor.info',
-		'href' => 'http://rutor.info',
-		'icon' => BB_ROOT . 'styles/images/trackers/rutor.ico',
-		'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
-		'dl_url' => 'http://d.rutor.info/download/',
-		'target_element' => '<td class="header"',
+		'info' => array(
+			'name' => 'rutor.info',
+			'href' => 'http://rutor.info',
+			'icon' => BB_ROOT . 'styles/images/trackers/rutor.ico',
+		),
+		'settings' => array(
+			'regex' => "#(?:rutor\.info|rutor\.is)\/torrent/#", // .is, .info
+			'dl_url' => 'http://d.rutor.info/download/',
+			'target_element' => '<td class="header"',
+		),
 		'redirect' => array(
 			'from' => array('http://rutor.org/'),
 			'to' => 'http://rutor.info/'
