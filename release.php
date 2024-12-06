@@ -185,6 +185,9 @@ if (empty($url)) {
 		// Проверка на редиректы
 		if (!empty($data['redirect']['from'])) {
 			foreach ($data['redirect']['from'] as $fromUrl) {
+				if (!filter_var($data['redirect']['to'], FILTER_VALIDATE_URL) || !filter_var($fromUrl, FILTER_VALIDATE_URL)) {
+					bb_die($lang['PARSER_INVALID_REDIRECT_URLS']);
+				}
 				if (strpos($url, $fromUrl) === 0) {
 					$url = str_replace($fromUrl, $data['redirect']['to'], $url);
 					break;
