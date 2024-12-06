@@ -37,18 +37,21 @@ function fetch_content($curl, $url, $target_element)
 {
 	global $lang;
 
-	// Получение контента
-	$content = $curl->fetchUrl($url);
-	$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
-	$pos = strpos($content, $target_element);
-	$content = substr($content, 0, $pos);
+	for ($i = 0, $max_try = 3; $i <= $max_try; $i++) {
+		// Получение контента
+		$content = $curl->fetchUrl($url);
+		$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
+		$pos = strpos($content, $target_element);
+		$content = substr($content, 0, $pos);
 
-	// Проверка на пустую страницу
-	if (empty($content)) {
-		die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $url));
+		if (!empty($content)) {
+			return $content;
+		} elseif ($i == $max_try) {
+			die_and_refresh(sprintf($lang['PARSER_EMPTY_CONTENT'], $url));
+		}
 	}
 
-	return $content;
+	return false;
 }
 
 /**
