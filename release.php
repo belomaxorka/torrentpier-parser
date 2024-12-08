@@ -252,7 +252,7 @@ if (empty($url)) {
 	}
 
 	// Получение содержимого
-	$content = fetch_content($curl, $url, $tracker_data['settings']['target_element']);
+	$content = fetch_content($curl, $url, $tracker_data['settings']['target_element'], (isset($tracker_data['settings']['from_win_1251_iconv']) ? $tracker_data['settings']['from_win_1251_iconv'] : false));
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content, $curl, $tracker_data)) {
