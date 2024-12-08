@@ -17,12 +17,13 @@ if (!defined('BB_ROOT')) {
  * Парсер с z-torrents.ru
  *
  * @param $text
+ * @param object $curl
+ * @param array $tracker_data
  * @return array
  * @author ivangord aka Ральф
  * @license MIT License
- *
  */
-function ztorrents($text)
+function ztorrents($text, $curl = null, $tracker_data = null)
 {
 	// ------------------- Get title -------------------
 	preg_match("#<title>([\s\S]*?)</title>#i", $text, $matches);
