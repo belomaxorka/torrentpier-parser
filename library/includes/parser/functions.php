@@ -31,16 +31,21 @@ function die_and_refresh($msg)
  * @param object $curl
  * @param string $url
  * @param string $target_element
+ * @param bool $from_win_1251_iconv
  * @return mixed
  */
-function fetch_content($curl, $url, $target_element)
+function fetch_content($curl, $url, $target_element, $from_win_1251_iconv = false)
 {
 	global $lang;
 
 	for ($i = 0, $max_try = 3; $i <= $max_try; $i++) {
 		// Получение контента
 		$content = $curl->fetchUrl($url);
-		$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
+		if ($from_win_1251_iconv) {
+			$content = iconv('windows-1251', 'UTF-8', $content);
+		} else {
+			$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
+		}
 		$pos = strpos($content, $target_element);
 		$content = substr($content, 0, $pos);
 

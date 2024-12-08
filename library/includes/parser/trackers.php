@@ -85,7 +85,9 @@ $trackers = array(
 		'settings' => array(
 			'regex' => "#rutracker\.org/forum\/viewtopic\.php\?t=\d+#",
 			'dl_url' => 'https://rutracker.org/forum/dl.php?t=',
+			'ajax_url' => 'https://rutracker.org/forum/ajax.php',
 			'target_element' => '<div style="padding-top: 6px;">',
+			'from_win_1251_iconv' => true,
 		),
 		'auth' => array(
 			'enabled' => true,
