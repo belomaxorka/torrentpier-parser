@@ -79,6 +79,7 @@ $bb_cfg['torrent_parser'] = array(
 	'auth' => array(
 		// 'название трекера' => array('login' => 'ваш логин', 'pass' => 'ваш пароль'),
 		'rutracker_ru' => array('login' => '', 'pass' => ''),
+		'rutracker_org' => array('login' => '', 'pass' => ''),
 		'booktracker' => array('login' => '', 'pass' => ''),
 	)
 );
