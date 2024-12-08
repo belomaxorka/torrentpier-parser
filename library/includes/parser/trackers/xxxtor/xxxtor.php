@@ -17,12 +17,13 @@ if (!defined('BB_ROOT')) {
  * Парсер с xxxtor.net
  *
  * @param $text
+ * @param object $curl
+ * @param array $tracker_data
  * @return array
  * @author ivangord aka Ральф
  * @license MIT License
- *
  */
-function xxxtor($text)
+function xxxtor($text, $curl = null, $tracker_data = null)
 {
 	// ------------------- Get title -------------------
 	preg_match("#<h1>([\s\S]*?)</h1>#i", $text, $matches);
