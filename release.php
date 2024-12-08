@@ -18,7 +18,7 @@ require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
 require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
 require_once INC_DIR . '/bbcode.php';
 
-set_time_limit($bb_cfg['torrent_parser']['time_limit']);
+set_time_limit(60);
 $hidden_form_fields = $message = $subject = '';
 
 // Вводимый URL адрес пользователем
