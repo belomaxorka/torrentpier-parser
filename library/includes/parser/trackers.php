@@ -65,7 +65,7 @@ $trackers = array(
 			'login_url' => 'http://rutracker.ru/login.php',
 			'login_input_name' => 'login_username',
 			'password_input_name' => 'login_password',
-			'login_has_error_element' => '',
+			'login_has_error_element' => '', // todo
 		),
 		'redirect' => array(
 			// from https -> http
