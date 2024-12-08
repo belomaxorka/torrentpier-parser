@@ -16,14 +16,15 @@ if (!defined('BB_ROOT')) {
 /**
  * Парсер с Rutor.info
  *
- * @link https://torrentpier.com/resources/avtomaticheskij-parser-razdach-s-rutor-info.253/
+ * @param $text
+ * @param object $curl
+ * @param array $tracker_data
+ * @return array
  * @author _Xz_
  * @license MIT License
- *
- * @param $text
- * @return array
+ * @link https://torrentpier.com/resources/avtomaticheskij-parser-razdach-s-rutor-info.253/
  */
-function rutor($text)
+function rutor($text, $curl = null, $tracker_data = null)
 {
 	// ------------------- Get title -------------------
 	preg_match("#<h1>([\s\S]*?)</h1>#", $text, $matches);
