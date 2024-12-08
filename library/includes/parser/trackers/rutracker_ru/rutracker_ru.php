@@ -17,12 +17,13 @@ if (!defined('BB_ROOT')) {
  * Парсер с rutracker.ru
  *
  * @param $text
+ * @param object $curl
+ * @param array $tracker_data
  * @return array
  * @author ivangord aka Ральф
  * @license MIT License
- *
  */
-function rutracker_ru($text)
+function rutracker_ru($text, $curl = null, $tracker_data = null)
 {
 	// ------------------- Get title -------------------
 	preg_match("#<title>(.*?)(::.*?)</title>#s", $text, $matches);
