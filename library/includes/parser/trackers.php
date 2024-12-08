@@ -75,6 +75,25 @@ $trackers = array(
 			'to' => 'http://rutracker.ru/',
 		),
 	),
+	'rutracker_org' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'rutracker.org',
+			'href' => 'https://rutracker.org',
+			'icon' => BB_ROOT . 'styles/images/trackers/rutracker_org.ico',
+		),
+		'settings' => array(
+			'regex' => "#rutracker\.org/forum\/viewtopic\.php\?t=\d+#",
+			'dl_url' => 'https://rutracker.org/forum/dl.php?t=',
+			'target_element' => '<div style="padding-top: 6px;">',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'https://rutracker.org/forum/login.php',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+		),
+	),
 	'ztorrents' => array(
 		'enabled' => true,
 		'info' => array(
