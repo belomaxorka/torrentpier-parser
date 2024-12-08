@@ -162,7 +162,7 @@ $lang['PARSER_INVALID_JSON_RESPONSE'] = 'Не удалось получить JS
 $lang['PARSER_CANT_FIND_PARSER'] = 'Не удается найти файл парсера: <b>%s</b>';
 $lang['PARSER_CANT_CREATE_COOKIES_DIR'] = 'Не получается создать папку для куки файлов. Попробуйте повторить попытку парсинга';
 $lang['PARSER_EMPTY_AUTH_LINK'] = 'Отсутствует ссылка на страницу авторизации';
-$lang['PARSER_AUTH_ERROR'] = 'Во время авторизации возникла ошибка. Вероятно, указан неверный логин / пароль в настройках.';
+$lang['PARSER_AUTH_ERROR'] = 'Во время авторизации возникла ошибка. Вероятно, указан неверный логин / пароль в настройках';
 $lang['PARSER_EMPTY_CONTENT'] = 'Не удается получить данные с страницы (<b>%s</b>)';
 $lang['PARSER_CANT_GET_TORRENT'] = 'Не удается найти ссылку с торрент-файлом и/или она некорректная';
 $lang['PARSER_DUPLICATE_TORRENT'] = 'Повтор. Такая тема уже существует.<br><hr>Оригинальная тема - <a target="_blank" href="%s">%s</a><br>Ваш релиз - <a target="_blank" href="%s">%s</a>';
