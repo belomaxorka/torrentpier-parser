@@ -14,7 +14,7 @@ if (!defined('BB_ROOT')) {
 }
 
 /**
- * Парсер с rutracker.ru
+ * Парсер с rutracker.org
  *
  * @param $text
  * @return array
@@ -22,7 +22,7 @@ if (!defined('BB_ROOT')) {
  * @license MIT License
  *
  */
-function rutracker_ru($text)
+function rutracker_org($text)
 {
 	// ------------------- Get title -------------------
 	preg_match("#<title>(.*?)(::.*?)</title>#s", $text, $matches);
