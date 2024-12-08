@@ -92,7 +92,7 @@ $trackers = array(
 			'login_url' => 'https://rutracker.org/forum/login.php',
 			'login_input_name' => 'login_username',
 			'password_input_name' => 'login_password',
-			'login_has_error_element' => '',
+			'login_has_error_element' => '/<img[^>]*src="https:\/\/static\.rutracker\.cc\/captcha\/[^"]*"\s*[^>]*>/i',
 		),
 	),
 	'ztorrents' => array(
