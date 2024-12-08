@@ -25,6 +25,8 @@ if (!defined('BB_ROOT')) {
  */
 function rutracker_org($text, $curl = null, $tracker_data = null)
 {
+	global $lang;
+
 	// ------------------- Get title -------------------
 	preg_match("#<title>(.*?)(::.*?)</title>#s", $text, $matches);
 	$title = $matches[1];
@@ -47,13 +49,18 @@ function rutracker_org($text, $curl = null, $tracker_data = null)
 		"form_token" => "$form_token"
 	);
 
+	// Получение кода топика
 	$source = $curl->sendPostData($tracker_data['settings']['ajax_url'], $post_data);
+	if (!is_json($source)) {
+		die_and_refresh($lang['PARSER_INVALID_JSON_RESPONSE']);
+	}
+
 	$text = json_decode(mb_convert_encoding($source, 'UTF-8', mb_detect_encoding($source)), true);
 	$text = isset($text['post_text']) ? $text['post_text'] : '';
 
 	// Проверка ответа
 	if (empty($text)) {
-		// todo
+		die_and_refresh($lang['PARSER_INVALID_JSON_RESPONSE']);
 	}
 
 	$text = preg_replace("#\[font=(\w+)]#", "[font=\"\\1\"]", $text);

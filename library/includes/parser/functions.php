@@ -210,3 +210,15 @@ function rgb2html($rgb)
 		. str_pad(dechex($g), 2, '0', STR_PAD_LEFT)
 		. str_pad(dechex($b), 2, '0', STR_PAD_LEFT);
 }
+
+/**
+ * Проверка JSON ответа на корректность
+ *
+ * @param $string
+ * @return bool
+ */
+function is_json($string)
+{
+	json_decode($string);
+	return json_last_error() === JSON_ERROR_NONE;
+}
