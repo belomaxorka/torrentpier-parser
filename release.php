@@ -245,10 +245,14 @@ if (empty($url)) {
 			'login' => true,
 			'autologin' => 'on',
 		);
-		$curl->sendPostData($tracker_data['auth']['login_url'], $submit_vars);
+		$content = $curl->sendPostData($tracker_data['auth']['login_url'], $submit_vars);
 
 		// Проверка на успешную авторизацию
-		$content = fetch_content($curl, $tracker_data['auth']['login_url'], '</body>', (isset($tracker_data['settings']['from_win_1251_iconv']) ? $tracker_data['settings']['from_win_1251_iconv'] : false));
+		if (isset($tracker_data['settings']['from_win_1251_iconv']) && $tracker_data['settings']['from_win_1251_iconv']) {
+			$content = iconv('windows-1251', 'UTF-8', $content);
+		} else {
+			$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
+		}
 		if (preg_match($tracker_data['auth']['login_has_error_element'], $content)) {
 			// Ошибка авторизации
 			bb_die($lang['PARSER_AUTH_ERROR']);
