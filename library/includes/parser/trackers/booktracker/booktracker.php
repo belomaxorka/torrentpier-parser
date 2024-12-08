@@ -17,12 +17,13 @@ if (!defined('BB_ROOT')) {
  * Парсер с booktracker.org
  *
  * @param $text
+ * @param object $curl
+ * @param array $tracker_data
  * @return array
  * @author ivangord aka Ральф
  * @license MIT License
- *
  */
-function booktracker($text)
+function booktracker($text, $curl = null, $tracker_data = null)
 {
 	// ------------------- Get title -------------------
 	preg_match("#<h1 class=\"maintitle\"><a href=\".*?\">([\s\S]*?)</a></h1>#", $text, $matches);
