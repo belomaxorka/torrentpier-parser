@@ -65,6 +65,7 @@ $trackers = array(
 			'login_url' => 'http://rutracker.ru/login.php',
 			'login_input_name' => 'login_username',
 			'password_input_name' => 'login_password',
+			'login_has_error_element' => '',
 		),
 		'redirect' => array(
 			// from https -> http
@@ -91,6 +92,7 @@ $trackers = array(
 			'login_url' => 'https://rutracker.org/forum/login.php',
 			'login_input_name' => 'login_username',
 			'password_input_name' => 'login_password',
+			'login_has_error_element' => '',
 		),
 	),
 	'ztorrents' => array(
@@ -122,6 +124,7 @@ $trackers = array(
 			'login_url' => 'https://booktracker.org/login.php',
 			'login_input_name' => 'login_username',
 			'password_input_name' => 'login_password',
+			'login_has_error_element' => '',
 		),
 	),
 );
