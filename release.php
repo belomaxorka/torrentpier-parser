@@ -39,7 +39,7 @@ $attach_dir = get_attachments_dir();
  * ------------------------------------------------------
  */
 $ext_errors = array();
-$ext_list = array('dom', 'mbstring', 'curl', 'iconv');
+$ext_list = array('json', 'dom', 'mbstring', 'curl', 'iconv');
 foreach ($ext_list as $ext) {
 	if (!extension_loaded($ext)) {
 		$ext_errors[] = $ext;
