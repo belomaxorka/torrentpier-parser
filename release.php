@@ -18,33 +18,6 @@ require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
 require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
 require_once INC_DIR . '/bbcode.php';
 
-/**
- * ------------------------------------------------------
- * Проверка расширений
- * ------------------------------------------------------
- */
-$ext_errors = array();
-$ext_list = array(
-	'dom',
-	'mbstring',
-	'curl',
-	'iconv',
-);
-foreach ($ext_list as $ext) {
-	if (!extension_loaded($ext)) {
-		$ext_errors[] = $ext;
-	}
-}
-if (!empty($ext_errors)) {
-	bb_die(sprintf("TorrentPier requires %s extension(s) installed on server", implode(', ', $ext_errors)));
-}
-unset($ext_errors, $ext_list);
-
-/**
- * ------------------------------------------------------
- * Входные данные / инициализация
- * ------------------------------------------------------
- */
 set_time_limit(60);
 $hidden_form_fields = $message = $subject = '';
 
@@ -59,6 +32,23 @@ $user->session_start(array('req_login' => ($bb_cfg['torrent_parser']['parser_aut
 
 // Получаем путь до папки с торрентами
 $attach_dir = get_attachments_dir();
+
+/**
+ * ------------------------------------------------------
+ * Проверка расширений
+ * ------------------------------------------------------
+ */
+$ext_errors = array();
+$ext_list = array('dom', 'mbstring', 'curl', 'iconv');
+foreach ($ext_list as $ext) {
+	if (!extension_loaded($ext)) {
+		$ext_errors[] = $ext;
+	}
+}
+if (!empty($ext_errors)) {
+	bb_die(sprintf($lang['PARSER_MISSING_EXTENSIONS'], implode(', ', $ext_errors)));
+}
+unset($ext_errors, $ext_list);
 
 /**
  * ------------------------------------------------------
