@@ -18,6 +18,33 @@ require_once INC_DIR . '/parser/curl/CurlHttpClient.php';
 require_once INC_DIR . '/parser/random_user_agent/UserAgent.php';
 require_once INC_DIR . '/bbcode.php';
 
+/**
+ * ------------------------------------------------------
+ * Проверка расширений
+ * ------------------------------------------------------
+ */
+$ext_errors = array();
+$ext_list = array(
+	'dom',
+	'mbstring',
+	'curl',
+	'iconv',
+);
+foreach ($ext_list as $ext) {
+	if (!extension_loaded($ext)) {
+		$ext_errors[] = $ext;
+	}
+}
+if (!empty($ext_errors)) {
+	bb_die(sprintf("TorrentPier requires %s extension(s) installed on server", implode(', ', $ext_errors)));
+}
+unset($ext_errors, $ext_list);
+
+/**
+ * ------------------------------------------------------
+ * Входные данные / инициализация
+ * ------------------------------------------------------
+ */
 set_time_limit(60);
 $hidden_form_fields = $message = $subject = '';
 
