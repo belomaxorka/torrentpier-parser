@@ -26,7 +26,7 @@ if (!defined('BB_ROOT')) {
 function rustorka($text, $curl = null, $tracker_data = null)
 {
 	// ------------------- Get title -------------------
-	preg_match("#<title>(.*?)(::.*?)</title>#s", $text, $matches);
+	preg_match("#<h1 class=\"bigtitle\"><a href=\".*?\">([\s\S]*?)</a></h1>#", $text, $matches);
 	$title = $matches[1];
 
 	// ------------------- Get download link -------------------
