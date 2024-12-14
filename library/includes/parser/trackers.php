@@ -172,7 +172,7 @@ $trackers = array(
 		'info' => array(
 			'name' => 'windows-soft.info',
 			'href' => 'https://windows-soft.info',
-			'icon' => BB_ROOT . 'styles/images/trackers/windows-soft.ico',
+			'icon' => BB_ROOT . 'styles/images/trackers/windowssoft.ico',
 		),
 		'settings' => array(
 			'regex' => "#windows-soft.info/#",
@@ -185,7 +185,7 @@ $trackers = array(
 		'info' => array(
 			'name' => 'only-soft.org',
 			'href' => 'https://solely-soft.top',
-			'icon' => BB_ROOT . 'styles/images/trackers/only-soft.ico',
+			'icon' => BB_ROOT . 'styles/images/trackers/onlysoft.ico',
 		),
 		'settings' => array(
 			'regex' => "#solely-soft\.top/viewtopic\.php\?t=\d+#",
