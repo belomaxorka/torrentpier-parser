@@ -34,7 +34,7 @@ function megapeer($text, $curl = null, $tracker_data = null)
 	$torrent = $matches[1];
 
 	// ------------------- Get content -------------------
-	preg_match_all("#<tr><td style=\"vertical-align:top;\">([\s\S]*?)</td></tr>#si", $text, $source, PREG_SET_ORDER);
+	preg_match_all("#<tr><td id=\"top\">([\s\S]*?)</td></tr>#si", $text, $source, PREG_SET_ORDER);
 	$text = $source[0][1];
 	$text = preg_replace("/<\/td><td><img src ='([^<]*?)'\/>/", '[img=right]$1[/img]', $text);
 	$text = preg_replace('/<\/td><td>.*?<img src="([\s\S]*?)" \/>/', '[img=right]$1[/img]', $text);
