@@ -31,7 +31,7 @@ function rustorka($text, $curl = null, $tracker_data = null)
 	$title = str_replace('<wbr>', '', $title);
 
 	// ------------------- Get download link -------------------
-	preg_match('#<th colspan=\"3\" class=\"genmed\">(.*?).torrent</th>[\s\S]*?<a href=\"download.php\?id=(.*?)\"#', $text, $matches);
+	preg_match('#<th colspan=\"3\" class=\"genmed\">(.*?).torrent</th>[\s\S]*?<a href=\"download.php\?id=(.*?)\" #', $text, $matches);
 	$torrent = $matches[1];
 
 	// ------------------- Get content -------------------
