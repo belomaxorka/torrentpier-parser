@@ -155,7 +155,7 @@ $trackers = array(
 			'icon' => BB_ROOT . 'styles/images/trackers/kinozal.ico',
 		),
 		'settings' => array(
-			'regex' => "#kinozal.tv/details.php\?id=\d+#",
+			'regex' => "#kinozal\.tv/details\.php\?id=\d+#",
 			'dl_url' => 'https://dl.kinozal.tv/download.php?id=',
 			'target_element' => '<form id="cmt" method=post',
 		),
