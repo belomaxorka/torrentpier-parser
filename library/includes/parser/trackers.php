@@ -127,24 +127,4 @@ $trackers = array(
 			'login_has_error_element' => '/<h4 class="warnColor1 tCenter mrg_16">.*?<\/h4>/s',
 		),
 	),
-	'rustorka' => array(
-		'enabled' => true,
-		'info' => array(
-			'name' => 'rustorka.com',
-			'href' => 'https://rustorka.com',
-			'icon' => BB_ROOT . 'styles/images/trackers/rustorka.ico',
-		),
-		'settings' => array(
-			'regex' => "#rustorka\.com/forum\/viewtopic\.php\?t=\d+#",
-			'dl_url' => 'https://rustorka.com/forum/download.php?id=',
-			'target_element' => '<tr class="row3 tCenter">',
-		),
-		'auth' => array(
-			'enabled' => true,
-			'login_url' => 'https://rustorka.com/forum/login.php',
-			'login_input_name' => 'login_username',
-			'password_input_name' => 'login_password',
-			'login_has_error_element' => '',
-		),
-	),
 );
