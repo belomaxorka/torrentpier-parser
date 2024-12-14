@@ -77,6 +77,7 @@ $bb_cfg['torrent_parser'] = array(
 		'rutracker_ru' => array('login' => '', 'pass' => ''),
 		'rutracker_org' => array('login' => '', 'pass' => ''),
 		'booktracker' => array('login' => '', 'pass' => ''),
+		'riperam' => array('login' => '', 'pass' => ''),
 		'megapeer' => array('login' => '', 'pass' => ''),
 		'kinozal' => array('login' => '', 'pass' => ''),
 		'only-soft' => array('login' => '', 'pass' => ''),
