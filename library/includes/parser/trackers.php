@@ -167,4 +167,17 @@ $trackers = array(
 			'login_has_error_element' => '', // todo
 		),
 	),
+	'windows-soft' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'windows-soft.info',
+			'href' => 'https://windows-soft.info',
+			'icon' => BB_ROOT . 'styles/images/trackers/windows-soft.ico',
+		),
+		'settings' => array(
+			'regex' => "#windows-soft.info/#",
+			'dl_url' => 'https://windows-soft.info/engine/download.php?id=',
+			'target_element' => '<div class="fstory-rating">',
+		),
+	),
 );
