@@ -204,4 +204,29 @@ $trackers = array(
 			'to' => 'https://solely-soft.top/',
 		),
 	),
+	'ddgroupclub' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'ddgroupclub.win',
+			'href' => 'http://ddgroupclub.win',
+			'icon' => BB_ROOT . 'styles/images/trackers/ddgroupclub.ico',
+		),
+		'settings' => array(
+			'regex' => "#ddgroupclub\.win/viewtopic\.php\?t=\d+#",
+			'dl_url' => 'http://ddgroupclub.win/dl.php?id=',
+			'target_element' => '<p class="small">',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'http://ddgroupclub.win/login.php',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'login_has_error_element' => '', // todo
+		),
+		'redirect' => array(
+			// from https -> http
+			'from' => array('https://ddgroupclub.win/'),
+			'to' => 'http://ddgroupclub.win/',
+		),
+	),
 );
