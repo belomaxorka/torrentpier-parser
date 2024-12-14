@@ -167,7 +167,7 @@ $trackers = array(
 			'login_has_error_element' => '', // todo
 		),
 	),
-	'windows-soft' => array(
+	'windows_soft' => array(
 		'enabled' => true,
 		'info' => array(
 			'name' => 'windows-soft.info',
@@ -180,7 +180,7 @@ $trackers = array(
 			'target_element' => '<div class="fstory-rating">',
 		),
 	),
-	'only-soft' => array( // aka solely-soft.top
+	'only_soft' => array( // aka solely-soft.top
 		'enabled' => true,
 		'info' => array(
 			'name' => 'only-soft.org',
