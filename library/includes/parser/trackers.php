@@ -176,7 +176,7 @@ $trackers = array(
 			'icon' => BB_ROOT . 'styles/images/trackers/windowssoft.ico',
 		),
 		'settings' => array(
-			'regex' => "#windows-soft.info/#",
+			'regex' => "#windows-soft.info/#", // todo
 			'dl_url' => 'https://windows-soft.info/engine/download.php?id=',
 			'target_element' => '<div class="fstory-rating">',
 		),
@@ -238,7 +238,7 @@ $trackers = array(
 			'icon' => BB_ROOT . 'styles/images/trackers/megapeer.ico',
 		),
 		'settings' => array(
-			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#",
+			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#", // todo
 			'dl_url' => 'https://megapeer.vip/download/',
 			'target_element' => '<td class="heading"',
 			'from_win_1251_iconv' => true,
