@@ -127,4 +127,44 @@ $trackers = array(
 			'login_has_error_element' => '/<h4 class="warnColor1 tCenter mrg_16">.*?<\/h4>/s',
 		),
 	),
+	'riperam' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'riperam.org',
+			'href' => 'https://riperam.org',
+			'icon' => BB_ROOT . 'styles/images/trackers/riperam.ico',
+		),
+		'settings' => array(
+			'regex' => "#riperam.org/#", // todo
+			'dl_url' => 'https://riperam.org/download/file.php?id=',
+			'target_element' => '<td style="text-align: center; vertical-align: top;">',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'https://riperam.org/ucp.php?mode=login',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'login_has_error_element' => '', // todo
+		),
+	),
+	'kinozal' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'kinozal.tv',
+			'href' => 'https://kinozal.tv',
+			'icon' => BB_ROOT . 'styles/images/trackers/kinozal.ico',
+		),
+		'settings' => array(
+			'regex' => "#kinozal.tv/details.php\?id=\d+#",
+			'dl_url' => 'https://dl.kinozal.tv/download.php?id=',
+			'target_element' => '<form id="cmt" method=post',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'https://kinozal.tv/takelogin.php',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'login_has_error_element' => '', // todo
+		),
+	),
 );
