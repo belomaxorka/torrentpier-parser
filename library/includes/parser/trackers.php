@@ -230,4 +230,28 @@ $trackers = array(
 			'to' => 'http://ddgroupclub.win/',
 		),
 	),
+	'megapeer' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'megapeer.vip',
+			'href' => 'https://megapeer.vip',
+			'icon' => BB_ROOT . 'styles/images/trackers/megapeer.ico',
+		),
+		'settings' => array(
+			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#",
+			'dl_url' => 'https://megapeer.ru/download/',
+			'target_element' => '<td class="heading"',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'https://megapeer.ru/takelogin.php',
+			'login_input_name' => 'username',
+			'password_input_name' => 'password',
+			'login_has_error_element' => '', // todo
+		),
+		'redirect' => array(
+			'from' => array('http://megapeer.ru/', 'https://megapeer.ru/'),
+			'to' => 'https://megapeer.vip/',
+		),
+	),
 );
