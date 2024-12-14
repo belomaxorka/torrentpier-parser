@@ -239,12 +239,13 @@ $trackers = array(
 		),
 		'settings' => array(
 			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#",
-			'dl_url' => 'https://megapeer.ru/download/',
+			'dl_url' => 'https://megapeer.vip/download/',
 			'target_element' => '<td class="heading"',
+			'from_win_1251_iconv' => true,
 		),
 		'auth' => array(
 			'enabled' => true,
-			'login_url' => 'https://megapeer.ru/takelogin.php',
+			'login_url' => 'https://megapeer.vip/takelogin.php',
 			'login_input_name' => 'username',
 			'password_input_name' => 'password',
 			'login_has_error_element' => '', // todo

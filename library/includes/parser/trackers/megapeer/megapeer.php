@@ -30,7 +30,7 @@ function megapeer($text, $curl = null, $tracker_data = null)
 	$title = $matches[1];
 
 	// ------------------- Get download link -------------------
-	preg_match('#<a.*?href=\"/download/([\d]+)\">#', $text, $matches);
+	preg_match('#<a.*?href=\"/download/([\d]+)\".*?>#', $text, $matches);
 	$torrent = $matches[1];
 
 	// ------------------- Get content -------------------
@@ -39,16 +39,6 @@ function megapeer($text, $curl = null, $tracker_data = null)
 	$text = preg_replace("/<\/td><td><img src ='([^<]*?)'\/>/", '[img=right]$1[/img]', $text);
 	$text = preg_replace('/<\/td><td>.*?<img src="([\s\S]*?)" \/>/', '[img=right]$1[/img]', $text);
 	$text = preg_replace("/<img src = '(.*?)' style='float: [\d]+;'\/>/", '[img]$1[/img]', $text);
-
-	$text = preg_replace("/Релиз от.*?<br \/>/siu", "\n", $text);  // вырезает
-	$text = preg_replace("/Автор рипа.*?<br \/>/siu", "\n", $text); // вырезает
-	$text = preg_replace("/АНОНСЫ МОИХ РАЗДАЧ.*?<br \/>/siu", "\n", $text); // вырезает
-	$text = preg_replace("/Рип от.*?<br \/>/siu", "\n", $text); // вырезает
-	$text = preg_replace("/Раздача от.*?<br \/>/i", "\n", $text); // вырезает
-	$text = preg_replace("/Сравнение с исходником.*?<br \/>/siu", "\n", $text); // вырезает
-	$text = preg_replace("/screenshotcomparison.com.*?<br \/>/siu", "\n", $text); // вырезает
-	$text = preg_replace("/Скачать.*?<br \/>/siu", "\n", $text); // вырезает
-	$text = preg_replace("/источник.*?<br \/>/siu", "\n", $text); // вырезает
 
 	$text = str_replace('<left>', '', $text);
 	$text = str_replace('</left>', '', $text);
