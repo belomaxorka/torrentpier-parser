@@ -158,6 +158,7 @@ $trackers = array(
 			'regex' => "#kinozal\.tv/details\.php\?id=\d+#",
 			'dl_url' => 'https://dl.kinozal.tv/download.php?id=',
 			'target_element' => '<form id="cmt" method=post',
+			'from_win_1251_iconv' => true,
 		),
 		'auth' => array(
 			'enabled' => true,

@@ -35,8 +35,8 @@ function kinozal($text, $curl = null, $tracker_data = null)
 
 	// ------------------- Get content -------------------
 	$match_screen = preg_match_all("/<a onclick=\"showtab\((\d+),(\d+)\); return false;\" href=\"#\">Скриншоты<\/a>/", $text, $source, PREG_SET_ORDER);
-	$url_id = $source[0][1];
-	$pagesd = $source[0][2];
+	$url_id = @$source[0][1];
+	$pagesd = @$source[0][2];
 	if ($match_screen) {
 		$screen = file_get_contents("http://kinozal.tv/get_srv_details.php?id=$url_id&pagesd=$pagesd");
 		$screenschot = "\n[spoiler=\"Скриншоты\"][align=center]" . $screen . "[/align][/spoiler]";
@@ -45,8 +45,8 @@ function kinozal($text, $curl = null, $tracker_data = null)
 	}
 
 	$match_screen2 = preg_match_all("/<a onclick=\"showtab\((\d+),(\d+)\); return false;\" href=\"#\">Качество<\/a>/", $text, $source, PREG_SET_ORDER);
-	$url_id2 = $source[0][1];
-	$pagesd2 = $source[0][2];
+	$url_id2 = @$source[0][1];
+	$pagesd2 = @$source[0][2];
 	if ($match_screen2) {
 		$screen2 = file_get_contents("http://kinozal.tv/get_srv_details.php?id=$url_id2&pagesd=$pagesd2");
 		$screenschot2 = "\n[spoiler=\"Качество\"][align=center]" . $screen2 . "[/align][/spoiler]";
@@ -55,8 +55,8 @@ function kinozal($text, $curl = null, $tracker_data = null)
 	}
 
 	$match_tr = preg_match_all("/<a onclick=\"showtab\((\d+),(\d+)\); return false;\" href=\"#\">Треклист<\/a>/", $text, $source, PREG_SET_ORDER);
-	$url_idtr = $source[0][1];
-	$pagesdtr = $source[0][2];
+	$url_idtr = @$source[0][1];
+	$pagesdtr = @$source[0][2];
 	if ($match_tr) {
 		$tr = file_get_contents("http://kinozal.tv/get_srv_details.php?id=$url_idtr&pagesd=$pagesdtr");
 		$track = "\n[spoiler=\"Треклист\"]\n[list]\n" . $tr . "\n[/list]\n[/spoiler]";
@@ -65,8 +65,8 @@ function kinozal($text, $curl = null, $tracker_data = null)
 	}
 
 	$match_movie_content = preg_match_all("/<a onclick=\"showtab\((\d+),(\d+)\); return false;\" href=\"#\">Содержание<\/a>/", $text, $source, PREG_SET_ORDER);
-	$url_idm = $source[0][1];
-	$pagesdm = $source[0][2];
+	$url_idm = @$source[0][1];
+	$pagesdm = @$source[0][2];
 	if ($match_movie_content) {
 		$movie_content = file_get_contents("http://kinozal.tv/get_srv_details.php?id=$url_idm&pagesd=$pagesdm");
 		$movie = "\n[spoiler=\"Содержание\"]\n" . $movie_content . "\n[/spoiler]";
@@ -75,13 +75,14 @@ function kinozal($text, $curl = null, $tracker_data = null)
 	}
 
 	$match_cover = preg_match_all("/<a onclick=\"showtab\((\d+),(\d+)\); return false;\" href=\"#\">Обложки<\/a>/", $text, $source, PREG_SET_ORDER);
-	$url_idcv = $source[0][1];
-	$pagesdcv = $source[0][2];
+	$url_idcv = @$source[0][1];
+	$pagesdcv = @$source[0][2];
 	if ($match_cover) {
 		$content_cover = file_get_contents("http://kinozal.tv/get_srv_details.php?id=$url_idcv&pagesd=$pagesdcv");
 		$cover = "\n[spoiler=\"Обложки\"]\n[align=center]" . $content_cover . "[/center]\n[/spoiler]";
-	} else
+	} else {
 		$cover = false;
+	}
 
 	$text = preg_replace('#kinopoisk.ru\/film\/(\d+)\/#', "/film/$1", $text);
 	$text = preg_replace('#/i/poster/#', "http://kinozal.tv/i/poster/$1", $text);
@@ -96,7 +97,7 @@ function kinozal($text, $curl = null, $tracker_data = null)
 
 	preg_match_all('/<a href="http[^<]*?kinopoisk.ru\/film\/(\d+)" target="_blank">Кинопоиск.*?<\/a>/', $text, $kp, PREG_SET_ORDER);
 
-	$kp_rating = ($kp[0][1]) ? "[kp]https://www.kinopoisk.ru/film/" . $kp[0][1] . "[/kp]" : "";
+	$kp_rating = isset($kp[0][1]) ? "[kp]https://www.kinopoisk.ru/film/" . $kp[0][1] . "[/kp]" : "";
 	$text = $poster . $source[0][1] . $imdb_rating . "&nbsp;" . $kp_rating . $track . $movie . $screenschot . $cover . $screenschot2;
 
 	$text = preg_replace('/<div class="bx1 justify">([\s\S]*?)<\/div>/', "\n[hr]\\1", $text);
