@@ -239,6 +239,8 @@ if (empty($url)) {
 	}
 	require_once $tracker_file_path;
 
+	$from_win_1251_iconv = isset($tracker_data['settings']['from_win_1251_iconv']) && $tracker_data['settings']['from_win_1251_iconv'];
+
 	// Авторизация
 	if (isset($tracker_data['auth']) && $tracker_data['auth']['enabled']) {
 		if (!filter_var($tracker_data['auth']['login_url'], FILTER_VALIDATE_URL)) {
@@ -266,7 +268,7 @@ if (empty($url)) {
 
 		// Проверка на успешную авторизацию
 		if (!empty($tracker_data['auth']['login_has_error_element'])) {
-			if (isset($tracker_data['settings']['from_win_1251_iconv']) && $tracker_data['settings']['from_win_1251_iconv']) {
+			if ($from_win_1251_iconv) {
 				$content = iconv('windows-1251', 'UTF-8', $content);
 			} else {
 				$content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
@@ -281,7 +283,7 @@ if (empty($url)) {
 	}
 
 	// Получение содержимого
-	$content = fetch_content($curl, $url, $tracker_data['settings']['target_element'], (isset($tracker_data['settings']['from_win_1251_iconv']) ? $tracker_data['settings']['from_win_1251_iconv'] : false));
+	$content = fetch_content($curl, $url, $tracker_data['settings']['target_element'], $from_win_1251_iconv);
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content, $curl, $tracker_data)) {
