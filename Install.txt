@@ -80,7 +80,6 @@ $bb_cfg['torrent_parser'] = array(
 		'riperam' => array('login' => '', 'pass' => ''),
 		'megapeer' => array('login' => '', 'pass' => ''),
 		'kinozal' => array('login' => '', 'pass' => ''),
-		'onlysoft' => array('login' => '', 'pass' => ''),
 		'ddgroupclub' => array('login' => '', 'pass' => ''),
 	)
 );

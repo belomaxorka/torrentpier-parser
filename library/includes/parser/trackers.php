@@ -181,30 +181,6 @@ $trackers = array(
 			'target_element' => '<div class="fstory-rating">',
 		),
 	),
-	'onlysoft' => array( // aka solely-soft.top
-		'enabled' => true,
-		'info' => array(
-			'name' => 'only-soft.org',
-			'href' => 'https://solely-soft.top',
-			'icon' => BB_ROOT . 'styles/images/trackers/onlysoft.ico',
-		),
-		'settings' => array(
-			'regex' => "#solely-soft\.top/viewtopic\.php\?t=\d+#",
-			'dl_url' => 'https://solely-soft.top/download.php?id=',
-			'target_element' => '<p class="small">',
-		),
-		'auth' => array(
-			'enabled' => true,
-			'login_url' => 'https://solely-soft.top/login.php',
-			'login_input_name' => 'login_username',
-			'password_input_name' => 'login_password',
-			'login_has_error_element' => '', // todo
-		),
-		'redirect' => array(
-			'from' => array('https://only-soft.org/'),
-			'to' => 'https://solely-soft.top/',
-		),
-	),
 	'ddgroupclub' => array(
 		'enabled' => true,
 		'info' => array(
