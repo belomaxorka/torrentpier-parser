@@ -224,7 +224,7 @@ $trackers = array(
 			'login_url' => 'https://megapeer.vip/takelogin.php',
 			'login_input_name' => 'username',
 			'password_input_name' => 'password',
-			'login_has_error_element' => '', // todo
+			'login_has_error_element' => '/<h1>.*?<\/h1>/s',
 		),
 		'redirect' => array(
 			'from' => array('http://megapeer.ru/', 'https://megapeer.ru/'),
