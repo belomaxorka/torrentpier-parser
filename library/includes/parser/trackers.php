@@ -214,7 +214,7 @@ $trackers = array(
 			'icon' => BB_ROOT . 'styles/images/trackers/megapeer.ico',
 		),
 		'settings' => array(
-			'regex' => "#(?:megapeer\.ru|megapeer\.vip)\/torrent/#", // todo
+			'regex' => "/megapeer\.vip\/torrent\/\d+\/[\w_-]+/", // todo
 			'dl_url' => 'https://megapeer.vip/download/',
 			'target_element' => '<td class="heading"',
 			'from_win_1251_iconv' => true,
