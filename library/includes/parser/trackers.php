@@ -198,7 +198,7 @@ $trackers = array(
 			'login_url' => 'http://ddgroupclub.win/login.php',
 			'login_input_name' => 'login_username',
 			'password_input_name' => 'login_password',
-			'login_has_error_element' => '', // todo
+			'login_has_error_element' => '/<div class="info_msg_wrap">.*?<\/div>/s',
 		),
 		'redirect' => array(
 			// from https -> http
