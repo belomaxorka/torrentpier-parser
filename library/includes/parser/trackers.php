@@ -176,7 +176,7 @@ $trackers = array(
 			'icon' => BB_ROOT . 'styles/images/trackers/windowssoft.ico',
 		),
 		'settings' => array(
-			'regex' => "#windows-soft.info/#", // todo
+			'regex' => "/^windows-soft\.info\/\d+-[a-z0-9-]+[a-z0-9-]+\.html$/",
 			'dl_url' => 'https://windows-soft.info/engine/download.php?id=',
 			'target_element' => '<div class="fstory-rating">',
 		),
