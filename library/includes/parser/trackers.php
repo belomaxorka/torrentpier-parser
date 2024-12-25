@@ -144,7 +144,7 @@ $trackers = array(
 			'login_url' => 'https://riperam.org/ucp.php?mode=login',
 			'login_input_name' => 'username',
 			'password_input_name' => 'password',
-			'login_has_error_element' => '', // todo
+			'login_has_error_element' => '/<div class="error">.*?<\/div>/s',
 		),
 	),
 	'kinozal' => array(
