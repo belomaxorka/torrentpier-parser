@@ -275,7 +275,7 @@ if (empty($url)) {
 			}
 			if (preg_match($tracker_data['auth']['login_has_error_element'], $content)) {
 				// Ошибка авторизации
-				bb_die($lang['PARSER_AUTH_ERROR']);
+				bb_die(sprintf($lang['PARSER_AUTH_ERROR'], $tracker));
 			}
 		}
 
