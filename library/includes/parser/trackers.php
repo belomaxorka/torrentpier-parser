@@ -165,7 +165,7 @@ $trackers = array(
 			'login_url' => 'https://kinozal.tv/takelogin.php',
 			'login_input_name' => 'username',
 			'password_input_name' => 'password',
-			'login_has_error_element' => '/<div class="red">\s*Не найдено имя[\s\S]*?<\/div>/s',
+			'login_has_error_element' => '/<div class="red">\s*(?:Не найдено имя|Неверно указан пароль для имени)[\s\S]*?<\/div>/s',
 		),
 	),
 	'windowssoft' => array(
