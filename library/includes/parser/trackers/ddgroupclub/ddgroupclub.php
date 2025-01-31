@@ -54,7 +54,7 @@ function ddgroupclub($text, $curl = null, $tracker_data = null)
 
 	$text = str_replace('<span class="post-hr">-</span>', "\n[hr]\n", $text);
 	$text = str_replace('<span class="post-br"><br /></span>', "\n[br]\n", $text);
-	$text = str_replace('<br />', "\n", $text);
+
 	$text = preg_replace('/<var class="postImg postImgAligned img-([^<]*?)" title="([^<]*?)">&#10;<\/var>/', "[img=\\1]\\2[/img]\n", $text);
 	$text = preg_replace('/<var class="postImg" title="([^<]*?)">&#10;<(?=\/)\/var>/', '[img]$1[/img]', $text);
 	$text = preg_replace('/<img class="smile" src=".*?" align="absmiddle" border="0" \/>/', '', $text);
