@@ -57,7 +57,7 @@ function rutracker_ru($text, $curl = null, $tracker_data = null)
 	$text = preg_replace('/<var class="postImg postImgAligned img-(.*?)" title="([^<]*?)">&#10;<\/var>/', "[img=\\1]\\2[/img]\n", $text);
 	$text = preg_replace('/<var class="postImg" title="([^<]*?)">&#10;<(?=\/)\/var>/', '[img]$1[/img]', $text);
 	$text = preg_replace('/<img class="smile" src=".*?" align="absmiddle" border="0" \/>/', '', $text);
-	$text = preg_replace('/<a href="([^<]*?)" data-rel="lightcase:myCollection:slideshow">.*?<\/a>/', '[th]$1[/th]', $text);
+	$text = preg_replace('/<span href="([^<]*?)".*? data-rel="lightcase:myCollection:slideshow">.*?<\/span>/', '[thumb]$1[/thumb]', $text);
 	$text = preg_replace('/<object.*?><param name="movie" value="([^<]*?)"><\/param>[\s\S]*?<\/object>/', '[youtube]$1[/youtube]', $text);
 	$text = str_replace('youtube.com/v/', 'youtube.com/watch?v=', $text);
 	$text = str_replace('&hl=ru_RU&fs=1&', '', $text);
