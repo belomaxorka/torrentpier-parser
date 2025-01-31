@@ -288,7 +288,7 @@ if (empty($url)) {
 	// Парсим HTML код страницы
 	if ($message = $tracker($content, $curl, $tracker_data)) {
 		$torrent_file = $message['torrent']; // Ссылка на торрент-файл / attach_id
-		$subject = $message['title']; // Заголовок сообщения
+		$subject = str_short($message['title'], 250); // Заголовок сообщения
 
 		// Проверка ссылки на торрент
 		if (empty($torrent_file)) {
