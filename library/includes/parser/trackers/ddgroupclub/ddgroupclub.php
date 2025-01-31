@@ -20,7 +20,7 @@ if (!defined('BB_ROOT')) {
  * @param object $curl
  * @param array $tracker_data
  * @return array
- * @author ivangord aka Ральф
+ * @author ivangord aka Ральф, DimaUZB2001
  * @license MIT License
  */
 function ddgroupclub($text, $curl = null, $tracker_data = null)
@@ -58,7 +58,7 @@ function ddgroupclub($text, $curl = null, $tracker_data = null)
 	$text = preg_replace('/<var class="postImg postImgAligned img-([^<]*?)" title="([^<]*?)">&#10;<\/var>/', "[img=\\1]\\2[/img]\n", $text);
 	$text = preg_replace('/<var class="postImg" title="([^<]*?)">&#10;<(?=\/)\/var>/', '[img]$1[/img]', $text);
 	$text = preg_replace('/<img class="smile" src=".*?" align="absmiddle" border="0" \/>/', '', $text);
-	$text = preg_replace('/<span href="([^<]*?)".*? rel="topic" class="highslide">.*?<\/span>/', '[th]$1[/th]', $text);
+	$text = preg_replace('/<span href="([^<]*?)".*? rel="topic" class="highslide">.*?<\/span>/', '[thumb]$1[/thumb]', $text);
 
 	$text = preg_replace('/<span href=".*?" target="_blank"><img src=".\/ratings\/kinopoisk.php\?url=([^<]*?)" ><\/span>/', '[kp]$1[/kp]', $text);
 	$text = preg_replace('/<span href=".*?" target="_blank"><img src=".\/ratings\/imdb.php\?url=([^<]*?)" ><\/span>/', '[imdb]$1[/imdb]', $text);
@@ -70,18 +70,18 @@ function ddgroupclub($text, $curl = null, $tracker_data = null)
 	$text = str_replace('youtube.com/embed/', "youtube.com/watch?v=", $text);
 
 	for ($i = 0; $i <= 20; $i++) {
-		$text = preg_replace('/<span class="post-b">([^<]*?)<(?=\/)\/span>/', '[b]$1[/b]', $text);
-		$text = preg_replace('/<span class="post-u">([^<]*?)<(?=\/)\/span>/', '[u]$1[/u]', $text);
-		$text = preg_replace('/<span class="post-i">([^<]*?)<(?=\/)\/span>/', '[i]$1[/i]', $text);
-		$text = preg_replace('/<span class="post-s">([^<]*?)<(?=\/)\/span>/', '[s]$1[/s]', $text);
-		$text = preg_replace('/<span class="post-sh">([^<]*?)<(?=\/)\/span>/', '[sh]$1[/sh]', $text);
-		$text = preg_replace('/<span class="post-d">([^<]*?)<(?=\/)\/span>/', '[d]$1[/d]', $text);
-		$text = preg_replace('/<span style="font-size: ([^<]*?)px; line-height: normal;">([^<]*?)<(?=\/)\/span>/', "[size=\\1]\\2[/size]", $text);
+		$text = preg_replace('/<span class="post-b">([\s\S]*?)<(?=\/)\/span>/', '[b]$1[/b]', $text);
+		$text = preg_replace('/<span class="post-u">([\s\S]*?)<(?=\/)\/span>/', '[u]$1[/u]', $text);
+		$text = preg_replace('/<span class="post-i">([\s\S]*?)<(?=\/)\/span>/', '[i]$1[/i]', $text);
+		$text = preg_replace('/<span class="post-s">([\s\S]*?)<(?=\/)\/span>/', '[s]$1[/s]', $text);
+		$text = preg_replace('/<span class="post-sh">([\s\S]*?)<(?=\/)\/span>/', '[sh]$1[/sh]', $text);
+		$text = preg_replace('/<span class="post-d">([\s\S]*?)<(?=\/)\/span>/', '[d]$1[/d]', $text);
+		$text = preg_replace('/<span style="font-size: ([^<]*?)px; line-height: normal;">([\s\S]*?)<(?=\/)\/span>/', "[size=\\1]\\2[/size]", $text);
 		$text = preg_replace('/<span style="font-family: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', "[font=\"\\1\"]\\2[/font]", $text);
-		$text = preg_replace('/<span class="post-align" style="text-align: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', "[align=\\1]\n\\2\n[/align]", $text);
-		$text = preg_replace('/<span style="color: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
+		$text = preg_replace('/<span class="post-align" style="text-align: ([^<]*?);">([\s\S]*?)<(?=\/)\/span>/', "[align=\\1]\n\\2\n[/align]", $text);
+		$text = preg_replace('/<span style="color: ([^<]*?);">([\s\S]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
 		$text = preg_replace('/<span href="([^<]*?)" class="postLink">([^<]*?)<(?=\/)\/span>/', '[url=$1]$2[/url]', $text);
-		$text = preg_replace('/<span class="sp-wrap"><span class="sp-body" title="([^<]*?)">([^<]*?)<(?=\/)\/span><(?=\/)\/span>/', "[spoiler=\"\\1\"]\n\\2\n[/spoiler]", $text);
+		$text = preg_replace('/<span class="sp-body" title="([^<]*?)">([\s\S]*?)<(?=\/)\/span>([^<]*?)<(?=\/)\/span>/', "[spoiler=\"\\1\"]\n\\2\n[/spoiler]", $text);
 		$text = preg_replace('/<span class="q">([^<]*?)<(?=\/)\/span>([^<]*?)<([^<]*?)\/span>/', "[quote]\n\\1\n[/quote]", $text);
 		$text = preg_replace('/<span class="q" head="([^<]*?)">([^<]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[quote=\"\\1\"]\n\\2\n[/quote]", $text);
 		$text = preg_replace('/<span class="c-body">([^<]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[code]\n\\1\n[/code]", $text);
