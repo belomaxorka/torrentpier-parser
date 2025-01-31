@@ -81,7 +81,7 @@ function ddgroupclub($text, $curl = null, $tracker_data = null)
 		$text = preg_replace('/<span class="post-align" style="text-align: ([^<]*?);">([\s\S]*?)<(?=\/)\/span>/', "[align=\\1]\n\\2\n[/align]", $text);
 		$text = preg_replace('/<span style="color: ([^<]*?);">([\s\S]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
 		$text = preg_replace('/<span href="([^<]*?)" class="postLink">([^<]*?)<(?=\/)\/span>/', '[url=$1]$2[/url]', $text);
-		$text = preg_replace('/<span class="sp-body" title="([^<]*?)">([\s\S]*?)<(?=\/)\/span>([^<]*?)<(?=\/)\/span>/', "[spoiler=\"\\1\"]\n\\2\n[/spoiler]", $text);
+		$text = preg_replace('/<span class="sp-body" title="([^<]*?)">([\s\S]*?)<(?=\/)\/span>([\s\S]*?)<(?=\/)\/span>/', "[spoiler=\"\\1\"]\n\\2\n[/spoiler]", $text);
 		$text = preg_replace('/<span class="q">([^<]*?)<(?=\/)\/span>([^<]*?)<([^<]*?)\/span>/', "[quote]\n\\1\n[/quote]", $text);
 		$text = preg_replace('/<span class="q" head="([^<]*?)">([^<]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[quote=\"\\1\"]\n\\2\n[/quote]", $text);
 		$text = preg_replace('/<span class="c-body">([^<]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[code]\n\\1\n[/code]", $text);
