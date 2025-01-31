@@ -128,7 +128,7 @@ function kinozal($text, $curl = null, $tracker_data = null)
 		$text = preg_replace('/<u>([^<]*?)<(?=\/)\/u>/', '[u]$1[/u]', $text);
 		$text = preg_replace('/<i>([^<]*?)<(?=\/)\/i>/', '[i]$1[/i]', $text);
 		$text = preg_replace('/<s>([^<]*?)<(?=\/)\/s>/', '[s]$1[/s]', $text);
-		$text = preg_replace('/<a href="([^<]*?)" class="gPic" rel="galI".*?><img.*?><\/a>/', "[th]$1[/th]", $text);
+		$text = preg_replace('/<a href="([^<]*?)" class="gPic" rel="galI".*?><img.*?><\/a>/', "[thumb]$1[/thumb]", $text);
 		$text = preg_replace('/<font style="font-size: ([^<]*?)pt">([^<]*?)<(?=\/)\/font>/', "[size=\\1]\\2[/size]", $text);
 		$text = preg_replace('/<span style="font-family: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', "[font=\"\\1\"]\\2[/font]", $text);
 		$text = preg_replace('/<span class="post-align" style="text-align: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', "[align=\\1]\\2[/align]", $text);
@@ -137,7 +137,6 @@ function kinozal($text, $curl = null, $tracker_data = null)
 		$text = preg_replace('/<a href="([^<]*?)" target="_blank">([^<]*?)<(?=\/)\/a>/', '[url=$1]$2[/url]', $text);
 		$text = preg_replace('/<div class="spoiler-wrap"><div class="spoiler-head folded clickable">([^<]*?)<\/div><div class="spoiler-body">([^<]*?)<(?=\/)\/div><(?=\/)\/div>/', "[spoiler=\"\\1\"]\n\\2\n[/spoiler]", $text);
 		$text = preg_replace('/http:(.*?)kinopoisk.ru/', "https:$1kinopoisk.ru", $text);
-
 	}
 
 	$text = preg_replace('#\[url=[^<]*?kinozal.*?\](.*?)\[/url\]#', "\\1", $text);

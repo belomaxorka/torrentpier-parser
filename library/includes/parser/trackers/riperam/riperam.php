@@ -53,7 +53,7 @@ function riperam($text, $curl = null, $tracker_data = null)
 	$text = preg_replace('/<var title="(.*?)" class="postImg".*?><\/var>/', '[img]$1[/img]', $text);
 	$text = preg_replace('/<img width=".*?" src="(.*?)" alt="">/', '[img]$1[/img]', $text);
 	$text = preg_replace('/<img width=".*?" src="(.*?)" alt>/', '[img]$1[/img]', $text);
-	$text = preg_replace('/<a href="(.*?)" rel="prettyPhotoSscreen.*?">.*?<\/a>/', '[th]$1[/th]', $text);
+	$text = preg_replace('/<a href="(.*?)" rel="prettyPhotoSscreen.*?">.*?<\/a>/', '[thumb]$1[/thumb]', $text);
 
 	$text = preg_replace('/<iframe.*?src="([^<]*?)" frameborder.*?allowfullscreen><\/iframe>/', '[youtube]$1[/youtube]', $text);
 	for ($i = 0; $i <= 20; $i++) {
