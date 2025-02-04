@@ -75,7 +75,7 @@ function windowssoft($text, $curl = null, $tracker_data = null)
 		$text = preg_replace('/<div style="text-align:([^<]*?);">([^<]*?)<(?=\/)\/div>/', '[align=$1]$2[/align]', $text);
 		$text = preg_replace('/http:(.*?)kinopoisk.ru/', "https:$1kinopoisk.ru", $text);
 		$text = preg_replace('/<a href="([^<]*?)"  target="_blank".*?>([^<]*?)<(?=\/)\/a>/', '[url=$1]$2[/url]', $text);
-		$text = preg_replace('/<div class="title_spoiler">([^<]*?)<\/a><(?=\/)\/div><div class="text_spoiler">([^<]*?)<(?=\/)\/div>/', "[spoiler=\"\\1\"]\n\\2\n[/spoiler]\n", $text);
+		$text = preg_replace('/<div class="title_spoiler">([\s\S]*?)<\/a><(?=\/)\/div><div class="text_spoiler">([^<]*?)<(?=\/)\/div>/', "[spoiler=\"\\1\"]\n\\2\n[/spoiler]\n", $text);
 	}
 
 	$text = preg_replace('#\[url=http.*?imdb.com/title/(.*?)/].*?\[\/url\]#', '[imdb]https://www.imdb.com/title/$17[/imdb]', $text);
