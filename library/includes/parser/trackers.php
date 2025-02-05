@@ -135,7 +135,7 @@ $trackers = array(
 			'icon' => BB_ROOT . 'styles/images/trackers/riperam.ico',
 		),
 		'settings' => array(
-			'regex' => "/^riperam\.org\/[a-z-]+[a-z]+\/\S+-t\d+\.html$/",
+			'regex' => "#riperam\.org\/[a-z-]+[a-z]+\/\S+-t\d+\.html$#",
 			'dl_url' => 'https://riperam.org/download/file.php?id=',
 			'target_element' => '<td style="text-align: center; vertical-align: top;">',
 		),
