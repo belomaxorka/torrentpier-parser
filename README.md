@@ -6,7 +6,7 @@
 
 Ссылка на тему: [NextGen Парсер раздач](https://torrentpier.com/resources/nextgen-parser-razdach.303/)
 
-### Достоинства:
+### Достоинства
 
 * Имеется поддержка трекеров с авторизацией
 * Имеется система прав доступа к парсеру (см. конфиг)
@@ -19,7 +19,7 @@
 * Расширеная система проверок вводимых данных
 * Проверка авторизации на корректность
 
-### Список поддерживаемых трекеров:
+### Список поддерживаемых трекеров
 
 * rutor.info
 * xxxtor.net
@@ -33,13 +33,13 @@
 * ddgroupclub.win
 * megapeer.vip
 
-### Полезные ссылки:
+### Полезные ссылки
 
 * [Установка на TorrentPier Cattle](https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96551)
 * [Как добавить трекер на основе TorrentPier](https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96559)
 * [Набор BBCode тегов с рутрекера](https://torrentpier.com/resources/nabor-bbcode-tegov-s-rutrekera.283/)
 
-### Авторство:
+### Авторство
 
 * Участники [torrentpier.com](https://torrentpier.com/)
 * Некоторые части кода принадлежат ivangord
