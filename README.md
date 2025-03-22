@@ -39,6 +39,11 @@
 * [Как добавить трекер на основе TorrentPier](https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96559)
 * [Набор BBCode тегов с рутрекера](https://torrentpier.com/resources/nabor-bbcode-tegov-s-rutrekera.283/)
 
+### Используемые библиотеки
+
+* [CurlHttpClient](https://github.com/dinke/curl_http_client) [LICENSE](library/includes/parser/curl/LICENSE)
+* [random-user-agent](https://github.com/joecampo/random-user-agent) [LICENSE](library/includes/parser/random_user_agent/LICENSE)
+
 ### Авторство
 
 * Участники [torrentpier.com](https://torrentpier.com/)
