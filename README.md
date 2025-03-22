@@ -41,8 +41,8 @@
 
 ### Используемые библиотеки
 
-* [CurlHttpClient](https://github.com/dinke/curl_http_client) [LICENSE](library/includes/parser/curl/LICENSE)
-* [random-user-agent](https://github.com/joecampo/random-user-agent) [LICENSE](library/includes/parser/random_user_agent/LICENSE)
+* [CurlHttpClient](https://github.com/dinke/curl_http_client). [LICENSE](library/includes/parser/curl/LICENSE)
+* [random-user-agent](https://github.com/joecampo/random-user-agent). [LICENSE](library/includes/parser/random_user_agent/LICENSE)
 
 ### Авторство
 
