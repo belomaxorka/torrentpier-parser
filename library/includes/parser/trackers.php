@@ -39,12 +39,12 @@ $trackers = array(
 	'xxxtor' => array(
 		'enabled' => true,
 		'info' => array(
-			'name' => 'xxxtor.net',
-			'href' => 'http://xxxtor.net',
+			'name' => 'xxxtor.com',
+			'href' => 'https://xxxtor.com',
 			'icon' => BB_ROOT . 'styles/images/trackers/xxxtor.ico',
 		),
 		'settings' => array(
-			'regex' => "#xxxtor\.net/\d+-\d+\.html#",
+			'regex' => "#xxxtor\.com/\d+-\d+\.html#",
 			'target_element' => '<div id="down">',
 		),
 	),
