@@ -285,6 +285,9 @@ if (empty($url)) {
 	// Получение содержимого
 	$content = fetch_content($curl, $url, $tracker_data['settings']['target_element'], $from_win_1251_iconv);
 
+	// Добавляем url к $tracker_data
+	$tracker_data[] = ['url' => $url];
+
 	// Парсим HTML код страницы
 	if ($message = $tracker($content, $curl, $tracker_data)) {
 		$torrent_file = $message['torrent']; // Ссылка на торрент-файл / attach_id
