@@ -32,7 +32,7 @@ function xxxtor($text, $curl = null, $tracker_data = null)
 	$title = preg_replace('/\[[\s\S]*?\.[\s\S]*?\]/', '', $title);
 
 	// ------------------- Get download link -------------------
-	preg_match('#<a class="yellowBtn" href=".*?var=//(.*?)&.*?var2.*?</a>#', $text, $matches);
+	preg_match('#<div id="download">\s*<a href="(/download/\d+/)"#is', $text, $matches);
 	$torrent = $tracker_data['hostname'] . $matches[1];
 
 	// ------------------- Get content -------------------
