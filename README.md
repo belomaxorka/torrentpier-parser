@@ -21,6 +21,7 @@
 
 ### Список поддерживаемых трекеров
 
+* rintor.org
 * rutor.info
 * xxxtor.com
 * rutracker.ru
