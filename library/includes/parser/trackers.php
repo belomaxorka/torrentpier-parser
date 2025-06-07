@@ -168,19 +168,6 @@ $trackers = array(
 			'login_has_error_element' => '/<div class="red">\s*(?:Не найдено имя|Неверно указан пароль для имени)[\s\S]*?<\/div>/s',
 		),
 	),
-	'windowssoft' => array(
-		'enabled' => true,
-		'info' => array(
-			'name' => 'windows-soft.info',
-			'href' => 'https://windows-soft.info',
-			'icon' => BB_ROOT . 'styles/images/trackers/windowssoft.ico',
-		),
-		'settings' => array(
-			'regex' => "#windows-soft\.info\/\d+-[a-z0-9-]+[a-z0-9-]+\.html$#",
-			'dl_url' => 'https://windows-soft.info/engine/download.php?id=',
-			'target_element' => '<div class="fstory-rating">',
-		),
-	),
 	'ddgroupclub' => array(
 		'enabled' => true,
 		'info' => array(
