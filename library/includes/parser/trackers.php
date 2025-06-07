@@ -44,7 +44,7 @@ $trackers = array(
 			'icon' => BB_ROOT . 'styles/images/trackers/xxxtor.ico',
 		),
 		'settings' => array(
-			'regex' => "#xxxtor\.com/\d+-\d+\.html#",
+			'regex' => "#https?://(?:www\.)?(?:xxxtor\.(?:com|info|org))/torrent/\d+/#", // поддержка зеркал
 			'target_element' => '<div id="down">',
 		),
 	),
