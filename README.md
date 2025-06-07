@@ -22,14 +22,13 @@
 ### Список поддерживаемых трекеров
 
 * rutor.info
-* xxxtor.net
+* xxxtor.com
 * rutracker.ru
 * rutracker.org
 * z-torrents.ru
 * booktracker.org
 * riperam.org
 * kinozal.tv
-* windows-soft.info
 * ddgroupclub.win
 * megapeer.vip
 
