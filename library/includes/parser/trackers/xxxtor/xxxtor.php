@@ -14,7 +14,7 @@ if (!defined('BB_ROOT')) {
 }
 
 /**
- * Парсер с xxxtor.net
+ * Парсер с xxxtor.com
  *
  * @param $text
  * @param object $curl
