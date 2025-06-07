@@ -33,7 +33,7 @@ function xxxtor($text, $curl = null, $tracker_data = null)
 
 	// ------------------- Get download link -------------------
 	preg_match('#<a class="yellowBtn" href=".*?var=//(.*?)&.*?var2.*?</a>#', $text, $matches);
-	$torrent = $matches[1];
+	$torrent = $tracker_data['url'] . $matches[1];
 
 	// ------------------- Get content -------------------
 	$pos = strpos($text, '<div class="post-user-message">');

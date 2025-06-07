@@ -286,7 +286,7 @@ if (empty($url)) {
 	$content = fetch_content($curl, $url, $tracker_data['settings']['target_element'], $from_win_1251_iconv);
 
 	// Добавляем url к $tracker_data
-	$tracker_data[] = ['url' => $url];
+	$tracker_data[] = ['hostname' => parse_url($url, PHP_URL_HOST)];
 
 	// Парсим HTML код страницы
 	if ($message = $tracker($content, $curl, $tracker_data)) {
