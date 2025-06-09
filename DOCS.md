@@ -3,10 +3,13 @@
 ## Инструкция по установке парсера на TorrentPier Cattle
 
 Открыть файл `library/includes/parser/functions.php` и найти:
+
 ```php
 // Раскомментировать для версий v2.4.0 и выше
 ```
+
 Строчки ниже раскомментируйте:
+
 ```php
 // $tor = \Arokettu\Bencode\Bencode::decode($torrent, dictType: \Arokettu\Bencode\Bencode\Collection::ARRAY);
 // $info_hash = pack('H*', sha1(\Arokettu\Bencode\Bencode::encode($tor['info'])));
@@ -44,4 +47,29 @@
 		'to' => 'http://example.com/', // адрес на который будет происходить переадресация
 	),
 ),
+```
+
+## Шаблон настроек для TorrentPier-подобного трекера
+
+```php
+'rintor' => array(
+	'enabled' => true,
+	'info' => array(
+		'name' => 'TorrentPier',
+		'href' => 'https://torrentpier.duckdns.org',
+		// 'icon' => '',
+	),
+	'settings' => array(
+		'regex' => "#torrentpier\.duckdns\.org/viewtopic\.php\?t=\d+#",
+		'dl_url' => 'https://torrentpier.duckdns.org/dl.php?id=',
+		'target_element' => '<p class="small">',
+	),
+	'auth' => array(
+		'enabled' => true,
+		'login_url' => 'https://torrentpier.duckdns.org/login.php',
+		'login_input_name' => 'login_username',
+		'password_input_name' => 'login_password',
+		'login_has_error_element' => '/<h4 class="warnColor1 tCenter mrg_16">.*?<\/h4>/s',
+	),
+)
 ```
