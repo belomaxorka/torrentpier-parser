@@ -82,6 +82,7 @@ $bb_cfg['torrent_parser'] = array(
 		'ddgroupclub' => array('login' => '', 'pass' => ''),
 		'megapeer' => array('login' => '', 'pass' => ''),
 		'rintor' => array('login' => '', 'pass' => ''),
+		'xxxtorrents' => array('login' => '', 'pass' => ''),
 	)
 );
 

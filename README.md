@@ -23,6 +23,7 @@
 
 ### Список поддерживаемых трекеров
 
+* xxxtorrents.pro
 * rintor.org
 * rutor.info
 * xxxtor.com
