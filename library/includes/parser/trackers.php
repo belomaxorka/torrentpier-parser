@@ -235,7 +235,7 @@ $trackers = array(
 			'login_url' => 'https://rintor.org/login.php',
 			'login_input_name' => 'login_username',
 			'password_input_name' => 'login_password',
-			'login_has_error_element' => '', // todo
+			'login_has_error_element' => '/<h4 class="warnColor1 tCenter mrg_16">.*?<\/h4>/s',
 		),
 	),
 );
