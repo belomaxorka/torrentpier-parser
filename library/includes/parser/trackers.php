@@ -238,4 +238,24 @@ $trackers = array(
 			'login_has_error_element' => '/<h4 class="warnColor1 tCenter mrg_16">.*?<\/h4>/s',
 		),
 	),
+	'xxxtorrents' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'XXXTorrents',
+			'href' => 'https://xxxtorrents.pro',
+			'icon' => BB_ROOT . 'styles/images/trackers/xxxtorrents.ico',
+		),
+		'settings' => array(
+			'regex' => "#xxxtorrents\.pro/viewtopic\.php\?t=\d+#",
+			'dl_url' => 'https://xxxtorrents.pro/dl.php?id=',
+			'target_element' => '<p class="small">',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'https://xxxtorrents.pro/login.php',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'login_has_error_element' => '/<h4 class="warnColor1 tCenter mrg_16">.*?<\/h4>/s',
+		),
+	),
 );
