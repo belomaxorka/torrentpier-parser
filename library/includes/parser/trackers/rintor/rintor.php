@@ -20,7 +20,7 @@ if (!defined('BB_ROOT')) {
  * @param object $curl
  * @param array $tracker_data
  * @return array
- * @author ivangord aka Ральф
+ * @author K15, DimaUZB2001
  * @license MIT License
  */
 function rintor($text, $curl = null, $tracker_data = null)
