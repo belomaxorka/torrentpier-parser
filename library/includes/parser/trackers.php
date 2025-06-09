@@ -218,4 +218,24 @@ $trackers = array(
 			'to' => 'https://megapeer.vip/',
 		),
 	),
+	'rintor' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'Rintor',
+			'href' => 'https://rintor.org',
+			'icon' => BB_ROOT . 'styles/images/trackers/rintor.ico',
+		),
+		'settings' => array(
+			'regex' => "#rintor\.org/viewtopic\.php\?t=\d+#",
+			'dl_url' => 'https://rintor.org/dl.php?id=',
+			'target_element' => '<p class="small">',
+		),
+		'auth' => array(
+			'enabled' => true,
+			'login_url' => 'https://rintor.org/login.php',
+			'login_input_name' => 'login_username',
+			'password_input_name' => 'login_password',
+			'login_has_error_element' => '', // todo
+		),
+	),
 );
