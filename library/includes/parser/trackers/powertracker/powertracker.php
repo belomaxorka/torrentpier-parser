@@ -14,21 +14,20 @@ if (!defined('BB_ROOT')) {
 }
 
 /**
- * Парсер с rintor.org
+ * Парсер с powertracker.ru
  *
  * @param $text
  * @param object $curl
  * @param array $tracker_data
  * @return array
- * @author K15, DimaUZB2001
+ * @author ivangord aka Ральф
  * @license MIT License
  */
-function rintor($text, $curl = null, $tracker_data = null)
+function powertracker($text, $curl = null, $tracker_data = null)
 {
 	// ------------------- Get title -------------------
-	preg_match('#<h1 class="maintitle">.*?<a class="tt-text" href=".*?">([\s\S]*?)</a>.*?</h1>#s', $text, $matches);
+	preg_match("#<title>(.*?)(::.*?)</title>#s", $text, $matches);
 	$title = $matches[1];
-	$title = str_replace('<wbr>', '', $title);
 
 	// ------------------- Get download link -------------------
 	preg_match('#<a href="dl.php\?id=(.*?)" class="genmed">#', $text, $matches);
@@ -56,7 +55,6 @@ function rintor($text, $curl = null, $tracker_data = null)
 	$text = preg_replace('/<span class="post-br".*?span>/', '[hr]', $text);
 	$text = preg_replace('/<hr class="post-hr">/', "\n[hr]", $text);
 	$text = str_replace('<span class="post-hr">-</span>', "\n[hr]\n", $text);
-	$text = str_replace('<br />', "\n", $text);
 	$text = preg_replace('/<var class="postImg postImgAligned img-([^<]*?)" title="([^<]*?)">&#10;<\/var>/', "[img=\\1]\\2[/img]\n", $text);
 	$text = preg_replace('/<var class="postImg" title="([^<]*?)">&#10;<(?=\/)\/var>/', '[img]$1[/img]', $text);
 	$text = preg_replace('/<img class="smile" src=".*?" align="absmiddle" border="0" \/>/', '', $text);
@@ -78,16 +76,19 @@ function rintor($text, $curl = null, $tracker_data = null)
 		$text = preg_replace('/<span class="post-d">([^<]*?)<(?=\/)\/span>/', '[d]$1[/d]', $text);
 		$text = preg_replace('/<span style="font-size: ([^<]*?)px; line-height: normal;">([^<]*?)<(?=\/)\/span>/', "[size=\\1]\\2[/size]", $text);
 		$text = preg_replace('/<span style="font-family: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', "[font=\"\\1\"]\\2[/font]", $text);
-		$text = preg_replace('/<span class="post-align" style="text-align: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', "[align=\\1]\n\\2\n[/align]", $text);
+		$text = preg_replace('/<span class="post-align" style="text-align: ([^<]*?);">([\s\S]*?)<(?=\/)\/span>/', "[align=\\1]\n\\2\n[/align]", $text);
 		$text = preg_replace('/<span style="color: ([^<]*?);">([^<]*?)<(?=\/)\/span>/', '[color=$1]$2[/color]', $text);
 		$text = preg_replace('/<span href="([^<]*?)" class="postLink" rel="nofollow">([^<]*?)<(?=\/)\/span>/', '[url=$1]$2[/url]', $text);
-		$text = preg_replace('/<span class="sp-body">([^<]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[align=center][spoiler=\"Скриншоты\"]\n\\1\n[/spoiler][/align]", $text);
+		$text = preg_replace('/<span class="sp-body" title="([^<]*?)">([\s\S]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[align=center] [spoiler=\"\\1\"]\n\\2\n[/spoiler][/align]", $text);
 		$text = preg_replace('/<span class="q">([^<]*?)<(?=\/)\/span>([^<]*?)<([^<]*?)\/span>/', "[quote]\n\\1\n[/quote]", $text);
 		$text = preg_replace('/<span class="q" head="([^<]*?)">([^<]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[quote=\"\\1\"]\n\\2\n[/quote]", $text);
 		$text = preg_replace('/<span class="c-body">([^<]*?)<(?=\/)\/span>([\s\S]*?)<([^<]*?)\/span>/', "[code]\n\\1\n[/code]", $text);
 		$text = preg_replace('/http:(.*?)kinopoisk.ru/', "https:$1kinopoisk.ru", $text);
 		$text = preg_replace('/\[url=.*?multi-up.com.*?\].*?\[\/url\]/', "", $text);
 	}
+
+	// Вставка плеера
+	insert_video_player($text);
 
 	return array(
 		'title' => $title,
