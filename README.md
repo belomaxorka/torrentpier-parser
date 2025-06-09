@@ -37,8 +37,6 @@
 
 ### Полезные ссылки
 
-* [Установка на TorrentPier Cattle](https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96551)
-* [Как добавить трекер на основе TorrentPier](https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96559)
 * [Набор BBCode тегов с рутрекера](https://torrentpier.com/resources/nabor-bbcode-tegov-s-rutrekera.283/)
 
 ### Используемые библиотеки
