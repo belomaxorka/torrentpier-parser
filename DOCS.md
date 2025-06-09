@@ -52,7 +52,7 @@
 ## Шаблон настроек для TorrentPier-подобного трекера
 
 ```php
-'rintor' => array(
+'torrentpier' => array(
 	'enabled' => true,
 	'info' => array(
 		'name' => 'TorrentPier',
