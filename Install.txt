@@ -81,6 +81,7 @@ $bb_cfg['torrent_parser'] = array(
 		'kinozal' => array('login' => '', 'pass' => ''),
 		'ddgroupclub' => array('login' => '', 'pass' => ''),
 		'megapeer' => array('login' => '', 'pass' => ''),
+		'rintor' => array('login' => '', 'pass' => ''),
 	)
 );
 
