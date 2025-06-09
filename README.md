@@ -23,6 +23,7 @@
 
 ### Список поддерживаемых трекеров
 
+* cybertorrent.pro (aka powertracker.ru)
 * xxxtorrents.pro
 * rintor.org
 * rutor.info
