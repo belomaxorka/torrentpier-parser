@@ -258,4 +258,22 @@ $trackers = array(
 			'login_has_error_element' => '/<h4 class="warnColor1 tCenter mrg_16">.*?<\/h4>/s',
 		),
 	),
+	'powertracker' => array(
+		'enabled' => true,
+		'info' => array(
+			'name' => 'CyberTorrent',
+			'href' => 'http://cybertorrent.pro',
+			'icon' => BB_ROOT . 'styles/images/trackers/powertracker.ico',
+		),
+		'settings' => array(
+			'regex' => "#cybertorrent\.pro/viewtopic\.php\?t=\d+#",
+			'dl_url' => 'http://cybertorrent.pro/dl.php?id=',
+			'target_element' => '<p class="small">',
+		),
+		'redirect' => array(
+			// from https -> http
+			'from' => array('https://cybertorrent.pro'),
+			'to' => 'http://cybertorrent.pro',
+		),
+	),
 );
