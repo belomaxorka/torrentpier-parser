@@ -3,8 +3,8 @@
 Парсер раздач по ссылке. Код парсера написан очень хорошо и добавление новых парсеров делается очень просто.
 
 **Совместимость:** все версии движка. [См. для v2.4.0](https://torrentpier.com/threads/nextgen-parser-razdach.42297/post-96551)
-
-Ссылка на тему: [NextGen Парсер раздач](https://torrentpier.com/resources/nextgen-parser-razdach.303/)
+**Ссылка на тему:** [NextGen Парсер раздач](https://torrentpier.com/resources/nextgen-parser-razdach.303/)
+**Документация:** [DOCS.md](DOCS.md)
 
 ### Достоинства
 
